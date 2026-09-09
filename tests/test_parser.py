@@ -1,6 +1,6 @@
 import pytest
 
-from sanctions_lists_etl.parser import parse_sdn_advanced
+from sanctions_lists_etl.sources.ofac.parser import parse_sdn_advanced
 
 
 @pytest.fixture(scope="module")

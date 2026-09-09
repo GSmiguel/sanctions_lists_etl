@@ -22,18 +22,26 @@ Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/).
 ```bash
 uv sync
 
-# download a fresh SDN snapshot and write data/output/ofac_sdn.xlsx
+# run every registered source end to end
 uv run sanctions-etl
 
+# just OFAC
+uv run sanctions-etl ofac
+
 # parse a local file instead of downloading
-uv run sanctions-etl --xml data/raw/sdn_advanced.xml
+uv run sanctions-etl ofac --xml data/raw/sdn_advanced.xml
 
 # individuals and entities only (drop vessels/aircraft)
-uv run sanctions-etl --individuals-entities-only --out data/output/parties.xlsx
+uv run sanctions-etl ofac --individuals-entities-only
+
+uv run sanctions-etl --list          # show registered sources
+uv run sanctions-etl --output-dir OUT --raw-dir RAW   # override paths
 ```
 
-`data/raw/` keeps the downloaded XML plus a `.meta.json` sidecar recording its
-SHA-256, size and download timestamp. Everything under `data/` is gitignored.
+Each source writes `<output-dir>/<source>.xlsx` (OFAC → `data/output/ofac_sdn.xlsx`).
+`data/raw/` keeps the downloaded source files plus a `.meta.json` sidecar
+recording SHA-256, size and download timestamp. Everything under `data/` is
+gitignored.
 
 ### Output columns
 
@@ -62,7 +70,23 @@ uv run pytest
 Tests run against `tests/fixtures/sample_sdn_advanced.xml`, a trimmed real export
 (4 parties, one of each type) with the full reference tables.
 
-## Development
+## Architecture
 
-Package layout: `src/sanctions_lists_etl/` — `download` → `references` → `parser`
-→ `excel`, orchestrated by `pipeline`.
+```
+src/sanctions_lists_etl/
+  cli.py         `sanctions-etl` command (subcommand per source, + "all")
+  runner.py      source registry + run_all() / run_source()
+  base.py        Source / SourceResult — the contract each list implements
+  common/
+    xmlutils.py  namespace-agnostic XML helpers (shared by all XML sources)
+    excel.py     generic single-sheet workbook writer
+  sources/
+    ofac/        OFAC SDN
+      download.py  references.py  columns.py  parser.py  pipeline.py
+```
+
+**Adding a list** (EU consolidated, UN Security Council, ...): create
+`sources/<name>/` with a module exporting a `SOURCE` object
+(`base.Source`: name, description, a `run(**opts) -> SourceResult` callable, and
+optional CLI hooks), then register it in `runner._SOURCES`. The CLI subcommand
+and `run_all` pick it up automatically.

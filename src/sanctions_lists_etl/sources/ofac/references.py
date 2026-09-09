@@ -10,14 +10,11 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from xml.etree.ElementTree import Element
 
+from ...common.xmlutils import localname
+
 NAMESPACE = (
     "https://sanctionslistservice.ofac.treas.gov/api/PublicationPreview/exports/ADVANCED_XML"
 )
-
-
-def localname(tag: str) -> str:
-    """Return an element tag without its ``{namespace}`` prefix."""
-    return tag.rsplit("}", 1)[-1]
 
 
 @dataclass

@@ -13,9 +13,16 @@ from pathlib import Path
 from typing import Iterable
 from xml.etree.ElementTree import Element, iterparse
 
-from .references import ReferenceData, localname, parse_reference_data
-
-LATIN_SCRIPT_ID = "215"
+from ...common.xmlutils import (
+    child_text,
+    children,
+    first_child,
+    format_date_period,
+    format_ymd,
+    localname,
+)
+from .columns import COLUMNS
+from .references import ReferenceData, parse_reference_data
 
 # Feature type ids with dedicated columns (stable in the OFAC schema).
 FEATURE_BIRTHDATE = "8"
@@ -24,34 +31,21 @@ FEATURE_NATIONALITY = "10"
 FEATURE_CITIZENSHIP = "11"
 FEATURE_WEBSITE = "14"
 FEATURE_EMAIL = "21"
+FEATURE_LOCATION = "25"
 FEATURE_TITLE = "26"
 FEATURE_GENDER = "224"
 
-# Column order for the flat sheet.
-COLUMNS: list[tuple[str, str]] = [
-    ("fixed_ref", "id_ofac"),
-    ("party_type", "tipo"),
-    ("primary_name", "nome_principal"),
-    ("aliases", "nomes_alternativos"),
-    ("birth_dates", "data_nascimento"),
-    ("birth_places", "local_nascimento"),
-    ("nationalities", "nacionalidades"),
-    ("citizenships", "cidadanias"),
-    ("genders", "genero"),
-    ("titles", "titulos"),
-    ("address_countries", "paises"),
-    ("addresses", "enderecos"),
-    ("documents", "documentos"),
-    ("programs", "programas"),
-    ("sanctions_lists", "listas"),
-    ("listed_on", "data_listagem"),
-    ("emails", "emails"),
-    ("websites", "websites"),
-    ("crypto_addresses", "enderecos_cripto"),
-    ("other_features", "outras_caracteristicas"),
-]
-
 _LIST_SEP = "; "
+_UNKNOWN_COUNTRIES = {"undetermined", "unknown"}
+_ADDRESS_PART_ORDER = (
+    "ADDRESS1",
+    "ADDRESS2",
+    "ADDRESS3",
+    "REGION",
+    "CITY",
+    "STATE/PROVINCE",
+    "POSTAL CODE",
+)
 
 
 @dataclass
@@ -146,7 +140,7 @@ def parse_sdn_advanced(
     return list(records.values())
 
 
-def rows_from_records(records: list[PartyRecord]) -> list[dict[str, str]]:
+def rows_from_records(records: Iterable[PartyRecord]) -> list[dict[str, str]]:
     return [record.to_row() for record in records]
 
 
@@ -160,23 +154,21 @@ def _build_party(
     location_countries: dict[str, str],
     docs_by_identity: dict[str, list[str]],
 ) -> PartyRecord | None:
-    profile = _find(party, "Profile")
+    profile = first_child(party, "Profile")
     if profile is None:
         return None
 
     record = PartyRecord(fixed_ref=party.get("FixedRef", ""))
     record.party_type = ref.party_type_for_subtype(profile.get("PartySubTypeID"))
 
-    identity = _find(profile, "Identity")
+    identity = first_child(profile, "Identity")
     if identity is not None:
-        primary, aliases = _resolve_names(identity, ref)
-        record.primary_name = primary
-        record.aliases = aliases
+        record.primary_name, record.aliases = _resolve_names(identity, ref)
         identity_id = identity.get("ID")
         if identity_id in docs_by_identity:
             record.documents = docs_by_identity.pop(identity_id)
 
-    for feature in _findall(profile, "Feature"):
+    for feature in children(profile, "Feature"):
         _apply_feature(feature, ref, record, locations, location_countries)
 
     return record
@@ -184,10 +176,10 @@ def _build_party(
 
 def _resolve_names(identity: Element, ref: ReferenceData) -> tuple[str, list[str]]:
     group_type: dict[str, str] = {}
-    groups = _find(identity, "NamePartGroups")
+    groups = first_child(identity, "NamePartGroups")
     if groups is not None:
-        for master in _findall(groups, "MasterNamePartGroup"):
-            npg = _find(master, "NamePartGroup")
+        for master in children(groups, "MasterNamePartGroup"):
+            npg = first_child(master, "NamePartGroup")
             if npg is not None:
                 group_type[npg.get("ID")] = ref.name_part_type.get(
                     npg.get("NamePartTypeID"), ""
@@ -195,7 +187,7 @@ def _resolve_names(identity: Element, ref: ReferenceData) -> tuple[str, list[str
 
     primary = ""
     aliases: list[str] = []
-    for alias in _findall(identity, "Alias"):
+    for alias in children(identity, "Alias"):
         alias_type = ref.alias_type.get(alias.get("AliasTypeID"), "")
         is_primary = alias.get("Primary") == "true"
         low_quality = alias.get("LowQuality") == "true"
@@ -214,18 +206,17 @@ def _resolve_names(identity: Element, ref: ReferenceData) -> tuple[str, list[str
 
 
 def _rendered_names(alias: Element, group_type: dict[str, str]) -> list[str]:
-    documented = _findall(alias, "DocumentedName")
+    documented = children(alias, "DocumentedName")
     # Prefer the base ("status 1") rendering, then any others (scripts, variants).
-    documented.sort(key=lambda d: (d.get("DocNameStatusID") != "1",))
+    documented.sort(key=lambda d: d.get("DocNameStatusID") != "1")
     rendered: list[str] = []
     for doc in documented:
         parts: list[tuple[str, str]] = []
-        for part in _findall(doc, "DocumentedNamePart"):
-            value = _find(part, "NamePartValue")
+        for part in children(doc, "DocumentedNamePart"):
+            value = first_child(part, "NamePartValue")
             if value is None or not (value.text or "").strip():
                 continue
-            group_id = value.get("NamePartGroupID")
-            parts.append((group_type.get(group_id, ""), value.text.strip()))
+            parts.append((group_type.get(value.get("NamePartGroupID"), ""), value.text.strip()))
         name = _join_name_parts(parts)
         if name:
             rendered.append(name)
@@ -255,37 +246,33 @@ def _apply_feature(
     type_id = feature.get("FeatureTypeID")
     type_name = ref.feature_type.get(type_id, f"Feature {type_id}")
     values: list[str] = []
-    for version in _findall(feature, "FeatureVersion"):
+    for version in children(feature, "FeatureVersion"):
         values.extend(_feature_version_values(version, ref, locations))
-        for version_location in _findall(version, "VersionLocation"):
-            loc_id = version_location.get("LocationID")
-            if loc_id in location_countries:
-                record.address_countries.append(location_countries[loc_id])
+        for version_location in children(version, "VersionLocation"):
+            country = location_countries.get(version_location.get("LocationID"))
+            if country:
+                record.address_countries.append(country)
 
     if not values:
         return
 
-    if type_id == FEATURE_BIRTHDATE:
-        record.birth_dates.extend(values)
-    elif type_id == FEATURE_BIRTHPLACE:
-        record.birth_places.extend(values)
-    elif type_id == FEATURE_NATIONALITY:
-        record.nationalities.extend(values)
-    elif type_id == FEATURE_CITIZENSHIP:
-        record.citizenships.extend(values)
-    elif type_id == FEATURE_GENDER:
-        record.genders.extend(values)
-    elif type_id == FEATURE_TITLE:
-        record.titles.extend(values)
-    elif type_id == FEATURE_EMAIL:
-        record.emails.extend(values)
-    elif type_id == FEATURE_WEBSITE:
-        record.websites.extend(values)
+    bucket = {
+        FEATURE_BIRTHDATE: record.birth_dates,
+        FEATURE_BIRTHPLACE: record.birth_places,
+        FEATURE_NATIONALITY: record.nationalities,
+        FEATURE_CITIZENSHIP: record.citizenships,
+        FEATURE_GENDER: record.genders,
+        FEATURE_TITLE: record.titles,
+        FEATURE_EMAIL: record.emails,
+        FEATURE_WEBSITE: record.websites,
+        FEATURE_LOCATION: record.addresses,
+    }.get(type_id)
+
+    if bucket is not None:
+        bucket.extend(values)
     elif type_name.startswith("Digital Currency Address"):
         currency = type_name.split("-")[-1].strip()
         record.crypto_addresses.extend(f"{currency}: {value}" for value in values)
-    elif type_name == "Location" or type_id == "25":
-        record.addresses.extend(values)
     else:
         clean = type_name.rstrip(" -:")
         record.other_features.extend(f"{clean}: {value}" for value in values)
@@ -298,11 +285,11 @@ def _feature_version_values(
     for child in version:
         name = localname(child.tag)
         if name == "VersionLocation":
-            loc_id = child.get("LocationID")
-            if loc_id in locations:
-                values.append(locations[loc_id])
+            address = locations.get(child.get("LocationID"))
+            if address:
+                values.append(address)
         elif name == "DatePeriod":
-            rendered = _format_date_period(child)
+            rendered = format_date_period(child)
             if rendered:
                 values.append(rendered)
         elif name == "VersionDetail":
@@ -311,7 +298,7 @@ def _feature_version_values(
                 values.append(text)
             else:
                 ref_id = child.get("DetailReferenceID")
-                if ref_id and ref_id in ref.detail_reference:
+                if ref_id in ref.detail_reference:
                     values.append(ref.detail_reference[ref_id])
     return values
 
@@ -321,47 +308,40 @@ def _feature_version_values(
 # --------------------------------------------------------------------------- #
 def _format_location(location: Element, ref: ReferenceData) -> tuple[str, str]:
     ordered: dict[str, str] = {}
-    for part in _findall(location, "LocationPart"):
+    for part in children(location, "LocationPart"):
         kind = ref.loc_part_type.get(part.get("LocPartTypeID"), part.get("LocPartTypeID", ""))
-        value_el = _find(part, "LocationPartValue")
-        value = ""
-        if value_el is not None:
-            inner = _find(value_el, "Value")
-            value = (inner.text or "").strip() if inner is not None else ""
+        value_el = first_child(part, "LocationPartValue")
+        value = child_text(value_el, "Value") if value_el is not None else ""
         if value:
             ordered.setdefault(kind, value)
 
-    country_el = _find(location, "LocationCountry")
     country = ""
+    country_el = first_child(location, "LocationCountry")
     if country_el is not None:
         country = ref.country.get(country_el.get("CountryID"), "")
     if not country:
-        area_el = _find(location, "LocationAreaCode")
+        area_el = first_child(location, "LocationAreaCode")
         if area_el is not None:
             country = ref.area_code_country.get(area_el.get("AreaCodeID"), "")
-    if country.lower() in {"undetermined", "unknown"}:
+    if country.lower() in _UNKNOWN_COUNTRIES:
         country = ""
 
-    sequence = ["ADDRESS1", "ADDRESS2", "ADDRESS3", "REGION", "CITY", "STATE/PROVINCE", "POSTAL CODE"]
-    pieces = [ordered[key] for key in sequence if key in ordered]
-    pieces.extend(value for key, value in ordered.items() if key not in sequence)
+    pieces = [ordered[key] for key in _ADDRESS_PART_ORDER if key in ordered]
+    pieces.extend(value for key, value in ordered.items() if key not in _ADDRESS_PART_ORDER)
     if country:
         pieces.append(country)
     return ", ".join(pieces), country
 
 
 def _format_document(document: Element, ref: ReferenceData) -> str:
-    doc_type = ref.id_reg_doc_type.get(document.get("IDRegDocTypeID"), "ID")
-    number_el = _find(document, "IDRegistrationNo")
-    number = (number_el.text or "").strip() if number_el is not None else ""
+    number = child_text(document, "IDRegistrationNo")
     if not number:
         return ""
-    rendered = f"{doc_type}: {number}"
+    rendered = f"{ref.id_reg_doc_type.get(document.get('IDRegDocTypeID'), 'ID')}: {number}"
     country = ref.country.get(document.get("IssuedBy-CountryID"), "")
     if country:
         rendered += f" ({country})"
-    authority_el = _find(document, "IssuingAuthority")
-    authority = (authority_el.text or "").strip() if authority_el is not None else ""
+    authority = child_text(document, "IssuingAuthority")
     if authority:
         rendered += f" - {authority}"
     return rendered
@@ -373,8 +353,7 @@ def _format_document(document: Element, ref: ReferenceData) -> str:
 def _attach_sanctions_entry(
     entry: Element, ref: ReferenceData, records: dict[str, PartyRecord]
 ) -> None:
-    profile_id = entry.get("ProfileID")
-    record = records.get(profile_id)
+    record = records.get(entry.get("ProfileID"))
     if record is None:
         return
 
@@ -382,64 +361,17 @@ def _attach_sanctions_entry(
     if list_name:
         record.sanctions_lists.append(list_name)
 
-    for event in _findall(entry, "EntryEvent"):
-        date_el = _find(event, "Date")
-        rendered = _format_ymd(date_el) if date_el is not None else ""
+    for event in children(entry, "EntryEvent"):
+        rendered = format_ymd(first_child(event, "Date"))
         if rendered:
             record.listed_on.append(rendered)
 
-    for measure in _findall(entry, "SanctionsMeasure"):
-        type_name = ref.sanctions_type.get(measure.get("SanctionsTypeID"), "")
-        comment_el = _find(measure, "Comment")
-        comment = (comment_el.text or "").strip() if comment_el is not None else ""
-        if type_name == "Program" and comment:
-            record.programs.append(comment)
+    for measure in children(entry, "SanctionsMeasure"):
+        if ref.sanctions_type.get(measure.get("SanctionsTypeID")) == "Program":
+            program = child_text(measure, "Comment")
+            if program:
+                record.programs.append(program)
 
     record.listed_on.sort()
     if record.listed_on:
         record.listed_on = [record.listed_on[0]]
-
-
-# --------------------------------------------------------------------------- #
-# small helpers
-# --------------------------------------------------------------------------- #
-def _find(parent: Element, name: str) -> Element | None:
-    for child in parent:
-        if localname(child.tag) == name:
-            return child
-    return None
-
-
-def _findall(parent: Element, name: str) -> list[Element]:
-    return [child for child in parent if localname(child.tag) == name]
-
-
-def _format_date_period(period: Element) -> str:
-    start = _find(period, "Start")
-    end = _find(period, "End")
-    first = _format_ymd(_find(start, "From")) if start is not None else ""
-    last = _format_ymd(_find(end, "To")) if end is not None else ""
-    if first and last and first != last:
-        return f"{first} to {last}"
-    return first or last
-
-
-def _format_ymd(node: Element | None) -> str:
-    if node is None:
-        return ""
-    year = _child_text(node, "Year")
-    month = _child_text(node, "Month")
-    day = _child_text(node, "Day")
-    if not year:
-        return ""
-    out = year
-    if month:
-        out += f"-{int(month):02d}"
-        if day:
-            out += f"-{int(day):02d}"
-    return out
-
-
-def _child_text(node: Element, name: str) -> str:
-    child = _find(node, name)
-    return (child.text or "").strip() if child is not None else ""

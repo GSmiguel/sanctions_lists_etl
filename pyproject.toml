@@ -9,7 +9,7 @@ dependencies = [
 ]
 
 [project.scripts]
-sanctions-etl = "sanctions_lists_etl.__main__:main"
+sanctions-etl = "sanctions_lists_etl.cli:main"
 
 [dependency-groups]
 dev = [

@@ -1,6 +1,7 @@
 from xml.etree.ElementTree import iterparse
 
-from sanctions_lists_etl.references import localname, parse_reference_data
+from sanctions_lists_etl.common.xmlutils import localname
+from sanctions_lists_etl.sources.ofac.references import parse_reference_data
 
 
 def _load(sample_xml):
