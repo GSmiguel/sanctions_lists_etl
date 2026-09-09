@@ -23,9 +23,9 @@ htmlcov/
 *.local
 
 # Data artifacts
-data/raw/
-data/processed/
+data/
 *.parquet
+*.xlsx
 
 # Editors / OS
 .vscode/

@@ -1,0 +1,1634 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Sanctions xmlns="https://sanctionslistservice.ofac.treas.gov/api/PublicationPreview/exports/ADVANCED_XML" Version="3">
+  <DateOfIssue CalendarTypeID="1"><Year>2026</Year><Month>9</Month><Day>9</Day></DateOfIssue>
+  <ReferenceValueSets xmlns="https://sanctionslistservice.ofac.treas.gov/api/PublicationPreview/exports/ADVANCED_XML">
+    <AliasTypeValues>
+      <AliasType ID="1400">A.K.A.</AliasType>
+      <AliasType ID="1401">F.K.A.</AliasType>
+      <AliasType ID="1402">N.K.A.</AliasType>
+      <AliasType ID="1403">Name</AliasType>
+    </AliasTypeValues>
+    <AreaCodeValues>
+      <AreaCode ID="11029" CountryID="11029" Description="Afghanistan" AreaCodeTypeID="1">AF</AreaCode>
+      <AreaCode ID="11030" CountryID="11030" Description="Albania" AreaCodeTypeID="1">AL</AreaCode>
+      <AreaCode ID="11031" CountryID="11031" Description="Algeria" AreaCodeTypeID="1">DZ</AreaCode>
+      <AreaCode ID="11033" CountryID="11033" Description="Angola" AreaCodeTypeID="1">AO</AreaCode>
+      <AreaCode ID="11034" CountryID="11034" Description="Antigua and Barbuda" AreaCodeTypeID="1">AG</AreaCode>
+      <AreaCode ID="11035" CountryID="11035" Description="Argentina" AreaCodeTypeID="1">AR</AreaCode>
+      <AreaCode ID="11036" CountryID="11036" Description="Armenia" AreaCodeTypeID="1">AM</AreaCode>
+      <AreaCode ID="11037" CountryID="11037" Description="Australia" AreaCodeTypeID="1">AU</AreaCode>
+      <AreaCode ID="11038" CountryID="11038" Description="Austria" AreaCodeTypeID="1">AT</AreaCode>
+      <AreaCode ID="11039" CountryID="11039" Description="Azerbaijan" AreaCodeTypeID="1">AZ</AreaCode>
+      <AreaCode ID="11040" CountryID="11040" Description="Bahamas, The" AreaCodeTypeID="1">BS</AreaCode>
+      <AreaCode ID="11041" CountryID="11041" Description="Bahrain" AreaCodeTypeID="1">BH</AreaCode>
+      <AreaCode ID="11042" CountryID="11042" Description="Bangladesh" AreaCodeTypeID="1">BD</AreaCode>
+      <AreaCode ID="11043" CountryID="11043" Description="Barbados" AreaCodeTypeID="1">BB</AreaCode>
+      <AreaCode ID="11044" CountryID="11044" Description="Belarus" AreaCodeTypeID="1">BY</AreaCode>
+      <AreaCode ID="11045" CountryID="11045" Description="Belgium" AreaCodeTypeID="1">BE</AreaCode>
+      <AreaCode ID="11046" CountryID="11046" Description="Belize" AreaCodeTypeID="1">BZ</AreaCode>
+      <AreaCode ID="11047" CountryID="11047" Description="Benin" AreaCodeTypeID="1">BJ</AreaCode>
+      <AreaCode ID="11049" CountryID="11049" Description="Bolivia" AreaCodeTypeID="1">BO</AreaCode>
+      <AreaCode ID="11050" CountryID="11050" Description="Bosnia and Herzegovina" AreaCodeTypeID="1">BA</AreaCode>
+      <AreaCode ID="11052" CountryID="11052" Description="Brazil" AreaCodeTypeID="1">BR</AreaCode>
+      <AreaCode ID="11054" CountryID="11054" Description="Bulgaria" AreaCodeTypeID="1">BG</AreaCode>
+      <AreaCode ID="11055" CountryID="11055" Description="Burkina Faso" AreaCodeTypeID="1">BF</AreaCode>
+      <AreaCode ID="11056" CountryID="11056" Description="Burma" AreaCodeTypeID="1">MM</AreaCode>
+      <AreaCode ID="11058" CountryID="11058" Description="Cambodia" AreaCodeTypeID="1">KH</AreaCode>
+      <AreaCode ID="11060" CountryID="11060" Description="Canada" AreaCodeTypeID="1">CA</AreaCode>
+      <AreaCode ID="11061" CountryID="11061" Description="Cabo Verde" AreaCodeTypeID="1">CV</AreaCode>
+      <AreaCode ID="11062" CountryID="11062" Description="Central African Republic" AreaCodeTypeID="1">CF</AreaCode>
+      <AreaCode ID="11064" CountryID="11064" Description="Chile" AreaCodeTypeID="1">CL</AreaCode>
+      <AreaCode ID="11065" CountryID="11065" Description="China" AreaCodeTypeID="1">CN</AreaCode>
+      <AreaCode ID="11066" CountryID="11066" Description="Colombia" AreaCodeTypeID="1">CO</AreaCode>
+      <AreaCode ID="11067" CountryID="11067" Description="Comoros" AreaCodeTypeID="1">KM</AreaCode>
+      <AreaCode ID="11068" CountryID="11068" Description="Congo, Republic of the" AreaCodeTypeID="1">CG</AreaCode>
+      <AreaCode ID="11069" CountryID="11069" Description="Congo, Democratic Republic of the" AreaCodeTypeID="1">CD</AreaCode>
+      <AreaCode ID="11070" CountryID="11070" Description="Costa Rica" AreaCodeTypeID="1">CR</AreaCode>
+      <AreaCode ID="11071" CountryID="11071" Description="Cote d Ivoire" AreaCodeTypeID="1">CI</AreaCode>
+      <AreaCode ID="11072" CountryID="11072" Description="Croatia" AreaCodeTypeID="1">HR</AreaCode>
+      <AreaCode ID="11073" CountryID="11073" Description="Cuba" AreaCodeTypeID="1">CU</AreaCode>
+      <AreaCode ID="11074" CountryID="11074" Description="Cyprus" AreaCodeTypeID="1">CY</AreaCode>
+      <AreaCode ID="11075" CountryID="11075" Description="Czech Republic" AreaCodeTypeID="1">CZ</AreaCode>
+      <AreaCode ID="11076" CountryID="11076" Description="Denmark" AreaCodeTypeID="1">DK</AreaCode>
+      <AreaCode ID="11077" CountryID="11077" Description="Djibouti" AreaCodeTypeID="1">DJ</AreaCode>
+      <AreaCode ID="11078" CountryID="11078" Description="Dominica" AreaCodeTypeID="1">DM</AreaCode>
+      <AreaCode ID="11079" CountryID="11079" Description="Dominican Republic" AreaCodeTypeID="1">DO</AreaCode>
+      <AreaCode ID="11081" CountryID="11081" Description="Ecuador" AreaCodeTypeID="1">EC</AreaCode>
+      <AreaCode ID="11082" CountryID="11082" Description="Egypt" AreaCodeTypeID="1">EG</AreaCode>
+      <AreaCode ID="11083" CountryID="11083" Description="El Salvador" AreaCodeTypeID="1">SV</AreaCode>
+      <AreaCode ID="11084" CountryID="11084" Description="Equatorial Guinea" AreaCodeTypeID="1">GQ</AreaCode>
+      <AreaCode ID="11085" CountryID="11085" Description="Eritrea" AreaCodeTypeID="1">ER</AreaCode>
+      <AreaCode ID="11086" CountryID="11086" Description="Estonia" AreaCodeTypeID="1">EE</AreaCode>
+      <AreaCode ID="11087" CountryID="11087" Description="Ethiopia" AreaCodeTypeID="1">ET</AreaCode>
+      <AreaCode ID="11088" CountryID="11088" Description="Fiji" AreaCodeTypeID="1">FJ</AreaCode>
+      <AreaCode ID="11089" CountryID="11089" Description="Finland" AreaCodeTypeID="1">FI</AreaCode>
+      <AreaCode ID="11090" CountryID="11090" Description="France" AreaCodeTypeID="1">FR</AreaCode>
+      <AreaCode ID="11092" CountryID="11092" Description="The Gambia" AreaCodeTypeID="1">GM</AreaCode>
+      <AreaCode ID="11093" CountryID="11093" Description="Georgia" AreaCodeTypeID="1">GE</AreaCode>
+      <AreaCode ID="11094" CountryID="11094" Description="Germany" AreaCodeTypeID="1">DE</AreaCode>
+      <AreaCode ID="11095" CountryID="11095" Description="Ghana" AreaCodeTypeID="1">GH</AreaCode>
+      <AreaCode ID="11096" CountryID="11096" Description="Greece" AreaCodeTypeID="1">GR</AreaCode>
+      <AreaCode ID="11098" CountryID="11098" Description="Guatemala" AreaCodeTypeID="1">GT</AreaCode>
+      <AreaCode ID="11099" CountryID="11099" Description="Guinea" AreaCodeTypeID="1">GN</AreaCode>
+      <AreaCode ID="11100" CountryID="11100" Description="Guinea-Bissau" AreaCodeTypeID="1">GW</AreaCode>
+      <AreaCode ID="11101" CountryID="11101" Description="Guyana" AreaCodeTypeID="1">GY</AreaCode>
+      <AreaCode ID="11102" CountryID="11102" Description="Haiti" AreaCodeTypeID="1">HT</AreaCode>
+      <AreaCode ID="11104" CountryID="11104" Description="Honduras" AreaCodeTypeID="1">HN</AreaCode>
+      <AreaCode ID="11105" CountryID="11105" Description="Hungary" AreaCodeTypeID="1">HU</AreaCode>
+      <AreaCode ID="11106" CountryID="11106" Description="Iceland" AreaCodeTypeID="1">IS</AreaCode>
+      <AreaCode ID="11107" CountryID="11107" Description="India" AreaCodeTypeID="1">IN</AreaCode>
+      <AreaCode ID="11108" CountryID="11108" Description="Indonesia" AreaCodeTypeID="1">ID</AreaCode>
+      <AreaCode ID="11109" CountryID="11109" Description="Iran" AreaCodeTypeID="1">IR</AreaCode>
+      <AreaCode ID="11110" CountryID="11110" Description="Iraq" AreaCodeTypeID="1">IQ</AreaCode>
+      <AreaCode ID="11111" CountryID="11111" Description="Ireland" AreaCodeTypeID="1">IE</AreaCode>
+      <AreaCode ID="11112" CountryID="11112" Description="Israel" AreaCodeTypeID="1">IL</AreaCode>
+      <AreaCode ID="11113" CountryID="11113" Description="Italy" AreaCodeTypeID="1">IT</AreaCode>
+      <AreaCode ID="11114" CountryID="11114" Description="Jamaica" AreaCodeTypeID="1">JM</AreaCode>
+      <AreaCode ID="11115" CountryID="11115" Description="Japan" AreaCodeTypeID="1">JP</AreaCode>
+      <AreaCode ID="11116" CountryID="11116" Description="Jordan" AreaCodeTypeID="1">JO</AreaCode>
+      <AreaCode ID="11117" CountryID="11117" Description="Kazakhstan" AreaCodeTypeID="1">KZ</AreaCode>
+      <AreaCode ID="11118" CountryID="11118" Description="Kenya" AreaCodeTypeID="1">KE</AreaCode>
+      <AreaCode ID="11120" CountryID="11120" Description="Korea, North" AreaCodeTypeID="1">KP</AreaCode>
+      <AreaCode ID="11121" CountryID="11121" Description="Korea, South" AreaCodeTypeID="1">KR</AreaCode>
+      <AreaCode ID="11122" CountryID="11122" Description="Kuwait" AreaCodeTypeID="1">KW</AreaCode>
+      <AreaCode ID="11123" CountryID="11123" Description="Kyrgyzstan" AreaCodeTypeID="1">KG</AreaCode>
+      <AreaCode ID="11124" CountryID="11124" Description="Laos" AreaCodeTypeID="1">LA</AreaCode>
+      <AreaCode ID="11125" CountryID="11125" Description="Latvia" AreaCodeTypeID="1">LV</AreaCode>
+      <AreaCode ID="11126" CountryID="11126" Description="Lebanon" AreaCodeTypeID="1">LB</AreaCode>
+      <AreaCode ID="11128" CountryID="11128" Description="Liberia" AreaCodeTypeID="1">LR</AreaCode>
+      <AreaCode ID="11129" CountryID="11129" Description="Libya" AreaCodeTypeID="1">LY</AreaCode>
+      <AreaCode ID="11130" CountryID="11130" Description="Liechtenstein" AreaCodeTypeID="1">LI</AreaCode>
+      <AreaCode ID="11131" CountryID="11131" Description="Lithuania" AreaCodeTypeID="1">LT</AreaCode>
+      <AreaCode ID="11132" CountryID="11132" Description="Luxembourg" AreaCodeTypeID="1">LU</AreaCode>
+      <AreaCode ID="11133" CountryID="11133" Description="North Macedonia, The Republic of" AreaCodeTypeID="1">MK</AreaCode>
+      <AreaCode ID="11136" CountryID="11136" Description="Malaysia" AreaCodeTypeID="1">MY</AreaCode>
+      <AreaCode ID="11137" CountryID="11137" Description="Maldives" AreaCodeTypeID="1">MV</AreaCode>
+      <AreaCode ID="11138" CountryID="11138" Description="Mali" AreaCodeTypeID="1">ML</AreaCode>
+      <AreaCode ID="11139" CountryID="11139" Description="Malta" AreaCodeTypeID="1">MT</AreaCode>
+      <AreaCode ID="11140" CountryID="11140" Description="Marshall Islands" AreaCodeTypeID="1">MH</AreaCode>
+      <AreaCode ID="11141" CountryID="11141" Description="Mauritania" AreaCodeTypeID="1">MR</AreaCode>
+      <AreaCode ID="11142" CountryID="11142" Description="Mauritius" AreaCodeTypeID="1">MU</AreaCode>
+      <AreaCode ID="11143" CountryID="11143" Description="Mexico" AreaCodeTypeID="1">MX</AreaCode>
+      <AreaCode ID="11145" CountryID="11145" Description="Moldova" AreaCodeTypeID="1">MD</AreaCode>
+      <AreaCode ID="11146" CountryID="11146" Description="Monaco" AreaCodeTypeID="1">MC</AreaCode>
+      <AreaCode ID="11147" CountryID="11147" Description="Mongolia" AreaCodeTypeID="1">MN</AreaCode>
+      <AreaCode ID="11148" CountryID="11148" Description="Morocco" AreaCodeTypeID="1">MA</AreaCode>
+      <AreaCode ID="11149" CountryID="11149" Description="Mozambique" AreaCodeTypeID="1">MZ</AreaCode>
+      <AreaCode ID="11150" CountryID="11150" Description="Namibia" AreaCodeTypeID="1">NA</AreaCode>
+      <AreaCode ID="11153" CountryID="11153" Description="Netherlands" AreaCodeTypeID="1">NL</AreaCode>
+      <AreaCode ID="11154" CountryID="11154" Description="New Zealand" AreaCodeTypeID="1">NZ</AreaCode>
+      <AreaCode ID="11155" CountryID="11155" Description="Nicaragua" AreaCodeTypeID="1">NI</AreaCode>
+      <AreaCode ID="11156" CountryID="11156" Description="Niger" AreaCodeTypeID="1">NE</AreaCode>
+      <AreaCode ID="11157" CountryID="11157" Description="Nigeria" AreaCodeTypeID="1">NG</AreaCode>
+      <AreaCode ID="11158" CountryID="11158" Description="Norway" AreaCodeTypeID="1">NO</AreaCode>
+      <AreaCode ID="11159" CountryID="11159" Description="Oman" AreaCodeTypeID="1">OM</AreaCode>
+      <AreaCode ID="11160" CountryID="11160" Description="Pakistan" AreaCodeTypeID="1">PK</AreaCode>
+      <AreaCode ID="11161" CountryID="11161" Description="Palau" AreaCodeTypeID="1">PW</AreaCode>
+      <AreaCode ID="11162" CountryID="11162" Description="Panama" AreaCodeTypeID="1">PA</AreaCode>
+      <AreaCode ID="11164" CountryID="11164" Description="Paraguay" AreaCodeTypeID="1">PY</AreaCode>
+      <AreaCode ID="11165" CountryID="11165" Description="Peru" AreaCodeTypeID="1">PE</AreaCode>
+      <AreaCode ID="11166" CountryID="11166" Description="Philippines" AreaCodeTypeID="1">PH</AreaCode>
+      <AreaCode ID="11167" CountryID="11167" Description="Poland" AreaCodeTypeID="1">PL</AreaCode>
+      <AreaCode ID="11168" CountryID="11168" Description="Portugal" AreaCodeTypeID="1">PT</AreaCode>
+      <AreaCode ID="11169" CountryID="11169" Description="Qatar" AreaCodeTypeID="1">QA</AreaCode>
+      <AreaCode ID="11170" CountryID="11170" Description="Romania" AreaCodeTypeID="1">RO</AreaCode>
+      <AreaCode ID="11171" CountryID="11171" Description="Russia" AreaCodeTypeID="1">RU</AreaCode>
+      <AreaCode ID="11172" CountryID="11172" Description="Rwanda" AreaCodeTypeID="1">RW</AreaCode>
+      <AreaCode ID="11173" CountryID="11173" Description="Saint Kitts and Nevis" AreaCodeTypeID="1">KN</AreaCode>
+      <AreaCode ID="11174" CountryID="11174" Description="Saint Lucia" AreaCodeTypeID="1">LC</AreaCode>
+      <AreaCode ID="11175" CountryID="11175" Description="Saint Vincent and the Grenadines" AreaCodeTypeID="1">VC</AreaCode>
+      <AreaCode ID="11176" CountryID="11176" Description="Samoa" AreaCodeTypeID="1">WS</AreaCode>
+      <AreaCode ID="11177" CountryID="11177" Description="San Marino" AreaCodeTypeID="1">SM</AreaCode>
+      <AreaCode ID="11179" CountryID="11179" Description="Saudi Arabia" AreaCodeTypeID="1">SA</AreaCode>
+      <AreaCode ID="11180" CountryID="11180" Description="Senegal" AreaCodeTypeID="1">SN</AreaCode>
+      <AreaCode ID="11181" CountryID="11181" Description="Serbia" AreaCodeTypeID="1">RS</AreaCode>
+      <AreaCode ID="11182" CountryID="11182" Description="Seychelles" AreaCodeTypeID="1">SC</AreaCode>
+      <AreaCode ID="11183" CountryID="11183" Description="Sierra Leone" AreaCodeTypeID="1">SL</AreaCode>
+      <AreaCode ID="11184" CountryID="11184" Description="Singapore" AreaCodeTypeID="1">SG</AreaCode>
+      <AreaCode ID="11185" CountryID="11185" Description="Slovakia" AreaCodeTypeID="1">SK</AreaCode>
+      <AreaCode ID="11186" CountryID="11186" Description="Slovenia" AreaCodeTypeID="1">SI</AreaCode>
+      <AreaCode ID="11188" CountryID="11188" Description="Somalia" AreaCodeTypeID="1">SO</AreaCode>
+      <AreaCode ID="11189" CountryID="11189" Description="South Africa" AreaCodeTypeID="1">ZA</AreaCode>
+      <AreaCode ID="11190" CountryID="11190" Description="Spain" AreaCodeTypeID="1">ES</AreaCode>
+      <AreaCode ID="11191" CountryID="11191" Description="Sri Lanka" AreaCodeTypeID="1">LK</AreaCode>
+      <AreaCode ID="11192" CountryID="11192" Description="Sudan" AreaCodeTypeID="1">SD</AreaCode>
+      <AreaCode ID="11193" CountryID="11193" Description="Suriname" AreaCodeTypeID="1">SR</AreaCode>
+      <AreaCode ID="11195" CountryID="11195" Description="Sweden" AreaCodeTypeID="1">SE</AreaCode>
+      <AreaCode ID="11196" CountryID="11196" Description="Switzerland" AreaCodeTypeID="1">CH</AreaCode>
+      <AreaCode ID="11197" CountryID="11197" Description="Syria" AreaCodeTypeID="1">SY</AreaCode>
+      <AreaCode ID="11198" CountryID="11198" Description="Tajikistan" AreaCodeTypeID="1">TJ</AreaCode>
+      <AreaCode ID="11199" CountryID="11199" Description="Tanzania" AreaCodeTypeID="1">TZ</AreaCode>
+      <AreaCode ID="11200" CountryID="11200" Description="Thailand" AreaCodeTypeID="1">TH</AreaCode>
+      <AreaCode ID="11203" CountryID="11203" Description="Trinidad and Tobago" AreaCodeTypeID="1">TT</AreaCode>
+      <AreaCode ID="11204" CountryID="11204" Description="Tunisia" AreaCodeTypeID="1">TN</AreaCode>
+      <AreaCode ID="11205" CountryID="11205" Description="Turkey" AreaCodeTypeID="1">TR</AreaCode>
+      <AreaCode ID="11206" CountryID="11206" Description="Turkmenistan" AreaCodeTypeID="1">TM</AreaCode>
+      <AreaCode ID="11208" CountryID="11208" Description="Uganda" AreaCodeTypeID="1">UG</AreaCode>
+      <AreaCode ID="11209" CountryID="11209" Description="Ukraine" AreaCodeTypeID="1">UA</AreaCode>
+      <AreaCode ID="11210" CountryID="11210" Description="United Arab Emirates" AreaCodeTypeID="1">AE</AreaCode>
+      <AreaCode ID="11211" CountryID="11211" Description="United Kingdom" AreaCodeTypeID="1">GB</AreaCode>
+      <AreaCode ID="11212" CountryID="11212" Description="United States" AreaCodeTypeID="1">US</AreaCode>
+      <AreaCode ID="11213" CountryID="11213" Description="Uruguay" AreaCodeTypeID="1">UY</AreaCode>
+      <AreaCode ID="11214" CountryID="11214" Description="Uzbekistan" AreaCodeTypeID="1">UZ</AreaCode>
+      <AreaCode ID="11215" CountryID="11215" Description="Vanuatu" AreaCodeTypeID="1">VU</AreaCode>
+      <AreaCode ID="11216" CountryID="11216" Description="Venezuela" AreaCodeTypeID="1">VE</AreaCode>
+      <AreaCode ID="11217" CountryID="11217" Description="Vietnam" AreaCodeTypeID="1">VN</AreaCode>
+      <AreaCode ID="11218" CountryID="11218" Description="Yemen" AreaCodeTypeID="1">YE</AreaCode>
+      <AreaCode ID="11219" CountryID="11219" Description="Zambia" AreaCodeTypeID="1">ZM</AreaCode>
+      <AreaCode ID="11220" CountryID="11220" Description="Zimbabwe" AreaCodeTypeID="1">ZW</AreaCode>
+      <AreaCode ID="11223" CountryID="11223" Description="Aruba" AreaCodeTypeID="1">AW</AreaCode>
+      <AreaCode ID="11226" CountryID="11226" Description="Bermuda" AreaCodeTypeID="1">BM</AreaCode>
+      <AreaCode ID="11230" CountryID="11230" Description="Cayman Islands" AreaCodeTypeID="1">KY</AreaCode>
+      <AreaCode ID="11241" CountryID="11241" Description="Gibraltar" AreaCodeTypeID="1">GI</AreaCode>
+      <AreaCode ID="11245" CountryID="11245" Description="Guernsey" AreaCodeTypeID="1">GG</AreaCode>
+      <AreaCode ID="11247" CountryID="11247" Description="Hong Kong" AreaCodeTypeID="1">HK</AreaCode>
+      <AreaCode ID="11250" CountryID="11250" Description="Jersey" AreaCodeTypeID="1">JE</AreaCode>
+      <AreaCode ID="11253" CountryID="11253" Description="Macau" AreaCodeTypeID="1">MO</AreaCode>
+      <AreaCode ID="11254" CountryID="11254" Description="Man, Isle of" AreaCodeTypeID="1">IM</AreaCode>
+      <AreaCode ID="11278" CountryID="11278" Description="Virgin Islands, British" AreaCodeTypeID="1">VG</AreaCode>
+      <AreaCode ID="11291" CountryID="11291" Description="undetermined" AreaCodeTypeID="1" />
+      <AreaCode ID="11292" CountryID="11292" Description="West Bank" AreaCodeTypeID="1" />
+      <AreaCode ID="11391" CountryID="11391" Description="Taiwan" AreaCodeTypeID="1">TW</AreaCode>
+      <AreaCode ID="91021" CountryID="91021" Description="Palestinian" AreaCodeTypeID="1">PS</AreaCode>
+      <AreaCode ID="91116" CountryID="91116" Description="Kosovo" AreaCodeTypeID="1" />
+      <AreaCode ID="91192" CountryID="91192" Description="Montenegro" AreaCodeTypeID="1">ME</AreaCode>
+      <AreaCode ID="91434" CountryID="91434" Description="Region: Northern Mali" AreaCodeTypeID="1" />
+      <AreaCode ID="91501" CountryID="91501" Description="South Sudan" AreaCodeTypeID="1">SS</AreaCode>
+      <AreaCode ID="91704" CountryID="91704" Description="Region: Gaza" AreaCodeTypeID="1" />
+      <AreaCode ID="92901" CountryID="92901" Description="Curacao" AreaCodeTypeID="1" />
+    </AreaCodeValues>
+    <AreaCodeTypeValues>
+      <AreaCodeType ID="1">ISO 3166 (2)</AreaCodeType>
+    </AreaCodeTypeValues>
+    <CalendarTypeValues>
+      <CalendarType ID="1">Gregorian</CalendarType>
+    </CalendarTypeValues>
+    <CountryValues>
+      <Country ID="11029" ISO2="AF">Afghanistan</Country>
+      <Country ID="11030" ISO2="AL">Albania</Country>
+      <Country ID="11031" ISO2="DZ">Algeria</Country>
+      <Country ID="11033" ISO2="AO">Angola</Country>
+      <Country ID="11034" ISO2="AG">Antigua and Barbuda</Country>
+      <Country ID="11035" ISO2="AR">Argentina</Country>
+      <Country ID="11036" ISO2="AM">Armenia</Country>
+      <Country ID="11037" ISO2="AU">Australia</Country>
+      <Country ID="11038" ISO2="AT">Austria</Country>
+      <Country ID="11039" ISO2="AZ">Azerbaijan</Country>
+      <Country ID="11040" ISO2="BS">Bahamas, The</Country>
+      <Country ID="11041" ISO2="BH">Bahrain</Country>
+      <Country ID="11042" ISO2="BD">Bangladesh</Country>
+      <Country ID="11043" ISO2="BB">Barbados</Country>
+      <Country ID="11044" ISO2="BY">Belarus</Country>
+      <Country ID="11045" ISO2="BE">Belgium</Country>
+      <Country ID="11046" ISO2="BZ">Belize</Country>
+      <Country ID="11047" ISO2="BJ">Benin</Country>
+      <Country ID="11049" ISO2="BO">Bolivia</Country>
+      <Country ID="11050" ISO2="BA">Bosnia and Herzegovina</Country>
+      <Country ID="11052" ISO2="BR">Brazil</Country>
+      <Country ID="11054" ISO2="BG">Bulgaria</Country>
+      <Country ID="11055" ISO2="BF">Burkina Faso</Country>
+      <Country ID="11056" ISO2="MM">Burma</Country>
+      <Country ID="11058" ISO2="KH">Cambodia</Country>
+      <Country ID="11060" ISO2="CA">Canada</Country>
+      <Country ID="11061" ISO2="CV">Cabo Verde</Country>
+      <Country ID="11062" ISO2="CF">Central African Republic</Country>
+      <Country ID="11064" ISO2="CL">Chile</Country>
+      <Country ID="11065" ISO2="CN">China</Country>
+      <Country ID="11066" ISO2="CO">Colombia</Country>
+      <Country ID="11067" ISO2="KM">Comoros</Country>
+      <Country ID="11068" ISO2="CG">Congo, Republic of the</Country>
+      <Country ID="11069" ISO2="CD">Congo, Democratic Republic of the</Country>
+      <Country ID="11070" ISO2="CR">Costa Rica</Country>
+      <Country ID="11071" ISO2="CI">Cote d Ivoire</Country>
+      <Country ID="11072" ISO2="HR">Croatia</Country>
+      <Country ID="11073" ISO2="CU">Cuba</Country>
+      <Country ID="11074" ISO2="CY">Cyprus</Country>
+      <Country ID="11075" ISO2="CZ">Czech Republic</Country>
+      <Country ID="11076" ISO2="DK">Denmark</Country>
+      <Country ID="11077" ISO2="DJ">Djibouti</Country>
+      <Country ID="11078" ISO2="DM">Dominica</Country>
+      <Country ID="11079" ISO2="DO">Dominican Republic</Country>
+      <Country ID="11081" ISO2="EC">Ecuador</Country>
+      <Country ID="11082" ISO2="EG">Egypt</Country>
+      <Country ID="11083" ISO2="SV">El Salvador</Country>
+      <Country ID="11084" ISO2="GQ">Equatorial Guinea</Country>
+      <Country ID="11085" ISO2="ER">Eritrea</Country>
+      <Country ID="11086" ISO2="EE">Estonia</Country>
+      <Country ID="11087" ISO2="ET">Ethiopia</Country>
+      <Country ID="11088" ISO2="FJ">Fiji</Country>
+      <Country ID="11089" ISO2="FI">Finland</Country>
+      <Country ID="11090" ISO2="FR">France</Country>
+      <Country ID="11092" ISO2="GM">The Gambia</Country>
+      <Country ID="11093" ISO2="GE">Georgia</Country>
+      <Country ID="11094" ISO2="DE">Germany</Country>
+      <Country ID="11095" ISO2="GH">Ghana</Country>
+      <Country ID="11096" ISO2="GR">Greece</Country>
+      <Country ID="11098" ISO2="GT">Guatemala</Country>
+      <Country ID="11099" ISO2="GN">Guinea</Country>
+      <Country ID="11100" ISO2="GW">Guinea-Bissau</Country>
+      <Country ID="11101" ISO2="GY">Guyana</Country>
+      <Country ID="11102" ISO2="HT">Haiti</Country>
+      <Country ID="11104" ISO2="HN">Honduras</Country>
+      <Country ID="11105" ISO2="HU">Hungary</Country>
+      <Country ID="11106" ISO2="IS">Iceland</Country>
+      <Country ID="11107" ISO2="IN">India</Country>
+      <Country ID="11108" ISO2="ID">Indonesia</Country>
+      <Country ID="11109" ISO2="IR">Iran</Country>
+      <Country ID="11110" ISO2="IQ">Iraq</Country>
+      <Country ID="11111" ISO2="IE">Ireland</Country>
+      <Country ID="11112" ISO2="IL">Israel</Country>
+      <Country ID="11113" ISO2="IT">Italy</Country>
+      <Country ID="11114" ISO2="JM">Jamaica</Country>
+      <Country ID="11115" ISO2="JP">Japan</Country>
+      <Country ID="11116" ISO2="JO">Jordan</Country>
+      <Country ID="11117" ISO2="KZ">Kazakhstan</Country>
+      <Country ID="11118" ISO2="KE">Kenya</Country>
+      <Country ID="11120" ISO2="KP">Korea, North</Country>
+      <Country ID="11121" ISO2="KR">Korea, South</Country>
+      <Country ID="11122" ISO2="KW">Kuwait</Country>
+      <Country ID="11123" ISO2="KG">Kyrgyzstan</Country>
+      <Country ID="11124" ISO2="LA">Laos</Country>
+      <Country ID="11125" ISO2="LV">Latvia</Country>
+      <Country ID="11126" ISO2="LB">Lebanon</Country>
+      <Country ID="11128" ISO2="LR">Liberia</Country>
+      <Country ID="11129" ISO2="LY">Libya</Country>
+      <Country ID="11130" ISO2="LI">Liechtenstein</Country>
+      <Country ID="11131" ISO2="LT">Lithuania</Country>
+      <Country ID="11132" ISO2="LU">Luxembourg</Country>
+      <Country ID="11133" ISO2="MK">North Macedonia, The Republic of</Country>
+      <Country ID="11136" ISO2="MY">Malaysia</Country>
+      <Country ID="11137" ISO2="MV">Maldives</Country>
+      <Country ID="11138" ISO2="ML">Mali</Country>
+      <Country ID="11139" ISO2="MT">Malta</Country>
+      <Country ID="11140" ISO2="MH">Marshall Islands</Country>
+      <Country ID="11141" ISO2="MR">Mauritania</Country>
+      <Country ID="11142" ISO2="MU">Mauritius</Country>
+      <Country ID="11143" ISO2="MX">Mexico</Country>
+      <Country ID="11145" ISO2="MD">Moldova</Country>
+      <Country ID="11146" ISO2="MC">Monaco</Country>
+      <Country ID="11147" ISO2="MN">Mongolia</Country>
+      <Country ID="11148" ISO2="MA">Morocco</Country>
+      <Country ID="11149" ISO2="MZ">Mozambique</Country>
+      <Country ID="11150" ISO2="NA">Namibia</Country>
+      <Country ID="11153" ISO2="NL">Netherlands</Country>
+      <Country ID="11154" ISO2="NZ">New Zealand</Country>
+      <Country ID="11155" ISO2="NI">Nicaragua</Country>
+      <Country ID="11156" ISO2="NE">Niger</Country>
+      <Country ID="11157" ISO2="NG">Nigeria</Country>
+      <Country ID="11158" ISO2="NO">Norway</Country>
+      <Country ID="11159" ISO2="OM">Oman</Country>
+      <Country ID="11160" ISO2="PK">Pakistan</Country>
+      <Country ID="11161" ISO2="PW">Palau</Country>
+      <Country ID="11162" ISO2="PA">Panama</Country>
+      <Country ID="11164" ISO2="PY">Paraguay</Country>
+      <Country ID="11165" ISO2="PE">Peru</Country>
+      <Country ID="11166" ISO2="PH">Philippines</Country>
+      <Country ID="11167" ISO2="PL">Poland</Country>
+      <Country ID="11168" ISO2="PT">Portugal</Country>
+      <Country ID="11169" ISO2="QA">Qatar</Country>
+      <Country ID="11170" ISO2="RO">Romania</Country>
+      <Country ID="11171" ISO2="RU">Russia</Country>
+      <Country ID="11172" ISO2="RW">Rwanda</Country>
+      <Country ID="11173" ISO2="KN">Saint Kitts and Nevis</Country>
+      <Country ID="11174" ISO2="LC">Saint Lucia</Country>
+      <Country ID="11175" ISO2="VC">Saint Vincent and the Grenadines</Country>
+      <Country ID="11176" ISO2="WS">Samoa</Country>
+      <Country ID="11177" ISO2="SM">San Marino</Country>
+      <Country ID="11179" ISO2="SA">Saudi Arabia</Country>
+      <Country ID="11180" ISO2="SN">Senegal</Country>
+      <Country ID="11181" ISO2="RS">Serbia</Country>
+      <Country ID="11182" ISO2="SC">Seychelles</Country>
+      <Country ID="11183" ISO2="SL">Sierra Leone</Country>
+      <Country ID="11184" ISO2="SG">Singapore</Country>
+      <Country ID="11185" ISO2="SK">Slovakia</Country>
+      <Country ID="11186" ISO2="SI">Slovenia</Country>
+      <Country ID="11188" ISO2="SO">Somalia</Country>
+      <Country ID="11189" ISO2="ZA">South Africa</Country>
+      <Country ID="11190" ISO2="ES">Spain</Country>
+      <Country ID="11191" ISO2="LK">Sri Lanka</Country>
+      <Country ID="11192" ISO2="SD">Sudan</Country>
+      <Country ID="11193" ISO2="SR">Suriname</Country>
+      <Country ID="11195" ISO2="SE">Sweden</Country>
+      <Country ID="11196" ISO2="CH">Switzerland</Country>
+      <Country ID="11197" ISO2="SY">Syria</Country>
+      <Country ID="11198" ISO2="TJ">Tajikistan</Country>
+      <Country ID="11199" ISO2="TZ">Tanzania</Country>
+      <Country ID="11200" ISO2="TH">Thailand</Country>
+      <Country ID="11203" ISO2="TT">Trinidad and Tobago</Country>
+      <Country ID="11204" ISO2="TN">Tunisia</Country>
+      <Country ID="11205" ISO2="TR">Turkey</Country>
+      <Country ID="11206" ISO2="TM">Turkmenistan</Country>
+      <Country ID="11208" ISO2="UG">Uganda</Country>
+      <Country ID="11209" ISO2="UA">Ukraine</Country>
+      <Country ID="11210" ISO2="AE">United Arab Emirates</Country>
+      <Country ID="11211" ISO2="GB">United Kingdom</Country>
+      <Country ID="11212" ISO2="US">United States</Country>
+      <Country ID="11213" ISO2="UY">Uruguay</Country>
+      <Country ID="11214" ISO2="UZ">Uzbekistan</Country>
+      <Country ID="11215" ISO2="VU">Vanuatu</Country>
+      <Country ID="11216" ISO2="VE">Venezuela</Country>
+      <Country ID="11217" ISO2="VN">Vietnam</Country>
+      <Country ID="11218" ISO2="YE">Yemen</Country>
+      <Country ID="11219" ISO2="ZM">Zambia</Country>
+      <Country ID="11220" ISO2="ZW">Zimbabwe</Country>
+      <Country ID="11223" ISO2="AW">Aruba</Country>
+      <Country ID="11226" ISO2="BM">Bermuda</Country>
+      <Country ID="11230" ISO2="KY">Cayman Islands</Country>
+      <Country ID="11241" ISO2="GI">Gibraltar</Country>
+      <Country ID="11245" ISO2="GG">Guernsey</Country>
+      <Country ID="11247" ISO2="HK">Hong Kong</Country>
+      <Country ID="11250" ISO2="JE">Jersey</Country>
+      <Country ID="11253" ISO2="MO">Macau</Country>
+      <Country ID="11254" ISO2="IM">Man, Isle of</Country>
+      <Country ID="11278" ISO2="VG">Virgin Islands, British</Country>
+      <Country ID="11291">undetermined</Country>
+      <Country ID="11292">West Bank</Country>
+      <Country ID="11391" ISO2="TW">Taiwan</Country>
+      <Country ID="91021" ISO2="PS">Palestinian</Country>
+      <Country ID="91116">Kosovo</Country>
+      <Country ID="91192" ISO2="ME">Montenegro</Country>
+      <Country ID="91434">Region: Northern Mali</Country>
+      <Country ID="91501" ISO2="SS">South Sudan</Country>
+      <Country ID="91704">Region: Gaza</Country>
+      <Country ID="92901">Curacao</Country>
+    </CountryValues>
+    <CountryRelevanceValues>
+      <CountryRelevance ID="1413">PRIMARY</CountryRelevance>
+    </CountryRelevanceValues>
+    <DecisionMakingBodyValues>
+      <DecisionMakingBody ID="1" OrganisationID="1">United States Treasury Department</DecisionMakingBody>
+    </DecisionMakingBodyValues>
+    <DetailReferenceValues>
+      <DetailReference ID="702">Bulk Carrier</DetailReference>
+      <DetailReference ID="703">Container Ship</DetailReference>
+      <DetailReference ID="704">General Cargo</DetailReference>
+      <DetailReference ID="705">Tug</DetailReference>
+      <DetailReference ID="91272">Chemical/Products Tanker</DetailReference>
+      <DetailReference ID="91273">Crew/Supply Vessel</DetailReference>
+      <DetailReference ID="91274">Crude Oil Tanker</DetailReference>
+      <DetailReference ID="91275">Crude/Oil Products Tanker</DetailReference>
+      <DetailReference ID="91276">Landing Craft</DetailReference>
+      <DetailReference ID="91277">LPG Tanker</DetailReference>
+      <DetailReference ID="91278">Offshore Tug/Supply Ship</DetailReference>
+      <DetailReference ID="91279">Platform Supply Ship</DetailReference>
+      <DetailReference ID="91280">Shuttle Tanker</DetailReference>
+      <DetailReference ID="91281">Tanker</DetailReference>
+      <DetailReference ID="91405">Bunkering Tanker</DetailReference>
+      <DetailReference ID="91464">Involved in Energy Sector</DetailReference>
+      <DetailReference ID="91467">Involved in the Shipping Sector</DetailReference>
+      <DetailReference ID="91468">Port Operator</DetailReference>
+      <DetailReference ID="91473">Subject to Secondary Sanctions</DetailReference>
+      <DetailReference ID="91521">Subject to Directive 1</DetailReference>
+      <DetailReference ID="91522">Subject to Directive 2</DetailReference>
+      <DetailReference ID="91523">Subject to Directive 3</DetailReference>
+      <DetailReference ID="91524">Subject to Directive 4</DetailReference>
+      <DetailReference ID="91526">Male</DetailReference>
+      <DetailReference ID="91527">Female</DetailReference>
+      <DetailReference ID="91738">Subject to Secondary Sanctions Pursuant to the Hizballah Financial Sanctions Regulations</DetailReference>
+      <DetailReference ID="91762">North Korea Sanctions Regulations, sections 510.201 and 510.210</DetailReference>
+      <DetailReference ID="91766">FOREIGN EXCHANGE. Sec 235(a)(7)</DetailReference>
+      <DetailReference ID="91767">BANKING TRANSACTIONS. Sec 235(a)(8)</DetailReference>
+      <DetailReference ID="91769">BAN ON INVESTMENT IN EQUITY OR DEBT OF SANCTIONED PERSON. Sec 235(a)(10)</DetailReference>
+      <DetailReference ID="91770">EXCLUSION OF CORPORATE OFFICERS. Sec 235(a)(11)</DetailReference>
+      <DetailReference ID="91771">SANCTIONS ON PRINCIPAL EXECUTIVE OFFICERS. Sec 235(a)(12)</DetailReference>
+      <DetailReference ID="91772">EXPORT SANCTIONS Sec. 235(a)(2)</DetailReference>
+      <DetailReference ID="91778">BLOCKING PROPERTY AND INTERESTS IN PROPERTY. Sec 235(a)(9)</DetailReference>
+      <DetailReference ID="91780">Products Tanker</DetailReference>
+      <DetailReference ID="91782">Passenger</DetailReference>
+      <DetailReference ID="91785">Roll-on Roll-off</DetailReference>
+      <DetailReference ID="91795">General Cargo</DetailReference>
+      <DetailReference ID="91796">Landing Craft</DetailReference>
+      <DetailReference ID="91799">Passenger</DetailReference>
+      <DetailReference ID="91802">Roll-on Roll-off</DetailReference>
+      <DetailReference ID="91836">Drilling Ship</DetailReference>
+      <DetailReference ID="91837">Floating Storage Tanker</DetailReference>
+      <DetailReference ID="91838">Chemical/Oil Tanker</DetailReference>
+      <DetailReference ID="91840">Oil Products Tanker</DetailReference>
+      <DetailReference ID="91880">EXCLUSION OF CORPORATE OFFICERS.  Sec. 4(e)</DetailReference>
+      <DetailReference ID="91882">LOANS FROM UNITED STATES FINANCIAL INSTITUTIONS.  Sec. 5(a)(i)</DetailReference>
+      <DetailReference ID="91883">FOREIGN EXCHANGE.  Sec. 5(a)(ii)</DetailReference>
+      <DetailReference ID="91884">BANKING TRANSACTIONS.  Sec. 5(a)(iii)</DetailReference>
+      <DetailReference ID="91885">BLOCKING PROPERTY AND INTERESTS IN PROPERTY.  Sec. 5(a)(iv)</DetailReference>
+      <DetailReference ID="91886">BAN ON INVESTMENT IN EQUITY OR DEBT OF SANCTIONED PERSON.  Sec. 5(a)(v)</DetailReference>
+      <DetailReference ID="91887">IMPORT SANCTIONS.  Sec. 5(a)(vi)</DetailReference>
+      <DetailReference ID="91888">SANCTIONS ON PRINCIPAL EXECUTIVE OFFICERS. Sec. 5(a)(vii)</DetailReference>
+      <DetailReference ID="91889">Pleasure Craft</DetailReference>
+      <DetailReference ID="91905">North Korea Sanctions Regulations section 510.214</DetailReference>
+      <DetailReference ID="91906">Fishing Vessel</DetailReference>
+      <DetailReference ID="91911">Growing of vegetables and melons, roots and tubers</DetailReference>
+      <DetailReference ID="91919">Growing of pome fruits and stone fruits</DetailReference>
+      <DetailReference ID="91922">Growing of beverage crops</DetailReference>
+      <DetailReference ID="91933">Mixed farming</DetailReference>
+      <DetailReference ID="91934">Support activities for crop production</DetailReference>
+      <DetailReference ID="91938">Support activities for animal production</DetailReference>
+      <DetailReference ID="91939">Post-harvest crop activities</DetailReference>
+      <DetailReference ID="91942">Mining of hard coal</DetailReference>
+      <DetailReference ID="91944">Extraction of crude petroleum</DetailReference>
+      <DetailReference ID="91945">Extraction of natural gas</DetailReference>
+      <DetailReference ID="91946">Mining of iron ores</DetailReference>
+      <DetailReference ID="91948">Mining of other non-ferrous metal ores</DetailReference>
+      <DetailReference ID="91952">Extraction of salt</DetailReference>
+      <DetailReference ID="91953">Support activities for petroleum and natural gas extraction</DetailReference>
+      <DetailReference ID="91954">Support activities for other mining and quarrying</DetailReference>
+      <DetailReference ID="91955">Manufacture of refined petroleum products</DetailReference>
+      <DetailReference ID="91957">Manufacture of air and spacecraft and related machinery</DetailReference>
+      <DetailReference ID="91958">Construction of buildings</DetailReference>
+      <DetailReference ID="91959">Construction of roads and railways</DetailReference>
+      <DetailReference ID="91960">Construction of utility projects</DetailReference>
+      <DetailReference ID="91961">Construction of other civil engineering projects</DetailReference>
+      <DetailReference ID="91963">Sea and coastal freight water transport</DetailReference>
+      <DetailReference ID="91964">Inland passenger water transport</DetailReference>
+      <DetailReference ID="91965">Inland freight water transport</DetailReference>
+      <DetailReference ID="91966">Passenger air transport</DetailReference>
+      <DetailReference ID="91967">Freight air transport</DetailReference>
+      <DetailReference ID="91968">Short term accommodation activities</DetailReference>
+      <DetailReference ID="91969">Restaurants and mobile food service activities</DetailReference>
+      <DetailReference ID="91971">Beverage serving activities</DetailReference>
+      <DetailReference ID="91972">Wired telecommunications activities</DetailReference>
+      <DetailReference ID="91973">Wireless telecommunications activities</DetailReference>
+      <DetailReference ID="91976">Activities of holding companies</DetailReference>
+      <DetailReference ID="91977">Trusts, funds and similar financial entities</DetailReference>
+      <DetailReference ID="91978">Financial leasing</DetailReference>
+      <DetailReference ID="91979">Real estate activities with own or leased property</DetailReference>
+      <DetailReference ID="91980">Real estate activities on a fee or contract basis</DetailReference>
+      <DetailReference ID="91981">Advertising</DetailReference>
+      <DetailReference ID="91982">Travel agency activities</DetailReference>
+      <DetailReference ID="91983">Tour operator activities</DetailReference>
+      <DetailReference ID="91984">Gambling and betting activities</DetailReference>
+      <DetailReference ID="91985">Operation of sports facilities</DetailReference>
+      <DetailReference ID="91986">Activities of sports clubs</DetailReference>
+      <DetailReference ID="91987">Palletized Cargo Ship</DetailReference>
+      <DetailReference ID="91990">Manufacture of furniture</DetailReference>
+      <DetailReference ID="91991">Sale of motor vehicle parts and accessories</DetailReference>
+      <DetailReference ID="92000">Wholesale of food, beverages and tobacco</DetailReference>
+      <DetailReference ID="92004">Wholesale of electronic and telecommunications equipment and parts</DetailReference>
+      <DetailReference ID="92005">Wholesale of metals and metal ores</DetailReference>
+      <DetailReference ID="92006">Wholesale of construction materials, hardware, plumbing and heating equipment and supplies</DetailReference>
+      <DetailReference ID="92007">Postal activities</DetailReference>
+      <DetailReference ID="92008">Private security activities</DetailReference>
+      <DetailReference ID="92009">Other financial service activities, except insurance and pension funding activities, n.e.c.</DetailReference>
+      <DetailReference ID="92012">Manufacture of articles of concrete, cement and plaster</DetailReference>
+      <DetailReference ID="92013">Manufacture of plastics products</DetailReference>
+      <DetailReference ID="92015">Higher education</DetailReference>
+      <DetailReference ID="92016">Manufacture of medical and dental instruments and supplies</DetailReference>
+      <DetailReference ID="92017">Other telecommunications activities</DetailReference>
+      <DetailReference ID="92018">Wholesale of other machinery and equipment</DetailReference>
+      <DetailReference ID="92032">Charity or Nonprofit Organization</DetailReference>
+      <DetailReference ID="92033">Private Company</DetailReference>
+      <DetailReference ID="92034">Public Company</DetailReference>
+      <DetailReference ID="92036">Financial Institution</DetailReference>
+      <DetailReference ID="92037">Criminal Organization</DetailReference>
+      <DetailReference ID="92040">General public administration activities</DetailReference>
+      <DetailReference ID="92041">Motion picture, video and television programme production activities</DetailReference>
+      <DetailReference ID="92044">Publishing of newspapers, journals and periodicals</DetailReference>
+      <DetailReference ID="92045">News agency activities</DetailReference>
+      <DetailReference ID="92046">Service activities related to printing</DetailReference>
+      <DetailReference ID="92048">State-Owned Enterprise</DetailReference>
+      <DetailReference ID="92050">Property and Interests in Property Blocked, Except Importation of Goods</DetailReference>
+      <DetailReference ID="92056">Pipe-laying Vessel</DetailReference>
+      <DetailReference ID="92057">Supply Vessel</DetailReference>
+      <DetailReference ID="92058">Offshore Tug</DetailReference>
+      <DetailReference ID="92059">Offshore Support Vessel</DetailReference>
+      <DetailReference ID="92060">Salvage Ship</DetailReference>
+      <DetailReference ID="92061">Anchor Handling Vessel</DetailReference>
+      <DetailReference ID="92062">Government Entity</DetailReference>
+      <DetailReference ID="92063">Other monetary intermediation</DetailReference>
+      <DetailReference ID="92066">Activities of political organizations</DetailReference>
+      <DetailReference ID="92072">Service Vessel</DetailReference>
+      <DetailReference ID="92077">Ukraine-/Russia-Related Sanctions Regulations, 31 CFR 589.201 and/or 589.209</DetailReference>
+      <DetailReference ID="92079">Fish Carrier</DetailReference>
+      <DetailReference ID="92080">Refrigerated Cargo Ship</DetailReference>
+      <DetailReference ID="92081">Public order and safety activities</DetailReference>
+      <DetailReference ID="92082">Wholesale of other household goods</DetailReference>
+      <DetailReference ID="92083">Other information technology and computer service activities</DetailReference>
+      <DetailReference ID="92084">section 1(b) of Executive Order 13224, as amended by Executive Order 13886</DetailReference>
+      <DetailReference ID="92097">For more information on directives, please visit the following link: https://home.treasury.gov/policy-issues/financial-sanctions/sanctions-programs-and-country-information/russian-harmful-foreign-activities-sanctions#directives</DetailReference>
+      <DetailReference ID="92098">Subject to Directive 3 - All transactions in, provision of financing for, and other dealings in new debt of longer than 14 days maturity or new equity where such new debt or new equity is issued on or after the 'Effective Date (EO 14024 Directive)' associated with this name are prohibited.</DetailReference>
+      <DetailReference ID="92103">Yacht</DetailReference>
+      <DetailReference ID="92104">Manufacture of jewellery and related articles</DetailReference>
+      <DetailReference ID="92105">Other business support service activities n.e.c.</DetailReference>
+      <DetailReference ID="92107">Manufacture of basic precious and other non-ferrous metals</DetailReference>
+      <DetailReference ID="92108">Sale of motor vehicles</DetailReference>
+      <DetailReference ID="92109">Processing and preserving of fish, crustaceans and molluscs</DetailReference>
+      <DetailReference ID="92110">Manufacture of other food products n.e.c.</DetailReference>
+      <DetailReference ID="92114">Maintenance and repair of motor vehicles</DetailReference>
+      <DetailReference ID="92115">Management consultancy activities</DetailReference>
+      <DetailReference ID="92116">Other human health activities</DetailReference>
+      <DetailReference ID="92117">Other amusement and recreation activities</DetailReference>
+      <DetailReference ID="92118">Dredger</DetailReference>
+      <DetailReference ID="92119">Hopper Barge</DetailReference>
+      <DetailReference ID="92125">Unrecognized Government Entity</DetailReference>
+      <DetailReference ID="92126">Accounting, bookkeeping and auditing activities; tax consultancy</DetailReference>
+      <DetailReference ID="92127">Ukraine-/Russia-Related Sanctions Regulations, 31 CFR 589.201</DetailReference>
+      <DetailReference ID="92128">Non-specialized wholesale trade</DetailReference>
+      <DetailReference ID="92130">Service activities incidental to air transportation</DetailReference>
+      <DetailReference ID="92131">Marine Fishing</DetailReference>
+      <DetailReference ID="92133">Other transportation support activities</DetailReference>
+      <DetailReference ID="92134">Other reservation service and related activities</DetailReference>
+      <DetailReference ID="92142">Mining and Quarrying</DetailReference>
+      <DetailReference ID="92143">Research and experimental development on natural sciences and engineering</DetailReference>
+      <DetailReference ID="92145">Defense activities</DetailReference>
+      <DetailReference ID="92146">Frigate</DetailReference>
+      <DetailReference ID="92147">Naval Auxiliary Vessel</DetailReference>
+      <DetailReference ID="92148">Retail sale of pharmaceutical and medical goods, cosmetic and toilet articles in specialized stores</DetailReference>
+      <DetailReference ID="92150">Hairdressing and other beauty treatment</DetailReference>
+      <DetailReference ID="92151">Wholesale of solid, liquid and gaseous fuels and related products</DetailReference>
+      <DetailReference ID="92152">Transportation and storage</DetailReference>
+      <DetailReference ID="92153">Manufacture of chemicals and chemical products</DetailReference>
+      <DetailReference ID="92154">Wholesale of jewelry, watches, precious stones, and precious metals</DetailReference>
+      <DetailReference ID="92155">Chemicals and allied products wholesale</DetailReference>
+      <DetailReference ID="92160">Research Vessel</DetailReference>
+      <DetailReference ID="92161">Retail sale of textiles in specialized stores</DetailReference>
+      <DetailReference ID="92162">Sports and recreation education</DetailReference>
+      <DetailReference ID="92163">Retail sale via mail order houses or via Internet</DetailReference>
+      <DetailReference ID="92164">Manufacture of other porcelain and ceramic products</DetailReference>
+      <DetailReference ID="92165">Packaging activities</DetailReference>
+      <DetailReference ID="92693">Cutting, shaping and finishing of stone</DetailReference>
+      <DetailReference ID="92719">Logging</DetailReference>
+      <DetailReference ID="92723">Retail sale of information and communications equipment in specialized stores</DetailReference>
+      <DetailReference ID="92764">See Section 11 of Executive Order 14024.</DetailReference>
+      <DetailReference ID="92765">Computer programming activities</DetailReference>
+      <DetailReference ID="92766">Retail sale of clothing, footwear and leather articles in specialized stores</DetailReference>
+      <DetailReference ID="92767">Manufacture of other fabricated metal products n.e.c.</DetailReference>
+      <DetailReference ID="92768">Manufacture of other special-purpose machinery</DetailReference>
+      <DetailReference ID="92769">Manufacture of pulp, paper and paperboard</DetailReference>
+      <DetailReference ID="92770">Manufacture of computers and peripheral equipment</DetailReference>
+      <DetailReference ID="92774">Heavy Lift Vessel</DetailReference>
+      <DetailReference ID="92775">Other food service activities</DetailReference>
+      <DetailReference ID="92776">Financial and Insurance Activities</DetailReference>
+      <DetailReference ID="92777">Wholesale and retail trade</DetailReference>
+      <DetailReference ID="92778">Professional, scientific, and technical activities</DetailReference>
+      <DetailReference ID="92779">LNG Carrier</DetailReference>
+      <DetailReference ID="92780">Retail sale of food in specialized stores</DetailReference>
+      <DetailReference ID="92781">Armed Group</DetailReference>
+      <DetailReference ID="92782">Retail sale of automotive fuel in specialized stores</DetailReference>
+      <DetailReference ID="92783">Manufacture of industrial, electric and electronic machinery</DetailReference>
+      <DetailReference ID="92791">Transnational Terrorist Group</DetailReference>
+      <DetailReference ID="92822">Legal activities</DetailReference>
+      <DetailReference ID="92858">Retail sale of hardware, paints and glass in specialized stores</DetailReference>
+      <DetailReference ID="92859">Asphalt/Bitumen Tanker</DetailReference>
+      <DetailReference ID="92862">Steam and air conditioning supply</DetailReference>
+      <DetailReference ID="92863">Advocacy organization</DetailReference>
+      <DetailReference ID="92864">Creative, arts and entertainment activities</DetailReference>
+      <DetailReference ID="92866">BLOCKING OF PROPERTY (entity). Sec.2(b)(1)(A) - All property and interests in property of this entity are blocked, and all transactions with this entity are prohibited, except for the importation of goods.</DetailReference>
+      <DetailReference ID="92867">BLOCKING OF PROPERTY (individual). Sec.2(b)(2)(a)- All property and interests in property of this individual are blocked, and all transactions with this individual are prohibited, except for the importation of goods.</DetailReference>
+      <DetailReference ID="92870">LOANS FROM UNITED STATES FINANCIAL INSTITUTIONS. Sec.2(b)(1)(D) - United States financial institutions are prohibited from making loans or providing credits to this entity totaling more than $10,000,000 in any 12-month period, subject to the exception set forth in PAIPA Section 2(b)(1)(D).</DetailReference>
+      <DetailReference ID="92875">FOREIGN EXCHANGE. Sec.2(b)(1)(H) - Transactions in foreign exchange that are subject to the jurisdiction of the United States and in which this entity has any interest are prohibited.</DetailReference>
+      <DetailReference ID="92876">BANKING TRANSACTIONS. Sec.2(b)(1)(I) - Any transfers of credit or payments between financial institutions or by, through, or to any financial institution, to the extent that such transfers or payments are subject to the jurisdiction of the United States and involve any interest of this entity, are prohibited.</DetailReference>
+      <DetailReference ID="92877">BAN ON INVESTMENT IN EQUITY OR DEBT OF SANCTIONED PERSON. Sec.2(b)(1)(J) - Any United States person is prohibited from investing in or purchasing significant amounts of equity or debt instruments of this entity.</DetailReference>
+      <DetailReference ID="92886">Cargo handling</DetailReference>
+      <DetailReference ID="92887">Manufacture of basic iron and steel</DetailReference>
+      <DetailReference ID="92888">Civil Society Organization</DetailReference>
+      <DetailReference ID="92909">Data processing, hosting and related activities</DetailReference>
+      <DetailReference ID="92911">Other human resources provision</DetailReference>
+    </DetailReferenceValues>
+    <DetailTypeValues>
+      <DetailType ID="1430">DATE</DetailType>
+      <DetailType ID="1431">LOOKUP</DetailType>
+      <DetailType ID="1432">TEXT</DetailType>
+      <DetailType ID="1433">COUNTRY</DetailType>
+    </DetailTypeValues>
+    <DocNameStatusValues>
+      <DocNameStatus ID="1">Primary Latin</DocNameStatus>
+      <DocNameStatus ID="2">Others</DocNameStatus>
+    </DocNameStatusValues>
+    <EntryEventTypeValues>
+      <EntryEventType ID="1">Created</EntryEventType>
+    </EntryEventTypeValues>
+    <EntryLinkTypeValues />
+    <ExRefTypeValues />
+    <FeatureTypeValues>
+      <FeatureType ID="1" FeatureTypeGroupID="1">Vessel Call Sign</FeatureType>
+      <FeatureType ID="2" FeatureTypeGroupID="1">VESSEL TYPE</FeatureType>
+      <FeatureType ID="3" FeatureTypeGroupID="1">Vessel Flag</FeatureType>
+      <FeatureType ID="4" FeatureTypeGroupID="1">Vessel Owner</FeatureType>
+      <FeatureType ID="5" FeatureTypeGroupID="1">Vessel Tonnage</FeatureType>
+      <FeatureType ID="6" FeatureTypeGroupID="1">Vessel Gross Registered Tonnage</FeatureType>
+      <FeatureType ID="8" FeatureTypeGroupID="1">Birthdate</FeatureType>
+      <FeatureType ID="9" FeatureTypeGroupID="1">Place of Birth</FeatureType>
+      <FeatureType ID="10" FeatureTypeGroupID="1">Nationality Country</FeatureType>
+      <FeatureType ID="11" FeatureTypeGroupID="1">Citizenship Country</FeatureType>
+      <FeatureType ID="13" FeatureTypeGroupID="1">SWIFT/BIC</FeatureType>
+      <FeatureType ID="14" FeatureTypeGroupID="1">Website</FeatureType>
+      <FeatureType ID="21" FeatureTypeGroupID="1">Email Address</FeatureType>
+      <FeatureType ID="24" FeatureTypeGroupID="1">Former Vessel Flag</FeatureType>
+      <FeatureType ID="25" FeatureTypeGroupID="1">Location</FeatureType>
+      <FeatureType ID="26" FeatureTypeGroupID="1">Title</FeatureType>
+      <FeatureType ID="44" FeatureTypeGroupID="1">Aircraft Construction Number (also called L/N or S/N or F/N)</FeatureType>
+      <FeatureType ID="45" FeatureTypeGroupID="1">Aircraft Manufacture Date</FeatureType>
+      <FeatureType ID="46" FeatureTypeGroupID="1">Aircraft Mode S Transponder Code</FeatureType>
+      <FeatureType ID="47" FeatureTypeGroupID="1">Aircraft Model</FeatureType>
+      <FeatureType ID="48" FeatureTypeGroupID="1">Aircraft Operator</FeatureType>
+      <FeatureType ID="49" FeatureTypeGroupID="1">Previous Aircraft Tail Number</FeatureType>
+      <FeatureType ID="50" FeatureTypeGroupID="1">Aircraft Manufacturer's Serial Number (MSN)</FeatureType>
+      <FeatureType ID="64" FeatureTypeGroupID="1">Aircraft Tail Number</FeatureType>
+      <FeatureType ID="104" FeatureTypeGroupID="1">IFCA Determination -</FeatureType>
+      <FeatureType ID="125" FeatureTypeGroupID="1">Additional Sanctions Information -</FeatureType>
+      <FeatureType ID="164" FeatureTypeGroupID="1">BIK (RU)</FeatureType>
+      <FeatureType ID="204" FeatureTypeGroupID="1">Executive Order 13662 Directive Determination -</FeatureType>
+      <FeatureType ID="224" FeatureTypeGroupID="1">Gender</FeatureType>
+      <FeatureType ID="264" FeatureTypeGroupID="1">UN/LOCODE</FeatureType>
+      <FeatureType ID="304" FeatureTypeGroupID="1">MICEX Code</FeatureType>
+      <FeatureType ID="344" FeatureTypeGroupID="1">Digital Currency Address - XBT</FeatureType>
+      <FeatureType ID="345" FeatureTypeGroupID="1">Digital Currency Address - ETH</FeatureType>
+      <FeatureType ID="364" FeatureTypeGroupID="1">D-U-N-S Number</FeatureType>
+      <FeatureType ID="365" FeatureTypeGroupID="1">Nationality of Registration</FeatureType>
+      <FeatureType ID="404" FeatureTypeGroupID="1">Registration Country</FeatureType>
+      <FeatureType ID="424" FeatureTypeGroupID="1">Other Vessel Flag</FeatureType>
+      <FeatureType ID="425" FeatureTypeGroupID="1">Other Vessel Call Sign</FeatureType>
+      <FeatureType ID="444" FeatureTypeGroupID="1">Digital Currency Address - XMR</FeatureType>
+      <FeatureType ID="504" FeatureTypeGroupID="1">Secondary sanctions risk:</FeatureType>
+      <FeatureType ID="524" FeatureTypeGroupID="1">Phone Number</FeatureType>
+      <FeatureType ID="525" FeatureTypeGroupID="1">CAATSA Section 235 Information:</FeatureType>
+      <FeatureType ID="526" FeatureTypeGroupID="1">Other Vessel Type</FeatureType>
+      <FeatureType ID="566" FeatureTypeGroupID="1">Digital Currency Address - LTC</FeatureType>
+      <FeatureType ID="586" FeatureTypeGroupID="1">Executive Order 13846 information:</FeatureType>
+      <FeatureType ID="626" FeatureTypeGroupID="1">Transactions Prohibited For Persons Owned or Controlled By U.S. Financial Institutions:</FeatureType>
+      <FeatureType ID="646" FeatureTypeGroupID="1">Organization Established Date</FeatureType>
+      <FeatureType ID="647" FeatureTypeGroupID="1">Organization Type:</FeatureType>
+      <FeatureType ID="686" FeatureTypeGroupID="1">Digital Currency Address - ZEC</FeatureType>
+      <FeatureType ID="687" FeatureTypeGroupID="1">Digital Currency Address - DASH</FeatureType>
+      <FeatureType ID="688" FeatureTypeGroupID="1">Digital Currency Address - BTG</FeatureType>
+      <FeatureType ID="689" FeatureTypeGroupID="1">Digital Currency Address - ETC</FeatureType>
+      <FeatureType ID="706" FeatureTypeGroupID="1">Digital Currency Address - BSV</FeatureType>
+      <FeatureType ID="726" FeatureTypeGroupID="1">Digital Currency Address - BCH</FeatureType>
+      <FeatureType ID="746" FeatureTypeGroupID="1">Digital Currency Address - XVG</FeatureType>
+      <FeatureType ID="766" FeatureTypeGroupID="1">Equity Ticker</FeatureType>
+      <FeatureType ID="806" FeatureTypeGroupID="1">ISIN</FeatureType>
+      <FeatureType ID="826" FeatureTypeGroupID="1">Target Type</FeatureType>
+      <FeatureType ID="827" FeatureTypeGroupID="1">PEESA Information:</FeatureType>
+      <FeatureType ID="887" FeatureTypeGroupID="1">Digital Currency Address - USDT</FeatureType>
+      <FeatureType ID="907" FeatureTypeGroupID="1">Digital Currency Address - XRP</FeatureType>
+      <FeatureType ID="947" FeatureTypeGroupID="1">Executive Order 14024 Directive Information -</FeatureType>
+      <FeatureType ID="948" FeatureTypeGroupID="1">Executive Order 14024 Directive Information</FeatureType>
+      <FeatureType ID="951" FeatureTypeGroupID="1">Listing Date (EO 14024 Directive 2):</FeatureType>
+      <FeatureType ID="952" FeatureTypeGroupID="1">Effective Date (EO 14024 Directive 2):</FeatureType>
+      <FeatureType ID="953" FeatureTypeGroupID="1">Listing Date (EO 14024 Directive 3):</FeatureType>
+      <FeatureType ID="954" FeatureTypeGroupID="1">Effective Date (EO 14024 Directive 3):</FeatureType>
+      <FeatureType ID="967" FeatureTypeGroupID="1">Vessel Year of Build</FeatureType>
+      <FeatureType ID="989" FeatureTypeGroupID="1">Digital Currency Address - BNB</FeatureType>
+      <FeatureType ID="992" FeatureTypeGroupID="1">Digital Currency Address - TRX</FeatureType>
+      <FeatureType ID="996" FeatureTypeGroupID="1">Digital Currency Address - DOGE</FeatureType>
+      <FeatureType ID="998" FeatureTypeGroupID="1">Digital Currency Address - USDC</FeatureType>
+      <FeatureType ID="1007" FeatureTypeGroupID="1">Digital Currency Address - ARB</FeatureType>
+      <FeatureType ID="1008" FeatureTypeGroupID="1">Digital Currency Address - BSC</FeatureType>
+      <FeatureType ID="1167" FeatureTypeGroupID="1">Digital Currency Address - SOL</FeatureType>
+      <FeatureType ID="1187" FeatureTypeGroupID="1">PAIPA Section 2 Information:</FeatureType>
+    </FeatureTypeValues>
+    <FeatureTypeGroupValues>
+      <FeatureTypeGroup ID="1">Unknown</FeatureTypeGroup>
+    </FeatureTypeGroupValues>
+    <IDRegDocDateTypeValues>
+      <IDRegDocDateType ID="1480">Issue Date</IDRegDocDateType>
+      <IDRegDocDateType ID="1481">Expiration Date</IDRegDocDateType>
+    </IDRegDocDateTypeValues>
+    <IDRegDocTypeValues>
+      <IDRegDocType ID="1570">Cedula No.</IDRegDocType>
+      <IDRegDocType ID="1571">Passport</IDRegDocType>
+      <IDRegDocType ID="1572">SSN</IDRegDocType>
+      <IDRegDocType ID="1573">R.F.C.</IDRegDocType>
+      <IDRegDocType ID="1574">D.N.I.</IDRegDocType>
+      <IDRegDocType ID="1575">NIT #</IDRegDocType>
+      <IDRegDocType ID="1576">US FEIN</IDRegDocType>
+      <IDRegDocType ID="1577">Driver's License No.</IDRegDocType>
+      <IDRegDocType ID="1578">RUC #</IDRegDocType>
+      <IDRegDocType ID="1579">N.I.E.</IDRegDocType>
+      <IDRegDocType ID="1580">C.I.F.</IDRegDocType>
+      <IDRegDocType ID="1581">Business Registration Document #</IDRegDocType>
+      <IDRegDocType ID="1582">RIF #</IDRegDocType>
+      <IDRegDocType ID="1584">National ID No.</IDRegDocType>
+      <IDRegDocType ID="1585">Registration ID</IDRegDocType>
+      <IDRegDocType ID="1586">LE Number</IDRegDocType>
+      <IDRegDocType ID="1587">Bosnian Personal ID No.</IDRegDocType>
+      <IDRegDocType ID="1588">Registered Charity No.</IDRegDocType>
+      <IDRegDocType ID="1589">V.A.T. Number</IDRegDocType>
+      <IDRegDocType ID="1590">Credencial electoral</IDRegDocType>
+      <IDRegDocType ID="1591">Kenyan ID No.</IDRegDocType>
+      <IDRegDocType ID="1592">Italian Fiscal Code</IDRegDocType>
+      <IDRegDocType ID="1593">Serial No.</IDRegDocType>
+      <IDRegDocType ID="1594">C.I.N.</IDRegDocType>
+      <IDRegDocType ID="1595">C.U.I.T.</IDRegDocType>
+      <IDRegDocType ID="1596">Tax ID No.</IDRegDocType>
+      <IDRegDocType ID="1597">Moroccan Personal ID No.</IDRegDocType>
+      <IDRegDocType ID="1598">Public Security and Immigration No.</IDRegDocType>
+      <IDRegDocType ID="1600">C.U.R.P.</IDRegDocType>
+      <IDRegDocType ID="1601">British National Overseas Passport</IDRegDocType>
+      <IDRegDocType ID="1602">C.R. No.</IDRegDocType>
+      <IDRegDocType ID="1603">UK Company Number</IDRegDocType>
+      <IDRegDocType ID="1604">Immigration No.</IDRegDocType>
+      <IDRegDocType ID="1605">Travel Document Number</IDRegDocType>
+      <IDRegDocType ID="1607">Electoral Registry No.</IDRegDocType>
+      <IDRegDocType ID="1608">Identification Number</IDRegDocType>
+      <IDRegDocType ID="1609">Paraguayan tax identification number</IDRegDocType>
+      <IDRegDocType ID="1611">National Foreign ID Number</IDRegDocType>
+      <IDRegDocType ID="1612">RFC</IDRegDocType>
+      <IDRegDocType ID="1613">Diplomatic Passport</IDRegDocType>
+      <IDRegDocType ID="1614">Dubai Chamber of Commerce Membership No.</IDRegDocType>
+      <IDRegDocType ID="1615">Trade License No.</IDRegDocType>
+      <IDRegDocType ID="1619">Commercial Registry Number</IDRegDocType>
+      <IDRegDocType ID="1620">Certificate of Incorporation Number</IDRegDocType>
+      <IDRegDocType ID="1621">Tourism License No.</IDRegDocType>
+      <IDRegDocType ID="1623">Aircraft Serial Identification</IDRegDocType>
+      <IDRegDocType ID="1624">Cartilla de Servicio Militar Nacional</IDRegDocType>
+      <IDRegDocType ID="1625">C.U.I.P.</IDRegDocType>
+      <IDRegDocType ID="1626">Vessel Registration Identification</IDRegDocType>
+      <IDRegDocType ID="1627">Personal ID Card</IDRegDocType>
+      <IDRegDocType ID="1628">Federal ID Card</IDRegDocType>
+      <IDRegDocType ID="1629">Registration Certificate Number (Dubai)</IDRegDocType>
+      <IDRegDocType ID="1630">VisaNumberID</IDRegDocType>
+      <IDRegDocType ID="1631">Matricula Mercantil No</IDRegDocType>
+      <IDRegDocType ID="1632">Residency Number</IDRegDocType>
+      <IDRegDocType ID="1633">Numero Unico de Identificacao Tributaria (NUIT)</IDRegDocType>
+      <IDRegDocType ID="1634">CNP (Personal Numerical Code)</IDRegDocType>
+      <IDRegDocType ID="1635">Romanian Permanent Resident</IDRegDocType>
+      <IDRegDocType ID="1636">Government Gazette Number</IDRegDocType>
+      <IDRegDocType ID="1638">Fiscal Code</IDRegDocType>
+      <IDRegDocType ID="1639">Pilot License Number</IDRegDocType>
+      <IDRegDocType ID="1642">Romanian C.R.</IDRegDocType>
+      <IDRegDocType ID="1643">Folio Mercantil No.</IDRegDocType>
+      <IDRegDocType ID="1644">Istanbul Chamber of Comm. No.</IDRegDocType>
+      <IDRegDocType ID="1645">Turkish Identification Number</IDRegDocType>
+      <IDRegDocType ID="1646">Romanian Tax Registration</IDRegDocType>
+      <IDRegDocType ID="1647">Stateless Person Passport</IDRegDocType>
+      <IDRegDocType ID="1648">Stateless Person ID Card</IDRegDocType>
+      <IDRegDocType ID="1649">Refugee ID Card</IDRegDocType>
+      <IDRegDocType ID="91236">Afghan Money Service Provider License Number</IDRegDocType>
+      <IDRegDocType ID="91264">MMSI</IDRegDocType>
+      <IDRegDocType ID="91412">Company Number</IDRegDocType>
+      <IDRegDocType ID="91475">Public Registration Number</IDRegDocType>
+      <IDRegDocType ID="91478">N.I.F.</IDRegDocType>
+      <IDRegDocType ID="91481">RTN</IDRegDocType>
+      <IDRegDocType ID="91482">Numero de Identidad</IDRegDocType>
+      <IDRegDocType ID="91483">Tarjeta de Identidad</IDRegDocType>
+      <IDRegDocType ID="91484">SRE Permit No.</IDRegDocType>
+      <IDRegDocType ID="91492">Tazkira National ID Card</IDRegDocType>
+      <IDRegDocType ID="91504">License</IDRegDocType>
+      <IDRegDocType ID="91508">Chinese Commercial Code</IDRegDocType>
+      <IDRegDocType ID="91712">I.F.E.</IDRegDocType>
+      <IDRegDocType ID="91719">Branch Unit Number</IDRegDocType>
+      <IDRegDocType ID="91720">Enterprise Number</IDRegDocType>
+      <IDRegDocType ID="91721">Organization Code</IDRegDocType>
+      <IDRegDocType ID="91739">Citizen's Card Number</IDRegDocType>
+      <IDRegDocType ID="91740">UAE Identification</IDRegDocType>
+      <IDRegDocType ID="91747">United Social Credit Code Certificate (USCCC)</IDRegDocType>
+      <IDRegDocType ID="91751">Chamber of Commerce Number</IDRegDocType>
+      <IDRegDocType ID="91752">Legal Entity Number</IDRegDocType>
+      <IDRegDocType ID="91753">Business Number</IDRegDocType>
+      <IDRegDocType ID="91759">Birth Certificate Number</IDRegDocType>
+      <IDRegDocType ID="91760">Business Registration Number</IDRegDocType>
+      <IDRegDocType ID="91761">Registration Number</IDRegDocType>
+      <IDRegDocType ID="91812">MSB Registration Number</IDRegDocType>
+      <IDRegDocType ID="91835">File Number</IDRegDocType>
+      <IDRegDocType ID="91854">C.U.I.</IDRegDocType>
+      <IDRegDocType ID="91891">Seafarer's Identification Document</IDRegDocType>
+      <IDRegDocType ID="92001">Unified Social Credit Code (USCC)</IDRegDocType>
+      <IDRegDocType ID="92067">Central Registration System Number</IDRegDocType>
+      <IDRegDocType ID="92121">Economic Register Number (CBLS)</IDRegDocType>
+      <IDRegDocType ID="92158">Trademark number</IDRegDocType>
+      <IDRegDocType ID="92159">Permit Number</IDRegDocType>
+      <IDRegDocType ID="92728">Military Registration Number</IDRegDocType>
+      <IDRegDocType ID="92772">Russian State Individual Business Registration Number Pattern (OGRNIP)</IDRegDocType>
+      <IDRegDocType ID="92790">Global Intermediary Identification Number</IDRegDocType>
+      <IDRegDocType ID="92883">Entity Code</IDRegDocType>
+    </IDRegDocTypeValues>
+    <IdentityFeatureLinkTypeValues>
+      <IdentityFeatureLinkType ID="1">Unknown</IdentityFeatureLinkType>
+    </IdentityFeatureLinkTypeValues>
+    <LegalBasisValues>
+      <LegalBasis ID="1" LegalBasisShortRef="Unknown" LegalBasisTypeID="1" SanctionsProgramID="1">Unknown</LegalBasis>
+      <LegalBasis ID="1807" LegalBasisShortRef="Executive Order 13566 (Libya)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13566 (Libya)</LegalBasis>
+      <LegalBasis ID="1810" LegalBasisShortRef="Executive Order 13441 (Lebanon)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13441 (Lebanon)</LegalBasis>
+      <LegalBasis ID="1811" LegalBasisShortRef="Executive Order 13382 (Non-proliferation)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13382 (Non-proliferation)</LegalBasis>
+      <LegalBasis ID="1817" LegalBasisShortRef="Executive Order 12947 (Terrorism)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 12947 (Terrorism)</LegalBasis>
+      <LegalBasis ID="1819" LegalBasisShortRef="Executive Order 12978 (Counter Narcotics SDNT)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 12978 (Counter Narcotics SDNT)</LegalBasis>
+      <LegalBasis ID="1820" LegalBasisShortRef="Executive Order 12854 (Cuba)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 12854 (Cuba)</LegalBasis>
+      <LegalBasis ID="1821" LegalBasisShortRef="Executive Order 13413 (DRC)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13413 (DRC)</LegalBasis>
+      <LegalBasis ID="1822" LegalBasisShortRef="Executive Order 13606 (Iran/Syria)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13606 (Iran/Syria)</LegalBasis>
+      <LegalBasis ID="1823" LegalBasisShortRef="Executive Order 13599 (Iran)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13599 (Iran)</LegalBasis>
+      <LegalBasis ID="1828" LegalBasisShortRef="Executive Order 13224 (Terrorism)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13224 (Terrorism)</LegalBasis>
+      <LegalBasis ID="1829" LegalBasisShortRef="Executive Order 13553 (Iran)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13553 (Iran)</LegalBasis>
+      <LegalBasis ID="1845" LegalBasisShortRef="Executive Order 13304 (Balkans)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13304 (Balkans)</LegalBasis>
+      <LegalBasis ID="1846" LegalBasisShortRef="Executive Order 13405 (Belarus)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13405 (Belarus)</LegalBasis>
+      <LegalBasis ID="1849" LegalBasisShortRef="Foreign Narcotics Kingpin Designation Act" LegalBasisTypeID="1" SanctionsProgramID="1">Foreign Narcotics Kingpin Designation Act</LegalBasis>
+      <LegalBasis ID="1852" LegalBasisShortRef="Executive Order 13438 (Iraq)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13438 (Iraq)</LegalBasis>
+      <LegalBasis ID="1857" LegalBasisShortRef="Executive Order 13350 (Iraq)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13350 (Iraq)</LegalBasis>
+      <LegalBasis ID="1858" LegalBasisShortRef="Executive Order 13315 (Iraq)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13315 (Iraq)</LegalBasis>
+      <LegalBasis ID="91240" LegalBasisShortRef="Executive Order 13536 (Somalia)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13536 (Somalia)</LegalBasis>
+      <LegalBasis ID="91245" LegalBasisShortRef="Executive Order 13551 (North Korea)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13551 (North Korea)</LegalBasis>
+      <LegalBasis ID="91257" LegalBasisShortRef="Executive Order 13581 (TCO)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13581 (TCO)</LegalBasis>
+      <LegalBasis ID="91258" LegalBasisShortRef="Executive Order 13611 (Yemen)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13611 (Yemen)</LegalBasis>
+      <LegalBasis ID="91262" LegalBasisShortRef="General License 4 Under EO 13224 (Terrorism)" LegalBasisTypeID="1" SanctionsProgramID="1">General License 4 Under EO 13224 (Terrorism)</LegalBasis>
+      <LegalBasis ID="91414" LegalBasisShortRef="CISADA" LegalBasisTypeID="1" SanctionsProgramID="1">CISADA</LegalBasis>
+      <LegalBasis ID="91425" LegalBasisShortRef="Executive Order 13628 (Iran)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13628 (Iran)</LegalBasis>
+      <LegalBasis ID="91426" LegalBasisShortRef="TRA" LegalBasisTypeID="1" SanctionsProgramID="1">TRA</LegalBasis>
+      <LegalBasis ID="91429" LegalBasisShortRef="Executive Order 13628 - Section 3" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13628 - Section 3</LegalBasis>
+      <LegalBasis ID="91430" LegalBasisShortRef="Executive Order 13628 - Section 7" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13628 - Section 7</LegalBasis>
+      <LegalBasis ID="91433" LegalBasisShortRef="INA" LegalBasisTypeID="1" SanctionsProgramID="1">INA</LegalBasis>
+      <LegalBasis ID="91436" LegalBasisShortRef="Magnitsky" LegalBasisTypeID="1" SanctionsProgramID="1">Magnitsky</LegalBasis>
+      <LegalBasis ID="91477" LegalBasisShortRef="Executive Order 13620 (Somalia)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13620 (Somalia)</LegalBasis>
+      <LegalBasis ID="91494" LegalBasisShortRef="Executive Order 13660 (Ukraine)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13660 (Ukraine)</LegalBasis>
+      <LegalBasis ID="91497" LegalBasisShortRef="Executive Order 13664 (South Sudan)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13664 (South Sudan)</LegalBasis>
+      <LegalBasis ID="91498" LegalBasisShortRef="Executive Order 13661 (Ukraine)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13661 (Ukraine)</LegalBasis>
+      <LegalBasis ID="91500" LegalBasisShortRef="Executive Order 13667 (CAR)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13667 (CAR)</LegalBasis>
+      <LegalBasis ID="91503" LegalBasisShortRef="Executive Order 13662 (Ukraine)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13662 (Ukraine)</LegalBasis>
+      <LegalBasis ID="91697" LegalBasisShortRef="Executive Order 13726 (Libya)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13726 (Libya)</LegalBasis>
+      <LegalBasis ID="91701" LegalBasisShortRef="Executive Order 13687 (North Korea)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13687 (North Korea)</LegalBasis>
+      <LegalBasis ID="91703" LegalBasisShortRef="Executive Order 13685 (Ukraine)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13685 (Ukraine)</LegalBasis>
+      <LegalBasis ID="91706" LegalBasisShortRef="Executive Order 13692 (Venezuela)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13692 (Venezuela)</LegalBasis>
+      <LegalBasis ID="91707" LegalBasisShortRef="Cuban Assets Control Regulations (CACR)" LegalBasisTypeID="1" SanctionsProgramID="1">Cuban Assets Control Regulations (CACR)</LegalBasis>
+      <LegalBasis ID="91711" LegalBasisShortRef="Executive Order 13694 (Cyber)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13694 (Cyber)</LegalBasis>
+      <LegalBasis ID="91736" LegalBasisShortRef="Executive Order 13722 (North Korea)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13722 (North Korea)</LegalBasis>
+      <LegalBasis ID="91742" LegalBasisShortRef="Executive Order 13757 (Cyber)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13757 (Cyber)</LegalBasis>
+      <LegalBasis ID="91745" LegalBasisShortRef="Executive Order 13810 (North Korea)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13810 (North Korea)</LegalBasis>
+      <LegalBasis ID="91746" LegalBasisShortRef="31 CFR 594.201(a)(5)" LegalBasisTypeID="1" SanctionsProgramID="1">31 CFR 594.201(a)(5)</LegalBasis>
+      <LegalBasis ID="91749" LegalBasisShortRef="Executive Order 13818 (Global Magnitsky)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13818 (Global Magnitsky)</LegalBasis>
+      <LegalBasis ID="91758" LegalBasisShortRef="CAATSA - Section 224" LegalBasisTypeID="1" SanctionsProgramID="1">CAATSA - Section 224</LegalBasis>
+      <LegalBasis ID="91777" LegalBasisShortRef="CAATSA - Section 231" LegalBasisTypeID="1" SanctionsProgramID="1">CAATSA - Section 231</LegalBasis>
+      <LegalBasis ID="91779" LegalBasisShortRef="CAATSA - Section 228" LegalBasisTypeID="1" SanctionsProgramID="1">CAATSA - Section 228</LegalBasis>
+      <LegalBasis ID="91784" LegalBasisShortRef="Executive Order 13846 (Iran)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13846 (Iran)</LegalBasis>
+      <LegalBasis ID="91809" LegalBasisShortRef="Executive Order 13851 (Nicaragua)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13851 (Nicaragua)</LegalBasis>
+      <LegalBasis ID="91811" LegalBasisShortRef="Executive Order 13850 (Venezuela)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13850 (Venezuela)</LegalBasis>
+      <LegalBasis ID="91856" LegalBasisShortRef="Executive Order 13871 (Iran)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13871 (Iran)</LegalBasis>
+      <LegalBasis ID="91859" LegalBasisShortRef="NHRAA" LegalBasisTypeID="1" SanctionsProgramID="1">NHRAA</LegalBasis>
+      <LegalBasis ID="91860" LegalBasisShortRef="NKSPEA" LegalBasisTypeID="1" SanctionsProgramID="1">NKSPEA</LegalBasis>
+      <LegalBasis ID="91861" LegalBasisShortRef="Executive Order 13876 (Iran)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13876 (Iran)</LegalBasis>
+      <LegalBasis ID="91864" LegalBasisShortRef="Executive Order 13882 (Mali)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13882 (Mali)</LegalBasis>
+      <LegalBasis ID="91870" LegalBasisShortRef="Executive Order 13848 (Election)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13848 (Election)</LegalBasis>
+      <LegalBasis ID="91893" LegalBasisShortRef="Executive Order 13846" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13846</LegalBasis>
+      <LegalBasis ID="91894" LegalBasisShortRef="Executive Order 13894 (Syria-related)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13894 (Syria-related)</LegalBasis>
+      <LegalBasis ID="91897" LegalBasisShortRef="Executive Order 13884 (Venezuela)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13884 (Venezuela)</LegalBasis>
+      <LegalBasis ID="91902" LegalBasisShortRef="Executive Order 13902 (Iran)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 13902 (Iran)</LegalBasis>
+      <LegalBasis ID="91904" LegalBasisShortRef="Executive Order 14059 (Illicit Drugs)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 14059 (Illicit Drugs)</LegalBasis>
+      <LegalBasis ID="91908" LegalBasisShortRef="CAATSA - Section 106" LegalBasisTypeID="1" SanctionsProgramID="1">CAATSA - Section 106</LegalBasis>
+      <LegalBasis ID="92003" LegalBasisShortRef="Executive Order - Convential Arms (Iran)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order - Convential Arms (Iran)</LegalBasis>
+      <LegalBasis ID="92021" LegalBasisShortRef="Protecting Europe's Energy Security Act (PEESA)" LegalBasisTypeID="1" SanctionsProgramID="1">Protecting Europe's Energy Security Act (PEESA)</LegalBasis>
+      <LegalBasis ID="92027" LegalBasisShortRef="CAATSA - Section 232" LegalBasisTypeID="1" SanctionsProgramID="1">CAATSA - Section 232</LegalBasis>
+      <LegalBasis ID="92031" LegalBasisShortRef="Executive Order 14014" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 14014</LegalBasis>
+      <LegalBasis ID="92049" LegalBasisShortRef="Executive Order 14024 (Russia)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 14024 (Russia)</LegalBasis>
+      <LegalBasis ID="92065" LegalBasisShortRef="Executive Order 14039" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 14039</LegalBasis>
+      <LegalBasis ID="92070" LegalBasisShortRef="Executive Order 14038 (Belarus)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 14038 (Belarus)</LegalBasis>
+      <LegalBasis ID="92074" LegalBasisShortRef="Executive Order 14033 (Balkans)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 14033 (Balkans)</LegalBasis>
+      <LegalBasis ID="92076" LegalBasisShortRef="Executive Order 14046 (Ethiopia)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 14046 (Ethiopia)</LegalBasis>
+      <LegalBasis ID="92123" LegalBasisShortRef="Executive Order 14065" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 14065</LegalBasis>
+      <LegalBasis ID="92139" LegalBasisShortRef="Executive Order 14078 (Hostages)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 14078 (Hostages)</LegalBasis>
+      <LegalBasis ID="92141" LegalBasisShortRef="UHRPA" LegalBasisTypeID="1" SanctionsProgramID="1">UHRPA</LegalBasis>
+      <LegalBasis ID="92157" LegalBasisShortRef="Executive Order 14098 (Sudan)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 14098 (Sudan)</LegalBasis>
+      <LegalBasis ID="92796" LegalBasisShortRef="Executive Order 14144 (Cyber)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 14144 (Cyber)</LegalBasis>
+      <LegalBasis ID="92813" LegalBasisShortRef="Executive Order 14203 (ICC)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 14203 (ICC)</LegalBasis>
+      <LegalBasis ID="92823" LegalBasisShortRef="Executive Order 14312 (PAARSSR)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 14312 (PAARSSR)</LegalBasis>
+      <LegalBasis ID="92824" LegalBasisShortRef="Executive Order 14306 (Cyber)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 14306 (Cyber)</LegalBasis>
+      <LegalBasis ID="92880" LegalBasisShortRef="PAIPA" LegalBasisTypeID="1" SanctionsProgramID="1">PAIPA</LegalBasis>
+      <LegalBasis ID="92884" LegalBasisShortRef="Executive Order 14404 (Cuba)" LegalBasisTypeID="1" SanctionsProgramID="1">Executive Order 14404 (Cuba)</LegalBasis>
+    </LegalBasisValues>
+    <LegalBasisTypeValues>
+      <LegalBasisType ID="1">Unknown</LegalBasisType>
+    </LegalBasisTypeValues>
+    <ListValues>
+      <List ID="1550">SDN List</List>
+      <List ID="91243">Non-SDN Palestinian Legislative Council List</List>
+      <List ID="91507">Sectoral Sanctions Identifications List</List>
+      <List ID="91512">Consolidated List</List>
+    </ListValues>
+    <LocPartTypeValues>
+      <LocPartType ID="1">Unknown</LocPartType>
+      <LocPartType ID="1450">REGION</LocPartType>
+      <LocPartType ID="1451">ADDRESS1</LocPartType>
+      <LocPartType ID="1452">ADDRESS2</LocPartType>
+      <LocPartType ID="1453">ADDRESS3</LocPartType>
+      <LocPartType ID="1454">CITY</LocPartType>
+      <LocPartType ID="1455">STATE/PROVINCE</LocPartType>
+      <LocPartType ID="1456">POSTAL CODE</LocPartType>
+    </LocPartTypeValues>
+    <LocPartValueStatusValues>
+      <LocPartValueStatus ID="1">Main</LocPartValueStatus>
+    </LocPartValueStatusValues>
+    <LocPartValueTypeValues>
+      <LocPartValueType ID="1">Unknown</LocPartValueType>
+    </LocPartValueTypeValues>
+    <NamePartTypeValues>
+      <NamePartType ID="1520">Last Name</NamePartType>
+      <NamePartType ID="1521">First Name</NamePartType>
+      <NamePartType ID="1522">Middle Name</NamePartType>
+      <NamePartType ID="1523">Maiden Name</NamePartType>
+      <NamePartType ID="1524">Aircraft Name</NamePartType>
+      <NamePartType ID="1525">Entity Name</NamePartType>
+      <NamePartType ID="1526">Vessel Name</NamePartType>
+      <NamePartType ID="1528">Nickname</NamePartType>
+      <NamePartType ID="91708">Patronymic</NamePartType>
+      <NamePartType ID="91709">Matronymic</NamePartType>
+    </NamePartTypeValues>
+    <OrganisationValues>
+      <Organisation ID="1" CountryID="11212">State</Organisation>
+    </OrganisationValues>
+    <PartySubTypeValues>
+      <PartySubType ID="1" PartyTypeID="4">Vessel</PartySubType>
+      <PartySubType ID="2" PartyTypeID="4">Aircraft</PartySubType>
+      <PartySubType ID="3" PartyTypeID="2">Unknown</PartySubType>
+      <PartySubType ID="4" PartyTypeID="1">Unknown</PartySubType>
+    </PartySubTypeValues>
+    <PartyTypeValues>
+      <PartyType ID="1">Individual</PartyType>
+      <PartyType ID="2">Entity</PartyType>
+      <PartyType ID="3">Location</PartyType>
+      <PartyType ID="4">Transport</PartyType>
+      <PartyType ID="5">Other Entity</PartyType>
+    </PartyTypeValues>
+    <RelationQualityValues>
+      <RelationQuality ID="1540">High</RelationQuality>
+      <RelationQuality ID="1541">Low</RelationQuality>
+      <RelationQuality ID="1542">on OFAC's SDN list:</RelationQuality>
+      <RelationQuality ID="1">Unknown</RelationQuality>
+    </RelationQualityValues>
+    <RelationTypeValues>
+      <RelationType ID="1555" Symmetrical="false">Associate Of</RelationType>
+      <RelationType ID="15001" Symmetrical="false">Providing support to</RelationType>
+      <RelationType ID="15002" Symmetrical="false">Acting for or on behalf of</RelationType>
+      <RelationType ID="15003" Symmetrical="false">Owned or Controlled By</RelationType>
+      <RelationType ID="15004" Symmetrical="false">Family member of</RelationType>
+      <RelationType ID="91422" Symmetrical="false">playing a significant role in</RelationType>
+      <RelationType ID="91725" Symmetrical="false">Leader or official of</RelationType>
+      <RelationType ID="91900" Symmetrical="false">Principal Executive Officer</RelationType>
+      <RelationType ID="92019" Symmetrical="false">Owns, controls, or operates</RelationType>
+      <RelationType ID="92122" Symmetrical="false">Property in the interest of</RelationType>
+    </RelationTypeValues>
+    <ReliabilityValues>
+      <Reliability ID="1560">Confirmed</Reliability>
+      <Reliability ID="1561">False</Reliability>
+      <Reliability ID="91479">Reported</Reliability>
+      <Reliability ID="1">Unknown</Reliability>
+    </ReliabilityValues>
+    <SanctionsProgramValues>
+      <SanctionsProgram ID="1" SubsidiaryBodyID="1">Unknown</SanctionsProgram>
+      <SanctionsProgram ID="202" SubsidiaryBodyID="1">CUBA</SanctionsProgram>
+      <SanctionsProgram ID="203" SubsidiaryBodyID="1">SDNTK</SanctionsProgram>
+      <SanctionsProgram ID="204" SubsidiaryBodyID="1">FTO</SanctionsProgram>
+      <SanctionsProgram ID="205" SubsidiaryBodyID="1">IRAN</SanctionsProgram>
+      <SanctionsProgram ID="211" SubsidiaryBodyID="1">SDGT</SanctionsProgram>
+      <SanctionsProgram ID="212" SubsidiaryBodyID="1">SDNT</SanctionsProgram>
+      <SanctionsProgram ID="1001" SubsidiaryBodyID="1">IRAQ2</SanctionsProgram>
+      <SanctionsProgram ID="10008" SubsidiaryBodyID="1">BALKANS</SanctionsProgram>
+      <SanctionsProgram ID="91031" SubsidiaryBodyID="1">NPWMD</SanctionsProgram>
+      <SanctionsProgram ID="91055" SubsidiaryBodyID="1">NS-PLC</SanctionsProgram>
+      <SanctionsProgram ID="91057" SubsidiaryBodyID="1">BELARUS</SanctionsProgram>
+      <SanctionsProgram ID="91070" SubsidiaryBodyID="1">DRCONGO</SanctionsProgram>
+      <SanctionsProgram ID="91101" SubsidiaryBodyID="1">DARFUR</SanctionsProgram>
+      <SanctionsProgram ID="91103" SubsidiaryBodyID="1">IRAQ3</SanctionsProgram>
+      <SanctionsProgram ID="91104" SubsidiaryBodyID="1">LEBANON</SanctionsProgram>
+      <SanctionsProgram ID="91154" SubsidiaryBodyID="1">SOMALIA</SanctionsProgram>
+      <SanctionsProgram ID="91166" SubsidiaryBodyID="1">IRGC</SanctionsProgram>
+      <SanctionsProgram ID="91167" SubsidiaryBodyID="1">IFSR</SanctionsProgram>
+      <SanctionsProgram ID="91168" SubsidiaryBodyID="1">DPRK</SanctionsProgram>
+      <SanctionsProgram ID="91169" SubsidiaryBodyID="1">IRAN-HR</SanctionsProgram>
+      <SanctionsProgram ID="91185" SubsidiaryBodyID="1">LIBYA2</SanctionsProgram>
+      <SanctionsProgram ID="91221" SubsidiaryBodyID="1">TCO</SanctionsProgram>
+      <SanctionsProgram ID="91230" SubsidiaryBodyID="1">HRIT-SY</SanctionsProgram>
+      <SanctionsProgram ID="91231" SubsidiaryBodyID="1">HRIT-IR</SanctionsProgram>
+      <SanctionsProgram ID="91423" SubsidiaryBodyID="1">YEMEN</SanctionsProgram>
+      <SanctionsProgram ID="91427" SubsidiaryBodyID="1">IRAN-TRA</SanctionsProgram>
+      <SanctionsProgram ID="91435" SubsidiaryBodyID="1">MAGNIT</SanctionsProgram>
+      <SanctionsProgram ID="91459" SubsidiaryBodyID="1">IFCA</SanctionsProgram>
+      <SanctionsProgram ID="91493" SubsidiaryBodyID="1">UKRAINE-EO13660</SanctionsProgram>
+      <SanctionsProgram ID="91495" SubsidiaryBodyID="1">CAR</SanctionsProgram>
+      <SanctionsProgram ID="91496" SubsidiaryBodyID="1">SOUTH SUDAN</SanctionsProgram>
+      <SanctionsProgram ID="91499" SubsidiaryBodyID="1">UKRAINE-EO13661</SanctionsProgram>
+      <SanctionsProgram ID="91502" SubsidiaryBodyID="1">UKRAINE-EO13662</SanctionsProgram>
+      <SanctionsProgram ID="91698" SubsidiaryBodyID="1">LIBYA3</SanctionsProgram>
+      <SanctionsProgram ID="91700" SubsidiaryBodyID="1">DPRK2</SanctionsProgram>
+      <SanctionsProgram ID="91702" SubsidiaryBodyID="1">UKRAINE-EO13685</SanctionsProgram>
+      <SanctionsProgram ID="91705" SubsidiaryBodyID="1">VENEZUELA</SanctionsProgram>
+      <SanctionsProgram ID="91735" SubsidiaryBodyID="1">DPRK3</SanctionsProgram>
+      <SanctionsProgram ID="91741" SubsidiaryBodyID="1">CYBER2</SanctionsProgram>
+      <SanctionsProgram ID="91744" SubsidiaryBodyID="1">DPRK4</SanctionsProgram>
+      <SanctionsProgram ID="91748" SubsidiaryBodyID="1">GLOMAG</SanctionsProgram>
+      <SanctionsProgram ID="91755" SubsidiaryBodyID="1">CAATSA - IRAN</SanctionsProgram>
+      <SanctionsProgram ID="91757" SubsidiaryBodyID="1">CAATSA - RUSSIA</SanctionsProgram>
+      <SanctionsProgram ID="91807" SubsidiaryBodyID="1">ELECTION-EO13848</SanctionsProgram>
+      <SanctionsProgram ID="91808" SubsidiaryBodyID="1">NICARAGUA</SanctionsProgram>
+      <SanctionsProgram ID="91810" SubsidiaryBodyID="1">VENEZUELA-EO13850</SanctionsProgram>
+      <SanctionsProgram ID="91855" SubsidiaryBodyID="1">IRAN-EO13871</SanctionsProgram>
+      <SanctionsProgram ID="91857" SubsidiaryBodyID="1">NICARAGUA-NHRAA</SanctionsProgram>
+      <SanctionsProgram ID="91858" SubsidiaryBodyID="1">DPRK-NKSPEA</SanctionsProgram>
+      <SanctionsProgram ID="91862" SubsidiaryBodyID="1">IRAN-EO13876</SanctionsProgram>
+      <SanctionsProgram ID="91863" SubsidiaryBodyID="1">MALI-EO13882</SanctionsProgram>
+      <SanctionsProgram ID="91869" SubsidiaryBodyID="1">IRAN-EO13846</SanctionsProgram>
+      <SanctionsProgram ID="91895" SubsidiaryBodyID="1">PAARSSR-EO13894</SanctionsProgram>
+      <SanctionsProgram ID="91896" SubsidiaryBodyID="1">VENEZUELA-EO13884</SanctionsProgram>
+      <SanctionsProgram ID="91901" SubsidiaryBodyID="1">IRAN-EO13902</SanctionsProgram>
+      <SanctionsProgram ID="91903" SubsidiaryBodyID="1">ILLICIT-DRUGS-EO14059</SanctionsProgram>
+      <SanctionsProgram ID="92002" SubsidiaryBodyID="1">IRAN-CON-ARMS-EO</SanctionsProgram>
+      <SanctionsProgram ID="92030" SubsidiaryBodyID="1">BURMA-EO14014</SanctionsProgram>
+      <SanctionsProgram ID="92042" SubsidiaryBodyID="1">RUSSIA-EO14024</SanctionsProgram>
+      <SanctionsProgram ID="92064" SubsidiaryBodyID="1">PEESA-EO14039</SanctionsProgram>
+      <SanctionsProgram ID="92069" SubsidiaryBodyID="1">BELARUS-EO14038</SanctionsProgram>
+      <SanctionsProgram ID="92073" SubsidiaryBodyID="1">BALKANS-EO14033</SanctionsProgram>
+      <SanctionsProgram ID="92075" SubsidiaryBodyID="1">ETHIOPIA-EO14046</SanctionsProgram>
+      <SanctionsProgram ID="92078" SubsidiaryBodyID="1">SSIDES</SanctionsProgram>
+      <SanctionsProgram ID="92100" SubsidiaryBodyID="1">RUSSIA-EO14065</SanctionsProgram>
+      <SanctionsProgram ID="92138" SubsidiaryBodyID="1">HOSTAGES-EO14078</SanctionsProgram>
+      <SanctionsProgram ID="92140" SubsidiaryBodyID="1">UHRPA</SanctionsProgram>
+      <SanctionsProgram ID="92156" SubsidiaryBodyID="1">SUDAN-EO14098</SanctionsProgram>
+      <SanctionsProgram ID="92795" SubsidiaryBodyID="1">CYBER3</SanctionsProgram>
+      <SanctionsProgram ID="92812" SubsidiaryBodyID="1">ICC-EO14203</SanctionsProgram>
+      <SanctionsProgram ID="92825" SubsidiaryBodyID="1">CYBER4</SanctionsProgram>
+      <SanctionsProgram ID="92865" SubsidiaryBodyID="1">PAIPA</SanctionsProgram>
+      <SanctionsProgram ID="92882" SubsidiaryBodyID="1">CUBA-EO14404</SanctionsProgram>
+    </SanctionsProgramValues>
+    <SanctionsTypeValues>
+      <SanctionsType ID="1705">Block</SanctionsType>
+      <SanctionsType ID="1706">Reject</SanctionsType>
+      <SanctionsType ID="91419">NDAA Special Conditions</SanctionsType>
+      <SanctionsType ID="91505">13662 Sectoral Directive 1</SanctionsType>
+      <SanctionsType ID="91506">13662 Sectoral Directive 2</SanctionsType>
+      <SanctionsType ID="91513">13662 Sectoral Directive 3</SanctionsType>
+      <SanctionsType ID="91514">13662 Sectoral Directive 4</SanctionsType>
+      <SanctionsType ID="91867">CAATSA Section 231/235 Sanctions</SanctionsType>
+      <SanctionsType ID="92087">Executive Order 14024 Directive 3</SanctionsType>
+      <SanctionsType ID="92093">Executive Order 14024 Directive 2</SanctionsType>
+      <SanctionsType ID="1">Program</SanctionsType>
+    </SanctionsTypeValues>
+    <ScriptValues>
+      <Script ID="160" ScriptCode="Arab">Arabic</Script>
+      <Script ID="230" ScriptCode="Armn">Armenian</Script>
+      <Script ID="501" ScriptCode="Hans">Chinese Simplified</Script>
+      <Script ID="502" ScriptCode="Hant">Chinese Traditional</Script>
+      <Script ID="220" ScriptCode="Cyrl">Cyrillic</Script>
+      <Script ID="240" ScriptCode="Geor">Georgian</Script>
+      <Script ID="200" ScriptCode="Grek">Greek</Script>
+      <Script ID="286" ScriptCode="Hang">Hangul</Script>
+      <Script ID="125" ScriptCode="Hebrew">Hebrew</Script>
+      <Script ID="413" ScriptCode="Japanese">Japanese</Script>
+      <Script ID="287" ScriptCode="Korean">Korean</Script>
+      <Script ID="215" ScriptCode="Latin">Latin</Script>
+    </ScriptValues>
+    <ScriptStatusValues>
+      <ScriptStatus ID="1">Unknown</ScriptStatus>
+    </ScriptStatusValues>
+    <SubsidiaryBodyValues>
+      <SubsidiaryBody ID="1" Notional="false" DecisionMakingBodyID="1">Office of Foreign Assets Control</SubsidiaryBody>
+    </SubsidiaryBodyValues>
+    <SupInfoTypeValues />
+    <TargetTypeValues />
+    <ValidityValues>
+      <Validity ID="1">Valid</Validity>
+      <Validity ID="2">Fraudulent</Validity>
+    </ValidityValues>
+  </ReferenceValueSets>
+  
+  <Locations><Location xmlns="https://sanctionslistservice.ofac.treas.gov/api/PublicationPreview/exports/ADVANCED_XML" ID="1835">
+      <LocationAreaCode AreaCodeID="11082" />
+      <LocationCountry CountryID="11082" CountryRelevanceID="1413" />
+      <FeatureVersionReference FeatureVersionID="201835" />
+    </Location>
+    <Location xmlns="https://sanctionslistservice.ofac.treas.gov/api/PublicationPreview/exports/ADVANCED_XML" ID="186082">
+      <LocationPart LocPartTypeID="1">
+        <LocationPartValue Primary="true" LocPartValueTypeID="1" LocPartValueStatusID="1">
+          <Comment />
+          <Value>Egypt</Value>
+        </LocationPartValue>
+      </LocationPart>
+      <FeatureVersionReference FeatureVersionID="1095" />
+      <FeatureVersionReference FeatureVersionID="1097" />
+      <FeatureVersionReference FeatureVersionID="1101" />
+      <FeatureVersionReference FeatureVersionID="1104" />
+      <FeatureVersionReference FeatureVersionID="2354" />
+      <FeatureVersionReference FeatureVersionID="3469" />
+      <FeatureVersionReference FeatureVersionID="4148" />
+      <FeatureVersionReference FeatureVersionID="5649" />
+      <FeatureVersionReference FeatureVersionID="6352" />
+      <FeatureVersionReference FeatureVersionID="6355" />
+      <FeatureVersionReference FeatureVersionID="6380" />
+      <FeatureVersionReference FeatureVersionID="12384" />
+      <FeatureVersionReference FeatureVersionID="13978" />
+      <FeatureVersionReference FeatureVersionID="18463" />
+      <FeatureVersionReference FeatureVersionID="19891" />
+      <FeatureVersionReference FeatureVersionID="21390" />
+      <FeatureVersionReference FeatureVersionID="22606" />
+      <FeatureVersionReference FeatureVersionID="22607" />
+      <FeatureVersionReference FeatureVersionID="29881" />
+      <FeatureVersionReference FeatureVersionID="36818" />
+      <FeatureVersionReference FeatureVersionID="37840" />
+      <FeatureVersionReference FeatureVersionID="40936" />
+      <FeatureVersionReference FeatureVersionID="43329" />
+      <FeatureVersionReference FeatureVersionID="43331" />
+      <FeatureVersionReference FeatureVersionID="43336" />
+      <FeatureVersionReference FeatureVersionID="53449" />
+      <FeatureVersionReference FeatureVersionID="63878" />
+      <FeatureVersionReference FeatureVersionID="65574" />
+      <FeatureVersionReference FeatureVersionID="65580" />
+      <FeatureVersionReference FeatureVersionID="91307" />
+      <FeatureVersionReference FeatureVersionID="92589" />
+      <FeatureVersionReference FeatureVersionID="96703" />
+      <FeatureVersionReference FeatureVersionID="98481" />
+    </Location>
+    <Location xmlns="https://sanctionslistservice.ofac.treas.gov/api/PublicationPreview/exports/ADVANCED_XML" ID="2237">
+      <LocationAreaCode AreaCodeID="11291" />
+      <FeatureVersionReference FeatureVersionID="202237" />
+    </Location>
+    <Location xmlns="https://sanctionslistservice.ofac.treas.gov/api/PublicationPreview/exports/ADVANCED_XML" ID="22998">
+      <LocationAreaCode AreaCodeID="11291" />
+      <FeatureVersionReference FeatureVersionID="222998" />
+    </Location>
+    <Location xmlns="https://sanctionslistservice.ofac.treas.gov/api/PublicationPreview/exports/ADVANCED_XML" ID="25">
+      <LocationAreaCode AreaCodeID="11073" />
+      <LocationCountry CountryID="11073" CountryRelevanceID="1413" />
+      <LocationPart LocPartTypeID="1454">
+        <LocationPartValue Primary="true" LocPartValueTypeID="1" LocPartValueStatusID="1">
+          <Comment />
+          <Value>Havana</Value>
+        </LocationPartValue>
+      </LocationPart>
+      <FeatureVersionReference FeatureVersionID="200025" />
+    </Location>
+    </Locations>
+  <IDRegDocuments></IDRegDocuments>
+  <DistinctParties><DistinctParty xmlns="https://sanctionslistservice.ofac.treas.gov/api/PublicationPreview/exports/ADVANCED_XML" FixedRef="36">
+      <Comment />
+      <Profile ID="36" PartySubTypeID="3">
+        <Identity ID="4375" FixedRef="36" Primary="true" False="false">
+          <Alias FixedRef="36" AliasTypeID="1400" Primary="false" LowQuality="false">
+            <DocumentedName ID="13178" FixedRef="36" DocNameStatusID="2">
+              <DocumentedNamePart>
+                <NamePartValue NamePartGroupID="19387" ScriptID="215" ScriptStatusID="1" Acronym="false">AERO-CARIBBEAN</NamePartValue>
+              </DocumentedNamePart>
+            </DocumentedName>
+          </Alias>
+          <Alias FixedRef="36" AliasTypeID="1403" Primary="true" LowQuality="false">
+            <DocumentedName ID="4375" FixedRef="36" DocNameStatusID="1">
+              <DocumentedNamePart>
+                <NamePartValue NamePartGroupID="6700" ScriptID="215" ScriptStatusID="1" Acronym="false">AEROCARIBBEAN AIRLINES</NamePartValue>
+              </DocumentedNamePart>
+            </DocumentedName>
+          </Alias>
+          <NamePartGroups>
+            <MasterNamePartGroup>
+              <NamePartGroup ID="6700" NamePartTypeID="1525" />
+            </MasterNamePartGroup>
+            <MasterNamePartGroup>
+              <NamePartGroup ID="19387" NamePartTypeID="1525" />
+            </MasterNamePartGroup>
+          </NamePartGroups>
+        </Identity>
+        <Feature ID="150025" FeatureTypeID="25">
+          <FeatureVersion ID="200025" ReliabilityID="1">
+            <Comment />
+            <VersionLocation LocationID="25" />
+          </FeatureVersion>
+          <IdentityReference IdentityID="4375" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+      </Profile>
+    </DistinctParty>
+    <DistinctParty xmlns="https://sanctionslistservice.ofac.treas.gov/api/PublicationPreview/exports/ADVANCED_XML" FixedRef="2677">
+      <Comment />
+      <Profile ID="2677" PartySubTypeID="4">
+        <Identity ID="4423" FixedRef="2677" Primary="true" False="false">
+          <Alias FixedRef="2677" AliasTypeID="1400" Primary="false" LowQuality="false">
+            <DocumentedName ID="13222" FixedRef="2677" DocNameStatusID="2">
+              <DocumentedNamePart>
+                <NamePartValue NamePartGroupID="19451" ScriptID="215" ScriptStatusID="1" Acronym="false">ZUMAR</NamePartValue>
+              </DocumentedNamePart>
+              <DocumentedNamePart>
+                <NamePartValue NamePartGroupID="19452" ScriptID="215" ScriptStatusID="1" Acronym="false">Abbud</NamePartValue>
+              </DocumentedNamePart>
+            </DocumentedName>
+          </Alias>
+          <Alias FixedRef="2677" AliasTypeID="1403" Primary="true" LowQuality="false">
+            <DocumentedName ID="4423" FixedRef="2677" DocNameStatusID="1">
+              <DocumentedNamePart>
+                <NamePartValue NamePartGroupID="71648" ScriptID="215" ScriptStatusID="1" Acronym="false">Al-Zomor</NamePartValue>
+              </DocumentedNamePart>
+              <DocumentedNamePart>
+                <NamePartValue NamePartGroupID="71649" ScriptID="215" ScriptStatusID="1" Acronym="false">Abboud Abdul Latif Hassan</NamePartValue>
+              </DocumentedNamePart>
+            </DocumentedName>
+            <DocumentedName ID="44098" FixedRef="2677" DocNameStatusID="2">
+              <DocumentedNamePart>
+                <NamePartValue NamePartGroupID="83901" ScriptID="160" ScriptStatusID="1" Acronym="false">الزمر</NamePartValue>
+              </DocumentedNamePart>
+              <DocumentedNamePart>
+                <NamePartValue NamePartGroupID="83902" ScriptID="160" ScriptStatusID="1" Acronym="false">عبود عبداللطيف حسن</NamePartValue>
+              </DocumentedNamePart>
+            </DocumentedName>
+          </Alias>
+          <Alias FixedRef="2677" AliasTypeID="1400" Primary="false" LowQuality="false">
+            <DocumentedName ID="44099" FixedRef="2677" DocNameStatusID="2">
+              <DocumentedNamePart>
+                <NamePartValue NamePartGroupID="83903" ScriptID="215" ScriptStatusID="1" Acronym="false">AL-Zumar</NamePartValue>
+              </DocumentedNamePart>
+              <DocumentedNamePart>
+                <NamePartValue NamePartGroupID="83904" ScriptID="215" ScriptStatusID="1" Acronym="false">Abbud</NamePartValue>
+              </DocumentedNamePart>
+            </DocumentedName>
+          </Alias>
+          <Alias FixedRef="2677" AliasTypeID="1400" Primary="false" LowQuality="false">
+            <DocumentedName ID="44100" FixedRef="2677" DocNameStatusID="2">
+              <DocumentedNamePart>
+                <NamePartValue NamePartGroupID="83905" ScriptID="215" ScriptStatusID="1" Acronym="false">El-Zomor</NamePartValue>
+              </DocumentedNamePart>
+              <DocumentedNamePart>
+                <NamePartValue NamePartGroupID="83906" ScriptID="215" ScriptStatusID="1" Acronym="false">Aboud Abdul Latif Hasan</NamePartValue>
+              </DocumentedNamePart>
+            </DocumentedName>
+          </Alias>
+          <Alias FixedRef="2677" AliasTypeID="1400" Primary="false" LowQuality="false">
+            <DocumentedName ID="44101" FixedRef="2677" DocNameStatusID="2">
+              <DocumentedNamePart>
+                <NamePartValue NamePartGroupID="83907" ScriptID="215" ScriptStatusID="1" Acronym="false">Al-Zumur</NamePartValue>
+              </DocumentedNamePart>
+              <DocumentedNamePart>
+                <NamePartValue NamePartGroupID="83908" ScriptID="215" ScriptStatusID="1" Acronym="false">Abood Abdul Latif Hassan</NamePartValue>
+              </DocumentedNamePart>
+            </DocumentedName>
+          </Alias>
+          <Alias FixedRef="2677" AliasTypeID="1400" Primary="false" LowQuality="false">
+            <DocumentedName ID="44102" FixedRef="2677" DocNameStatusID="2">
+              <DocumentedNamePart>
+                <NamePartValue NamePartGroupID="83909" ScriptID="215" ScriptStatusID="1" Acronym="false">Al-Zamur</NamePartValue>
+              </DocumentedNamePart>
+              <DocumentedNamePart>
+                <NamePartValue NamePartGroupID="83910" ScriptID="215" ScriptStatusID="1" Acronym="false">Abboud Abdul Latif Hassan</NamePartValue>
+              </DocumentedNamePart>
+            </DocumentedName>
+          </Alias>
+          <NamePartGroups>
+            <MasterNamePartGroup>
+              <NamePartGroup ID="19451" NamePartTypeID="1520" />
+            </MasterNamePartGroup>
+            <MasterNamePartGroup>
+              <NamePartGroup ID="19452" NamePartTypeID="1521" />
+            </MasterNamePartGroup>
+            <MasterNamePartGroup>
+              <NamePartGroup ID="71648" NamePartTypeID="1520" />
+            </MasterNamePartGroup>
+            <MasterNamePartGroup>
+              <NamePartGroup ID="71649" NamePartTypeID="1521" />
+            </MasterNamePartGroup>
+            <MasterNamePartGroup>
+              <NamePartGroup ID="83901" NamePartTypeID="1520" />
+            </MasterNamePartGroup>
+            <MasterNamePartGroup>
+              <NamePartGroup ID="83902" NamePartTypeID="1521" />
+            </MasterNamePartGroup>
+            <MasterNamePartGroup>
+              <NamePartGroup ID="83903" NamePartTypeID="1520" />
+            </MasterNamePartGroup>
+            <MasterNamePartGroup>
+              <NamePartGroup ID="83904" NamePartTypeID="1521" />
+            </MasterNamePartGroup>
+            <MasterNamePartGroup>
+              <NamePartGroup ID="83905" NamePartTypeID="1520" />
+            </MasterNamePartGroup>
+            <MasterNamePartGroup>
+              <NamePartGroup ID="83906" NamePartTypeID="1521" />
+            </MasterNamePartGroup>
+            <MasterNamePartGroup>
+              <NamePartGroup ID="83907" NamePartTypeID="1520" />
+            </MasterNamePartGroup>
+            <MasterNamePartGroup>
+              <NamePartGroup ID="83908" NamePartTypeID="1521" />
+            </MasterNamePartGroup>
+            <MasterNamePartGroup>
+              <NamePartGroup ID="83909" NamePartTypeID="1520" />
+            </MasterNamePartGroup>
+            <MasterNamePartGroup>
+              <NamePartGroup ID="83910" NamePartTypeID="1521" />
+            </MasterNamePartGroup>
+          </NamePartGroups>
+        </Identity>
+        <Feature ID="1005" FeatureTypeID="9">
+          <FeatureVersion ID="3555" ReliabilityID="1">
+            <Comment />
+            <VersionDetail DetailTypeID="1432">Nahia, Giza, Egypt</VersionDetail>
+          </FeatureVersion>
+          <IdentityReference IdentityID="4423" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+        <Feature ID="40120" FeatureTypeID="8">
+          <FeatureVersion ID="37839" ReliabilityID="1">
+            <Comment />
+            <DatePeriod CalendarTypeID="1" YearFixed="false" MonthFixed="false" DayFixed="false">
+              <Start Approximate="false" YearFixed="false" MonthFixed="false" DayFixed="false">
+                <From>
+                  <Year>1947</Year>
+                  <Month>4</Month>
+                  <Day>19</Day>
+                </From>
+                <To>
+                  <Year>1947</Year>
+                  <Month>4</Month>
+                  <Day>19</Day>
+                </To>
+              </Start>
+              <End Approximate="false" YearFixed="false" MonthFixed="false" DayFixed="false">
+                <From>
+                  <Year>1947</Year>
+                  <Month>4</Month>
+                  <Day>19</Day>
+                </From>
+                <To>
+                  <Year>1947</Year>
+                  <Month>4</Month>
+                  <Day>19</Day>
+                </To>
+              </End>
+            </DatePeriod>
+            <VersionDetail DetailTypeID="1430" />
+          </FeatureVersion>
+          <IdentityReference IdentityID="4423" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+        <Feature ID="40121" FeatureTypeID="10">
+          <FeatureVersion ID="37840" ReliabilityID="1">
+            <Comment />
+            <VersionDetail DetailTypeID="1433" />
+            <VersionLocation LocationID="186082" />
+          </FeatureVersion>
+          <IdentityReference IdentityID="4423" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+        <Feature ID="40122" FeatureTypeID="224">
+          <FeatureVersion ID="37841" ReliabilityID="1">
+            <Comment />
+            <VersionDetail DetailTypeID="1431" DetailReferenceID="91526" />
+          </FeatureVersion>
+          <IdentityReference IdentityID="4423" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+        <Feature ID="85813" FeatureTypeID="504">
+          <FeatureVersion ID="83432" ReliabilityID="1">
+            <Comment />
+            <VersionDetail DetailTypeID="1431" DetailReferenceID="92084" />
+          </FeatureVersion>
+          <IdentityReference IdentityID="4423" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+        <Feature ID="151835" FeatureTypeID="25">
+          <FeatureVersion ID="201835" ReliabilityID="1">
+            <Comment />
+            <VersionLocation LocationID="1835" />
+          </FeatureVersion>
+          <IdentityReference IdentityID="4423" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+      </Profile>
+    </DistinctParty>
+    <DistinctParty xmlns="https://sanctionslistservice.ofac.treas.gov/api/PublicationPreview/exports/ADVANCED_XML" FixedRef="4238">
+      <Comment />
+      <Profile ID="4238" PartySubTypeID="1">
+        <Identity ID="1663" FixedRef="4238" Primary="true" False="false">
+          <Alias FixedRef="4238" AliasTypeID="1403" Primary="true" LowQuality="false">
+            <DocumentedName ID="1663" FixedRef="4238" DocNameStatusID="1">
+              <DocumentedNamePart>
+                <NamePartValue NamePartGroupID="2489" ScriptID="215" ScriptStatusID="1" Acronym="false">MAR AZUL</NamePartValue>
+              </DocumentedNamePart>
+            </DocumentedName>
+          </Alias>
+          <NamePartGroups>
+            <MasterNamePartGroup>
+              <NamePartGroup ID="2489" NamePartTypeID="1526" />
+            </MasterNamePartGroup>
+          </NamePartGroups>
+        </Identity>
+        <Feature ID="10272" FeatureTypeID="1">
+          <FeatureVersion ID="7125" ReliabilityID="1560">
+            <Comment />
+            <VersionDetail DetailTypeID="1432">CL2192</VersionDetail>
+          </FeatureVersion>
+          <IdentityReference IdentityID="1663" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+        <Feature ID="10321" FeatureTypeID="3">
+          <FeatureVersion ID="7174" ReliabilityID="1560">
+            <Comment />
+            <VersionDetail DetailTypeID="1432">Cuba</VersionDetail>
+          </FeatureVersion>
+          <IdentityReference IdentityID="1663" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+        <Feature ID="10515" FeatureTypeID="4">
+          <FeatureVersion ID="7368" ReliabilityID="1560">
+            <Comment />
+            <VersionDetail DetailTypeID="1432">Samir de Navegacion S.A.</VersionDetail>
+          </FeatureVersion>
+          <IdentityReference IdentityID="1663" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+        <Feature ID="10898" FeatureTypeID="6">
+          <FeatureVersion ID="7751" ReliabilityID="1560">
+            <Comment />
+            <VersionDetail DetailTypeID="1432">212</VersionDetail>
+          </FeatureVersion>
+          <IdentityReference IdentityID="1663" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+        <Feature ID="11080" FeatureTypeID="2">
+          <FeatureVersion ID="7933" ReliabilityID="1560">
+            <Comment />
+            <VersionDetail DetailTypeID="1431" DetailReferenceID="705" />
+          </FeatureVersion>
+          <IdentityReference IdentityID="1663" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+        <Feature ID="152237" FeatureTypeID="25">
+          <FeatureVersion ID="202237" ReliabilityID="1">
+            <Comment />
+            <VersionLocation LocationID="2237" />
+          </FeatureVersion>
+          <IdentityReference IdentityID="1663" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+      </Profile>
+    </DistinctParty>
+    <DistinctParty xmlns="https://sanctionslistservice.ofac.treas.gov/api/PublicationPreview/exports/ADVANCED_XML" FixedRef="15432">
+      <Comment />
+      <Profile ID="15432" PartySubTypeID="2">
+        <Identity ID="7176" FixedRef="15432" Primary="true" False="false">
+          <Alias FixedRef="15432" AliasTypeID="1403" Primary="true" LowQuality="false">
+            <DocumentedName ID="16029" FixedRef="15432" DocNameStatusID="1">
+              <DocumentedNamePart>
+                <NamePartValue NamePartGroupID="24509" ScriptID="215" ScriptStatusID="1" Acronym="false">EP-GOL</NamePartValue>
+              </DocumentedNamePart>
+            </DocumentedName>
+          </Alias>
+          <NamePartGroups>
+            <MasterNamePartGroup>
+              <NamePartGroup ID="24509" NamePartTypeID="1524" />
+            </MasterNamePartGroup>
+          </NamePartGroups>
+        </Identity>
+        <Feature ID="12288" FeatureTypeID="44">
+          <FeatureVersion ID="9142" ReliabilityID="1560">
+            <Comment />
+            <VersionDetail DetailTypeID="1432">8305</VersionDetail>
+          </FeatureVersion>
+          <IdentityReference IdentityID="7176" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+        <Feature ID="12289" FeatureTypeID="50">
+          <FeatureVersion ID="9143" ReliabilityID="1560">
+            <Comment />
+            <VersionDetail DetailTypeID="1432">1013409297</VersionDetail>
+          </FeatureVersion>
+          <IdentityReference IdentityID="7176" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+        <Feature ID="12290" FeatureTypeID="45">
+          <FeatureVersion ID="9144" ReliabilityID="1560">
+            <Comment />
+            <DatePeriod CalendarTypeID="1" YearFixed="false" MonthFixed="false" DayFixed="false">
+              <Start Approximate="false" YearFixed="false" MonthFixed="false" DayFixed="false">
+                <From>
+                  <Year>1991</Year>
+                  <Month>1</Month>
+                  <Day>1</Day>
+                </From>
+                <To>
+                  <Year>1991</Year>
+                  <Month>1</Month>
+                  <Day>1</Day>
+                </To>
+              </Start>
+              <End Approximate="false" YearFixed="false" MonthFixed="false" DayFixed="false">
+                <From>
+                  <Year>1991</Year>
+                  <Month>12</Month>
+                  <Day>31</Day>
+                </From>
+                <To>
+                  <Year>1991</Year>
+                  <Month>12</Month>
+                  <Day>31</Day>
+                </To>
+              </End>
+            </DatePeriod>
+            <VersionDetail DetailTypeID="1430" />
+          </FeatureVersion>
+          <IdentityReference IdentityID="7176" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+        <Feature ID="12291" FeatureTypeID="47">
+          <FeatureVersion ID="9145" ReliabilityID="1560">
+            <Comment />
+            <VersionDetail DetailTypeID="1432">IL-76TD</VersionDetail>
+          </FeatureVersion>
+          <IdentityReference IdentityID="7176" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+        <Feature ID="12292" FeatureTypeID="48">
+          <FeatureVersion ID="9146" ReliabilityID="1560">
+            <Comment />
+            <VersionDetail DetailTypeID="1432">YAS AIR</VersionDetail>
+          </FeatureVersion>
+          <IdentityReference IdentityID="7176" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+        <Feature ID="86119" FeatureTypeID="504">
+          <FeatureVersion ID="83738" ReliabilityID="1">
+            <Comment />
+            <VersionDetail DetailTypeID="1431" DetailReferenceID="92084" />
+          </FeatureVersion>
+          <IdentityReference IdentityID="7176" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+        <Feature ID="172998" FeatureTypeID="25">
+          <FeatureVersion ID="222998" ReliabilityID="1">
+            <Comment />
+            <VersionLocation LocationID="22998" />
+          </FeatureVersion>
+          <IdentityReference IdentityID="7176" IdentityFeatureLinkTypeID="1" />
+        </Feature>
+      </Profile>
+    </DistinctParty>
+    </DistinctParties>
+  <ProfileRelationships />
+  <SanctionsEntries><SanctionsEntry xmlns="https://sanctionslistservice.ofac.treas.gov/api/PublicationPreview/exports/ADVANCED_XML" ID="36" ProfileID="36" ListID="1550">
+      <EntryEvent ID="36" EntryEventTypeID="1" LegalBasisID="1">
+        <Comment />
+        <Date CalendarTypeID="1">
+          <Year>1986</Year>
+          <Month>12</Month>
+          <Day>10</Day>
+        </Date>
+      </EntryEvent>
+      <SanctionsMeasure ID="4716" SanctionsTypeID="1705">
+        <DatePeriod CalendarTypeID="1" YearFixed="true" MonthFixed="true" DayFixed="true" />
+      </SanctionsMeasure>
+      <SanctionsMeasure ID="126005" SanctionsTypeID="1">
+        <Comment>CUBA</Comment>
+        <DatePeriod CalendarTypeID="1" YearFixed="true" MonthFixed="true" DayFixed="true" />
+      </SanctionsMeasure>
+    </SanctionsEntry>
+    <SanctionsEntry xmlns="https://sanctionslistservice.ofac.treas.gov/api/PublicationPreview/exports/ADVANCED_XML" ID="2677" ProfileID="2677" ListID="1550">
+      <EntryEvent ID="2677" EntryEventTypeID="1" LegalBasisID="1828">
+        <Comment />
+        <Date CalendarTypeID="1">
+          <Year>1995</Year>
+          <Month>1</Month>
+          <Day>23</Day>
+        </Date>
+      </EntryEvent>
+      <SanctionsMeasure ID="8309" SanctionsTypeID="1705">
+        <DatePeriod CalendarTypeID="1" YearFixed="true" MonthFixed="true" DayFixed="true" />
+      </SanctionsMeasure>
+      <SanctionsMeasure ID="154033" SanctionsTypeID="1">
+        <Comment>SDGT</Comment>
+        <DatePeriod CalendarTypeID="1" YearFixed="true" MonthFixed="true" DayFixed="true" />
+      </SanctionsMeasure>
+    </SanctionsEntry>
+    <SanctionsEntry xmlns="https://sanctionslistservice.ofac.treas.gov/api/PublicationPreview/exports/ADVANCED_XML" ID="4238" ProfileID="4238" ListID="1550">
+      <EntryEvent ID="4238" EntryEventTypeID="1" LegalBasisID="1">
+        <Comment />
+        <Date CalendarTypeID="1">
+          <Year>1989</Year>
+          <Month>1</Month>
+          <Day>5</Day>
+        </Date>
+      </EntryEvent>
+      <SanctionsMeasure ID="5039" SanctionsTypeID="1705">
+        <DatePeriod CalendarTypeID="1" YearFixed="true" MonthFixed="true" DayFixed="true" />
+      </SanctionsMeasure>
+      <SanctionsMeasure ID="126435" SanctionsTypeID="1">
+        <Comment>CUBA</Comment>
+        <DatePeriod CalendarTypeID="1" YearFixed="true" MonthFixed="true" DayFixed="true" />
+      </SanctionsMeasure>
+    </SanctionsEntry>
+    <SanctionsEntry xmlns="https://sanctionslistservice.ofac.treas.gov/api/PublicationPreview/exports/ADVANCED_XML" ID="15432" ProfileID="15432" ListID="1550">
+      <EntryEvent ID="15432" EntryEventTypeID="1" LegalBasisID="1828">
+        <Comment />
+        <Date CalendarTypeID="1">
+          <Year>2012</Year>
+          <Month>9</Month>
+          <Day>19</Day>
+        </Date>
+      </EntryEvent>
+      <SanctionsMeasure ID="752" SanctionsTypeID="1705">
+        <DatePeriod CalendarTypeID="1" YearFixed="true" MonthFixed="true" DayFixed="true" />
+      </SanctionsMeasure>
+      <SanctionsMeasure ID="140475" SanctionsTypeID="1">
+        <Comment>SDGT</Comment>
+        <DatePeriod CalendarTypeID="1" YearFixed="true" MonthFixed="true" DayFixed="true" />
+      </SanctionsMeasure>
+    </SanctionsEntry>
+    </SanctionsEntries>
+</Sanctions>
