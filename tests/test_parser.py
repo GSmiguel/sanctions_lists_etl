@@ -50,9 +50,9 @@ def test_vessel_features_go_to_other_column(records):
 
 def test_row_serialisation_uses_semicolons(records):
     row = records["36"].to_row()
-    assert row["id_ofac"] == "36"
-    assert row["tipo"] == "Entity"
-    assert "; " in row["enderecos"] or row["enderecos"]
+    assert row["ofac_id"] == "36"
+    assert row["type"] == "Entity"
+    assert "; " in row["addresses"] or row["addresses"]
 
 
 def test_party_type_filter(sample_xml):

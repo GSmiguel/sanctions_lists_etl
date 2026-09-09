@@ -50,7 +50,7 @@ def write_workbook(
 
     if metadata:
         info = workbook.create_sheet("info")
-        info.append(["campo", "valor"])
+        info.append(["field", "value"])
         for cell in info[1]:
             cell.font = Font(bold=True)
         for key, value in metadata.items():
