@@ -78,6 +78,10 @@ _AGE_BRACKETS = (
 JsonOpener = Callable[[str], Any]
 
 
+class InterpolServiceError(RuntimeError):
+    """The notices web service kept refusing requests (throttling / IP block)."""
+
+
 @dataclass(frozen=True)
 class DownloadResult:
     path: Path
@@ -133,7 +137,9 @@ class _Client:
                 data = self._open(url)
                 break
             except urllib.error.HTTPError as exc:
-                if exc.code in _RETRY_STATUS and attempt < _MAX_RETRIES:
+                if exc.code not in _RETRY_STATUS:
+                    raise
+                if attempt < _MAX_RETRIES:
                     wait = min(2 ** attempt, _BACKOFF_CAP)
                     log.warning(
                         "  HTTP %s on %s — retry %d/%d in %ds",
@@ -141,7 +147,12 @@ class _Client:
                     )
                     time.sleep(wait)
                     continue
-                raise
+                raise InterpolServiceError(
+                    f"web service returned HTTP {exc.code} for {url} after "
+                    f"{_MAX_RETRIES} tries — it rate-limits heavy clients and can "
+                    f"IP-block for a while. Retry later or raise "
+                    f"{DELAY_ENV} (currently {self._delay}s)."
+                ) from exc
         self.calls += 1
         if self._delay:
             time.sleep(self._delay)

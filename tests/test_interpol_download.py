@@ -10,6 +10,7 @@ so the partitioner can be exercised without touching the network.
 from __future__ import annotations
 
 import json
+import urllib.error
 import urllib.parse
 
 import pytest
@@ -17,6 +18,7 @@ import pytest
 from sanctions_lists_etl.sources.interpol import download
 from sanctions_lists_etl.sources.interpol.download import (
     INTERPOL_API_BASE,
+    InterpolServiceError,
     download_interpol,
     resolve_base,
     resolve_delay,
@@ -224,6 +226,16 @@ def test_limit_caps_enrichment(tmp_path):
     service = _FakeService(red, un_persons, un_entities)
     result = download_interpol(tmp_path, delay=0, opener=service, un=False, limit=10)
     assert result.notice_count == 10
+
+
+def test_persistent_http_error_becomes_a_clean_runtime_error(tmp_path, monkeypatch):
+    monkeypatch.setattr(download.time, "sleep", lambda _: None)
+
+    def blocked(url):
+        raise urllib.error.HTTPError(url, 403, "Forbidden", {}, None)
+
+    with pytest.raises(InterpolServiceError, match="HTTP 403"):
+        download_interpol(tmp_path, delay=0, opener=blocked)
 
 
 def test_snapshot_is_parseable(tmp_path):
