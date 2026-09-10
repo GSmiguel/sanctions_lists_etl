@@ -44,6 +44,28 @@ it one of these ways (checked in order):
 line and the `.meta.json` sidecar store the URL with the token stripped. See
 `.env.example`.
 
+## Stage 3 — UN Security Council Consolidated List
+
+Downloads the UN Security Council **Consolidated List** full XML from
+`https://scsanctions.un.org/resources/xml/en/consolidated.xml` and flattens every
+listed party — `<INDIVIDUAL>` and `<ENTITY>` — into a single-sheet workbook with
+the same column layout as the OFAC and EU exports (shared headers wherever the
+lists carry the same information).
+
+The UN format is flat like the EU one (no reference tables): every party carries
+its names, aliases, birth dates, addresses and documents inline as child
+elements whose values are element *text*. It is a single streaming pass, and the
+party type comes straight from the `INDIVIDUAL` / `ENTITY` tag. There is one row
+per `REFERENCE_NUMBER` (e.g. `QDi.335`, `IRe.001`) — the UN's own designation
+reference, which also encodes individual (`…i.…`) vs entity (`…e.…`) and the
+sanctions committee prefix (`QD` = Al-Qaida, `TA` = Taliban, `KP` = DPRK, …). It
+is the sort key and the `un_reference_number` column.
+
+The published endpoint answers with a 302 redirect to a short-lived signed Azure
+Blob URL, so — like the OFAC endpoint — the file is fetched fresh each run. **No
+credential is required.** `UN_CONSOLIDATED_URL` overrides the whole URL; every
+log line and the `.meta.json` sidecar store the URL with the signature stripped.
+
 ### Usage
 
 Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/).
@@ -62,9 +84,13 @@ uv run sanctions-etl ofac
 export EU_FSF_TOKEN=...        # or: uv run sanctions-etl eu --token-file ~/.secrets/eu.token
 uv run sanctions-etl eu
 
+# just the UN list (no credential needed)
+uv run sanctions-etl un
+
 # parse a local file instead of downloading
 uv run sanctions-etl ofac --xml data/raw/sdn_advanced.xml
 uv run sanctions-etl eu --xml data/raw/eu_fsf_full.xml
+uv run sanctions-etl un --xml data/raw/un_consolidated.xml
 
 # reuse the cached XML in data/raw/ instead of downloading a fresh copy
 uv run sanctions-etl ofac --no-download
@@ -72,6 +98,7 @@ uv run sanctions-etl ofac --no-download
 # restrict party types
 uv run sanctions-etl ofac --individuals-entities-only   # drop vessels/aircraft
 uv run sanctions-etl eu --persons-only                  # or --entities-only
+uv run sanctions-etl un --individuals-only              # or --entities-only
 
 uv run sanctions-etl --list          # show registered sources
 uv run sanctions-etl --output-dir OUT --raw-dir RAW   # override paths
@@ -83,7 +110,7 @@ counts, Excel write); `-q`/`-v` adjust the level. Top-level flags
 (`--output-dir`, `--raw-dir`, `-q`, `-v`) go **before** the source name.
 
 Each source writes `<output-dir>/<source>.xlsx` (OFAC → `data/output/ofac_sdn.xlsx`,
-EU → `data/output/eu_fsf.xlsx`).
+EU → `data/output/eu_fsf.xlsx`, UN → `data/output/un_consolidated.xlsx`).
 `data/raw/` keeps the downloaded source files plus a `.meta.json` sidecar
 recording SHA-256, size and download timestamp. Everything under `data/` is
 gitignored.
@@ -112,6 +139,14 @@ matches and swaps the rest: `eu_reference_number` / `un_id` replace `ofac_id`,
 `functions`, `phones` and `remarks` (no `nationalities` /
 `digital_currency_addresses` / `other_features`).
 
+The UN workbook (`un_consolidated.xlsx`, sheet `UN`) likewise reuses the shared
+headers and swaps the rest: `un_reference_number` / `data_id` replace `ofac_id`,
+`un_list_type` (the sanctions committee — Al-Qaida, Taliban, DPRK, …) fills the
+`programmes` slot, and it adds `name_original_script`, `last_updated`,
+`last_reviewed_on` and `interpol_notice`. The free-text `COMMENTS1` field becomes
+`remarks` with the "INTERPOL-UN Security Council Special Notice" boilerplate
+stripped.
+
 ### Tests
 
 ```bash
@@ -120,9 +155,11 @@ uv run pytest
 
 Tests run against trimmed real exports in `tests/fixtures/`:
 `sample_sdn_advanced.xml` (4 OFAC parties, one of each type, full reference
-tables) and `sample_eu_fsf.xml` (5 EU entities covering persons, an enterprise,
+tables), `sample_eu_fsf.xml` (5 EU entities covering persons, an enterprise,
 a UN cross-listing, ISO / year-range / non-Gregorian birth dates and contact
-info).
+info) and `sample_un_consolidated.xml` (4 individuals + 3 entities covering
+multi-part names, non-Latin scripts, exact / year-range / approximate birth
+dates, empty-alias placeholders and a trailing-space reference number).
 
 ## Architecture
 
@@ -138,6 +175,8 @@ src/sanctions_lists_etl/
     ofac/        OFAC SDN
       download.py  references.py  columns.py  parser.py  pipeline.py
     eu/          EU consolidated list (FSF)
+      download.py  columns.py  parser.py  pipeline.py
+    un/          UN Security Council Consolidated List
       download.py  columns.py  parser.py  pipeline.py
 ```
 

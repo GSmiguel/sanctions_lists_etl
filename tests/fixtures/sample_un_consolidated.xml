@@ -1,0 +1,353 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<CONSOLIDATED_LIST xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://www.un.org/sc/resources/sc-sanctions.xsd" dateGenerated="2026-09-09T23:00:04.485Z">
+  <INDIVIDUALS>
+    <INDIVIDUAL>
+      <DATAID>6908399</DATAID>
+      <VERSIONNUM>1</VERSIONNUM>
+      <FIRST_NAME>‘ABD AL-RAHMAN</FIRST_NAME>
+      <SECOND_NAME>KHALAF</SECOND_NAME>
+      <THIRD_NAME>‘UBAYD JUDAY’</THIRD_NAME>
+      <FOURTH_NAME>AL-‘ANIZI</FOURTH_NAME>
+      <UN_LIST_TYPE>Al-Qaida</UN_LIST_TYPE>
+      <REFERENCE_NUMBER>QDi.335</REFERENCE_NUMBER>
+      <LISTED_ON>2014-09-23</LISTED_ON>
+      <COMMENTS1>A sentence of imprisonment for 15 years was issued against him by Kuwait in absentia on 30 July 2015. Provides support to Al-Qaida (QDe.004) and Islamic State in Iraq and the Levant, listed as Al-Qaida in Iraq (AQI) (QDe.115), in Syria and Iraq INTERPOL-UN Security Council Special Notice:https://www.interpol.int/en/How-we-work/Notices/View-UN-Notices-Individuals</COMMENTS1>
+      <HAS_INTERPOL_LINK>YES</HAS_INTERPOL_LINK>
+      <INTERPOL_LINK>https://www.interpol.int/en/How-we-work/Notices/View-UN-Notices-Individuals</INTERPOL_LINK>
+      <NATIONALITY>
+        <VALUE>Kuwait</VALUE>
+      </NATIONALITY>
+      <LIST_TYPE>
+        <VALUE>UN List</VALUE>
+      </LIST_TYPE>
+      <LAST_DAY_UPDATED>
+        <VALUE>2017-02-15</VALUE>
+        <VALUE>2019-05-01</VALUE>
+        <VALUE>2022-11-08</VALUE>
+        <VALUE>2023-02-02</VALUE>
+      </LAST_DAY_UPDATED>
+      <LAST_REVIEWED_ON>
+        <VALUE>2019-02-21</VALUE>
+        <VALUE>2022-11-08</VALUE>
+      </LAST_REVIEWED_ON>
+      <INDIVIDUAL_ALIAS>
+        <QUALITY>Good</QUALITY>
+        <ALIAS_NAME>‘Abd al-Rahman Khalaf al-Anizi</ALIAS_NAME>
+      </INDIVIDUAL_ALIAS>
+      <INDIVIDUAL_ALIAS>
+        <QUALITY>Good</QUALITY>
+        <ALIAS_NAME>‘Abd al-Rahman Khalaf al-‘Anzi</ALIAS_NAME>
+      </INDIVIDUAL_ALIAS>
+      <INDIVIDUAL_ALIAS>
+        <QUALITY>Low</QUALITY>
+        <ALIAS_NAME>Abu Usamah al-Rahman</ALIAS_NAME>
+      </INDIVIDUAL_ALIAS>
+      <INDIVIDUAL_ALIAS>
+        <QUALITY>Low</QUALITY>
+        <ALIAS_NAME>Abu Shaima’ Kuwaiti</ALIAS_NAME>
+      </INDIVIDUAL_ALIAS>
+      <INDIVIDUAL_ALIAS>
+        <QUALITY>Low</QUALITY>
+        <ALIAS_NAME>Abu Usamah al-Kuwaiti</ALIAS_NAME>
+      </INDIVIDUAL_ALIAS>
+      <INDIVIDUAL_ALIAS>
+        <QUALITY>Low</QUALITY>
+        <ALIAS_NAME>Abu Usama</ALIAS_NAME>
+      </INDIVIDUAL_ALIAS>
+      <INDIVIDUAL_ALIAS>
+        <QUALITY>Low</QUALITY>
+        <ALIAS_NAME>Yusuf</ALIAS_NAME>
+      </INDIVIDUAL_ALIAS>
+      <INDIVIDUAL_ADDRESS>
+        <COUNTRY>Syrian Arab Republic</COUNTRY>
+        <NOTE>located in since 2013</NOTE>
+      </INDIVIDUAL_ADDRESS>
+      <INDIVIDUAL_DATE_OF_BIRTH>
+        <TYPE_OF_DATE>EXACT</TYPE_OF_DATE>
+        <DATE>1973-03-06</DATE>
+      </INDIVIDUAL_DATE_OF_BIRTH>
+      <INDIVIDUAL_PLACE_OF_BIRTH>
+        <COUNTRY />
+      </INDIVIDUAL_PLACE_OF_BIRTH>
+      <INDIVIDUAL_DOCUMENT>
+        <TYPE_OF_DOCUMENT>National Identification Number</TYPE_OF_DOCUMENT>
+        <NUMBER>273030601222</NUMBER>
+        <ISSUING_COUNTRY>Kuwait</ISSUING_COUNTRY>
+      </INDIVIDUAL_DOCUMENT>
+      <SORT_KEY />
+      <SORT_KEY_LAST_MOD />
+    </INDIVIDUAL>
+    <INDIVIDUAL>
+      <DATAID>3012888</DATAID>
+      <VERSIONNUM>1</VERSIONNUM>
+      <FIRST_NAME>ABDERRAHMANE</FIRST_NAME>
+      <SECOND_NAME>OULD EL AMAR</SECOND_NAME>
+      <UN_LIST_TYPE>Al-Qaida</UN_LIST_TYPE>
+      <REFERENCE_NUMBER>QDi.314</REFERENCE_NUMBER>
+      <LISTED_ON>2013-02-22</LISTED_ON>
+      <NAME_ORIGINAL_SCRIPT>عبد الرحمن ولد العامر</NAME_ORIGINAL_SCRIPT>
+      <COMMENTS1>Reportedly deceased as of December 2014. Leader of the Mouvement pour l’Unification et le Jihad en Afrique de l’Ouest (MUJAO) (QDe.134). Member of The Organization of Al-Qaida in the Islamic Maghreb (QDe.014). Arrested in April 2005 in Mauritania, escaped from Nouakchott jail on 26 Apr. 2006. Re-arrested in Sep. 2008 in Mali and released on 15 Apr. 2009. Associated with Mokhtar Belmokhtar (QDi.136). Father’s name is Leewemere INTERPOL-UN Security Council Special Notice:https://www.interpol.int/en/How-we-work/Notices/View-UN-Notices-Individuals</COMMENTS1>
+      <HAS_INTERPOL_LINK>YES</HAS_INTERPOL_LINK>
+      <INTERPOL_LINK>https://www.interpol.int/en/How-we-work/Notices/View-UN-Notices-Individuals</INTERPOL_LINK>
+      <NATIONALITY>
+        <VALUE>Mali</VALUE>
+      </NATIONALITY>
+      <LIST_TYPE>
+        <VALUE>UN List</VALUE>
+      </LIST_TYPE>
+      <LAST_DAY_UPDATED>
+        <VALUE>2019-05-01</VALUE>
+        <VALUE>2022-11-08</VALUE>
+        <VALUE>2023-02-02</VALUE>
+      </LAST_DAY_UPDATED>
+      <LAST_REVIEWED_ON>
+        <VALUE>2019-02-21</VALUE>
+        <VALUE>2022-11-08</VALUE>
+      </LAST_REVIEWED_ON>
+      <INDIVIDUAL_ALIAS>
+        <QUALITY>Good</QUALITY>
+        <ALIAS_NAME>Ahmed el Tilemsi</ALIAS_NAME>
+      </INDIVIDUAL_ALIAS>
+      <INDIVIDUAL_ALIAS>
+        <QUALITY>Good</QUALITY>
+        <ALIAS_NAME>Abderrahmane Ould el Amar Ould Sidahmed Loukbeiti</ALIAS_NAME>
+      </INDIVIDUAL_ALIAS>
+      <INDIVIDUAL_ALIAS>
+        <QUALITY>Good</QUALITY>
+        <ALIAS_NAME>Ahmad Ould Amar</ALIAS_NAME>
+      </INDIVIDUAL_ALIAS>
+      <INDIVIDUAL_ADDRESS>
+        <CITY>Gao</CITY>
+        <COUNTRY>Mali</COUNTRY>
+      </INDIVIDUAL_ADDRESS>
+      <INDIVIDUAL_ADDRESS>
+        <CITY>Tabankort</CITY>
+        <COUNTRY>Mali</COUNTRY>
+      </INDIVIDUAL_ADDRESS>
+      <INDIVIDUAL_ADDRESS>
+        <CITY>In Khalil</CITY>
+        <COUNTRY>Mali</COUNTRY>
+      </INDIVIDUAL_ADDRESS>
+      <INDIVIDUAL_ADDRESS>
+        <CITY>Al Moustarat</CITY>
+        <COUNTRY>Mali</COUNTRY>
+      </INDIVIDUAL_ADDRESS>
+      <INDIVIDUAL_DATE_OF_BIRTH>
+        <TYPE_OF_DATE>BETWEEN</TYPE_OF_DATE>
+        <FROM_YEAR>1977</FROM_YEAR>
+        <TO_YEAR>1982</TO_YEAR>
+      </INDIVIDUAL_DATE_OF_BIRTH>
+      <INDIVIDUAL_PLACE_OF_BIRTH>
+        <CITY>Tabankort</CITY>
+        <COUNTRY>Mali</COUNTRY>
+      </INDIVIDUAL_PLACE_OF_BIRTH>
+      <INDIVIDUAL_DOCUMENT />
+      <SORT_KEY />
+      <SORT_KEY_LAST_MOD />
+    </INDIVIDUAL>
+    <INDIVIDUAL>
+      <DATAID>6908473</DATAID>
+      <VERSIONNUM>1</VERSIONNUM>
+      <FIRST_NAME>AQSA</FIRST_NAME>
+      <SECOND_NAME>MAHMOOD</SECOND_NAME>
+      <UN_LIST_TYPE>Al-Qaida</UN_LIST_TYPE>
+      <REFERENCE_NUMBER>QDi.356</REFERENCE_NUMBER>
+      <LISTED_ON>2015-09-28</LISTED_ON>
+      <GENDER>Female</GENDER>
+      <COMMENTS1>Recruiter for Islamic State in Iraq and the Levant, listed as Al-Qaida in Iraq (QDe.115), in the Syrian Arab Republic, and a key figure in the the Al-Khanssaa brigade, a female ISIL brigade established in Al-Raqqa to enforce ISIL’s interpretation of Sharia law. Sex: female. Photo available for inclusion in the INTERPOL-UN Security Council Special Notice INTERPOL-UN Security Council Special Notice:https://www.interpol.int/en/How-we-work/Notices/View-UN-Notices-Individuals</COMMENTS1>
+      <HAS_INTERPOL_LINK>YES</HAS_INTERPOL_LINK>
+      <INTERPOL_LINK>https://www.interpol.int/en/How-we-work/Notices/View-UN-Notices-Individuals</INTERPOL_LINK>
+      <NATIONALITY>
+        <VALUE>United Kingdom of Great Britain and Northern Ireland</VALUE>
+      </NATIONALITY>
+      <LIST_TYPE>
+        <VALUE>UN List</VALUE>
+      </LIST_TYPE>
+      <LAST_DAY_UPDATED>
+        <VALUE>2020-11-24</VALUE>
+      </LAST_DAY_UPDATED>
+      <LAST_REVIEWED_ON>
+        <VALUE>2020-11-24</VALUE>
+        <VALUE>2024-11-07</VALUE>
+      </LAST_REVIEWED_ON>
+      <INDIVIDUAL_ALIAS>
+        <QUALITY>Low</QUALITY>
+        <ALIAS_NAME>Umm Layth</ALIAS_NAME>
+      </INDIVIDUAL_ALIAS>
+      <INDIVIDUAL_ADDRESS>
+        <COUNTRY>Syrian Arab Republic</COUNTRY>
+        <NOTE>as at Nov. 2013</NOTE>
+      </INDIVIDUAL_ADDRESS>
+      <INDIVIDUAL_ADDRESS>
+        <COUNTRY>United Kingdom of Great Britain and Northern Ireland</COUNTRY>
+        <NOTE>previous address</NOTE>
+      </INDIVIDUAL_ADDRESS>
+      <INDIVIDUAL_DATE_OF_BIRTH>
+        <TYPE_OF_DATE>EXACT</TYPE_OF_DATE>
+        <DATE>1994-05-11</DATE>
+      </INDIVIDUAL_DATE_OF_BIRTH>
+      <INDIVIDUAL_PLACE_OF_BIRTH>
+        <CITY>Glasgow</CITY>
+        <STATE_PROVINCE>Scotland</STATE_PROVINCE>
+        <COUNTRY>United Kingdom of Great Britain and Northern Ireland</COUNTRY>
+      </INDIVIDUAL_PLACE_OF_BIRTH>
+      <INDIVIDUAL_DOCUMENT>
+        <TYPE_OF_DOCUMENT>Passport</TYPE_OF_DOCUMENT>
+        <NUMBER>720134834</NUMBER>
+        <ISSUING_COUNTRY>United Kingdom of Great Britain and Northern Ireland</ISSUING_COUNTRY>
+        <DATE_OF_ISSUE>2012-06-27</DATE_OF_ISSUE>
+        <NOTE>expires on 27 Jun. 2022</NOTE>
+      </INDIVIDUAL_DOCUMENT>
+      <SORT_KEY />
+      <SORT_KEY_LAST_MOD />
+    </INDIVIDUAL>
+    <INDIVIDUAL>
+      <DATAID>111037</DATAID>
+      <VERSIONNUM>1</VERSIONNUM>
+      <FIRST_NAME>NIK MOHAMMAD</FIRST_NAME>
+      <SECOND_NAME>DOST MOHAMMAD</SECOND_NAME>
+      <UN_LIST_TYPE>Taliban</UN_LIST_TYPE>
+      <REFERENCE_NUMBER>TAi.019</REFERENCE_NUMBER>
+      <LISTED_ON>2001-01-31</LISTED_ON>
+      <NAME_ORIGINAL_SCRIPT>نیک محمد دوست محمد</NAME_ORIGINAL_SCRIPT>
+      <COMMENTS1>Leads a commission to register enemies of the Taliban as of mid-2013. Believed to be in Afghanistan/Pakistan border area. Belongs to Nurzai tribe INTERPOL-UN Security Council Special Notice:https://www.interpol.int/en/How-we-work/Notices/View-UN-Notices-Individuals</COMMENTS1>
+      <HAS_INTERPOL_LINK>YES</HAS_INTERPOL_LINK>
+      <INTERPOL_LINK>https://www.interpol.int/en/How-we-work/Notices/View-UN-Notices-Individuals</INTERPOL_LINK>
+      <TITLE>
+        <VALUE>Maulavi</VALUE>
+      </TITLE>
+      <DESIGNATION>
+        <VALUE>Deputy Minister of Commerce under the Taliban regime</VALUE>
+      </DESIGNATION>
+      <NATIONALITY>
+        <VALUE>Afghanistan</VALUE>
+      </NATIONALITY>
+      <LIST_TYPE>
+        <VALUE>UN List</VALUE>
+      </LIST_TYPE>
+      <LAST_DAY_UPDATED>
+        <VALUE>2003-09-03</VALUE>
+        <VALUE>2007-09-21</VALUE>
+        <VALUE>2011-11-29</VALUE>
+        <VALUE>2012-08-13</VALUE>
+        <VALUE>2012-10-19</VALUE>
+        <VALUE>2013-12-31</VALUE>
+      </LAST_DAY_UPDATED>
+      <LAST_REVIEWED_ON>
+        <VALUE>2010-07-27</VALUE>
+      </LAST_REVIEWED_ON>
+      <INDIVIDUAL_ALIAS>
+        <QUALITY>Good</QUALITY>
+        <ALIAS_NAME>Nik Mohammad</ALIAS_NAME>
+        <NOTE>previously listed as</NOTE>
+      </INDIVIDUAL_ALIAS>
+      <INDIVIDUAL_ADDRESS>
+        <COUNTRY />
+      </INDIVIDUAL_ADDRESS>
+      <INDIVIDUAL_DATE_OF_BIRTH>
+        <TYPE_OF_DATE>APPROXIMATELY</TYPE_OF_DATE>
+        <YEAR>1957</YEAR>
+      </INDIVIDUAL_DATE_OF_BIRTH>
+      <INDIVIDUAL_PLACE_OF_BIRTH>
+        <CITY>Zangi Abad village, Panjwai District</CITY>
+        <STATE_PROVINCE>Kandahar Province</STATE_PROVINCE>
+        <COUNTRY>Afghanistan</COUNTRY>
+      </INDIVIDUAL_PLACE_OF_BIRTH>
+      <INDIVIDUAL_DOCUMENT />
+      <SORT_KEY />
+      <SORT_KEY_LAST_MOD />
+    </INDIVIDUAL>
+  </INDIVIDUALS>
+  <ENTITIES>
+    <ENTITY>
+      <DATAID>6908409</DATAID>
+      <VERSIONNUM>1</VERSIONNUM>
+      <FIRST_NAME>ABDALLAH AZZAM BRIGADES (AAB)</FIRST_NAME>
+      <UN_LIST_TYPE>Al-Qaida</UN_LIST_TYPE>
+      <REFERENCE_NUMBER>QDe.144</REFERENCE_NUMBER>
+      <LISTED_ON>2014-09-23</LISTED_ON>
+      <COMMENTS1>An armed group that has carried out joint attacks with Al-Nusrah Front for the People of the Levant (formerly listed) INTERPOL-UN Security Council Special Notice:https://www.interpol.int/en/How-we-work/Notices/View-UN-Notices-Entities</COMMENTS1>
+      <HAS_INTERPOL_LINK>YES</HAS_INTERPOL_LINK>
+      <INTERPOL_LINK>https://www.interpol.int/en/How-we-work/Notices/View-UN-Notices-Entities</INTERPOL_LINK>
+      <LIST_TYPE>
+        <VALUE>UN List</VALUE>
+      </LIST_TYPE>
+      <LAST_DAY_UPDATED>
+        <VALUE>2019-12-06</VALUE>
+        <VALUE>2023-10-30</VALUE>
+      </LAST_DAY_UPDATED>
+      <LAST_REVIEWED_ON>
+        <VALUE>2019-12-04</VALUE>
+        <VALUE>2023-10-30</VALUE>
+      </LAST_REVIEWED_ON>
+      <ENTITY_ALIAS>
+        <QUALITY>a.k.a.</QUALITY>
+        <ALIAS_NAME>Abdullah Azzam Brigades</ALIAS_NAME>
+      </ENTITY_ALIAS>
+      <ENTITY_ALIAS>
+        <QUALITY>a.k.a.</QUALITY>
+        <ALIAS_NAME>Ziyad al-Jarrah Battalions of the Abdallah Azzam Brigades</ALIAS_NAME>
+      </ENTITY_ALIAS>
+      <ENTITY_ALIAS>
+        <QUALITY>a.k.a.</QUALITY>
+        <ALIAS_NAME>Yusuf al-'Uyayri Battalions of the Abdallah Azzam Brigades</ALIAS_NAME>
+      </ENTITY_ALIAS>
+      <ENTITY_ADDRESS>
+        <NOTE>Operates in Lebanon, Syria and the Arabian Peninsula</NOTE>
+      </ENTITY_ADDRESS>
+      <SORT_KEY />
+      <SORT_KEY_LAST_MOD />
+    </ENTITY>
+    <ENTITY>
+      <DATAID>110403</DATAID>
+      <VERSIONNUM>1</VERSIONNUM>
+      <FIRST_NAME>7TH OF TIR</FIRST_NAME>
+      <UN_LIST_TYPE>Iran</UN_LIST_TYPE>
+      <REFERENCE_NUMBER>IRe.001</REFERENCE_NUMBER>
+      <LISTED_ON>2006-12-23</LISTED_ON>
+      <COMMENTS1>Subordinate of Defence Industries Organisation (DIO), widely recognized
+as being directly involved in the nuclear programme. [Old Reference #E.37.A.7]</COMMENTS1>
+      <HAS_INTERPOL_LINK>NO</HAS_INTERPOL_LINK>
+      <INTERPOL_LINK />
+      <LIST_TYPE>
+        <VALUE>UN List</VALUE>
+      </LIST_TYPE>
+      <LAST_DAY_UPDATED>
+        <VALUE>2014-12-17</VALUE>
+      </LAST_DAY_UPDATED>
+      <ENTITY_ALIAS>
+        <QUALITY />
+        <ALIAS_NAME />
+      </ENTITY_ALIAS>
+      <ENTITY_ADDRESS>
+        <COUNTRY />
+      </ENTITY_ADDRESS>
+      <SORT_KEY />
+      <SORT_KEY_LAST_MOD />
+    </ENTITY>
+    <ENTITY>
+      <DATAID>6908563</DATAID>
+      <VERSIONNUM>1</VERSIONNUM>
+      <FIRST_NAME>KOREA UNITED DEVELOPMENT BANK</FIRST_NAME>
+      <UN_LIST_TYPE>DPRK</UN_LIST_TYPE>
+      <REFERENCE_NUMBER>KPe.033 </REFERENCE_NUMBER>
+      <LISTED_ON>2016-11-30</LISTED_ON>
+      <COMMENTS1>Korea United Development Bank operates in the financial services industry of the DPRK economy. SWIFT/BIC: KUDBKPPY</COMMENTS1>
+      <HAS_INTERPOL_LINK>NO</HAS_INTERPOL_LINK>
+      <INTERPOL_LINK />
+      <LIST_TYPE>
+        <VALUE>UN List</VALUE>
+      </LIST_TYPE>
+      <ENTITY_ALIAS>
+        <QUALITY />
+        <ALIAS_NAME />
+      </ENTITY_ALIAS>
+      <ENTITY_ADDRESS>
+        <CITY>Pyongyang</CITY>
+        <COUNTRY>Democratic People's Republic of Korea</COUNTRY>
+      </ENTITY_ADDRESS>
+      <SORT_KEY />
+      <SORT_KEY_LAST_MOD />
+    </ENTITY>
+  </ENTITIES>
+</CONSOLIDATED_LIST>
