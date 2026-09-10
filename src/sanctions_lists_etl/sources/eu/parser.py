@@ -44,7 +44,6 @@ _CONTACT_BUCKET = {
 @dataclass
 class SanctionEntity:
     eu_reference_number: str
-    logical_id: str = ""
     un_id: str = ""
     party_type: str = "Unknown"
     subject_code: str = ""
@@ -123,7 +122,6 @@ def rows_from_records(records: Iterable[SanctionEntity]) -> list[dict[str, str]]
 def _build_entity(entity: Element) -> SanctionEntity:
     record = SanctionEntity(
         eu_reference_number=entity.get("euReferenceNumber", ""),
-        logical_id=entity.get("logicalId", ""),
         un_id=entity.get("unitedNationId", ""),
     )
 

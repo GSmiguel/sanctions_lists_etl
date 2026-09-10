@@ -6,6 +6,7 @@ import argparse
 import datetime as dt
 import json
 import logging
+import re
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -170,6 +171,7 @@ def _cached_meta(source: Path, key: str) -> str | None:
         return None
 
 
-def _sort_key(record: SanctionEntity) -> tuple[int, str]:
-    lid = record.logical_id
-    return (int(lid), "") if lid.isdigit() else (2**63, record.eu_reference_number)
+def _sort_key(record: SanctionEntity) -> tuple[tuple[int, ...], str]:
+    """Order rows by euReferenceNumber, numerically (``EU.27.28`` before ``EU.100.1``)."""
+    ref = record.eu_reference_number
+    return tuple(int(n) for n in re.findall(r"\d+", ref)), ref
