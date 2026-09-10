@@ -8,10 +8,13 @@ and are joined back onto the already-built records by profile id.
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Iterable
 from xml.etree.ElementTree import Element, iterparse
+
+log = logging.getLogger(__name__)
 
 from ...common.xmlutils import (
     child_text,
@@ -103,12 +106,21 @@ def parse_sdn_advanced(
     location_countries: dict[str, str] = {}
     docs_by_identity: dict[str, list[str]] = {}
     records: dict[str, PartyRecord] = {}
+    seen_parties = 0
+    seen_entries = 0
 
+    log.info("parsing %s", source)
     for _, elem in iterparse(str(source), events=("end",)):
         tag = localname(elem.tag)
 
         if tag == "ReferenceValueSets":
             ref = parse_reference_data(elem)
+            log.info(
+                "  reference tables loaded (%d countries, %d feature types, %d lists)",
+                len(ref.country),
+                len(ref.feature_type),
+                len(ref.list_name),
+            )
             elem.clear()
         elif tag == "Location":
             assert ref is not None
@@ -132,11 +144,23 @@ def parse_sdn_advanced(
             if record is not None and (keep is None or record.party_type in keep):
                 records[elem.get("FixedRef")] = record
             elem.clear()
+            seen_parties += 1
+            if seen_parties % 2000 == 0:
+                log.info("  %d parties parsed (%d kept)", seen_parties, len(records))
         elif tag == "SanctionsEntry":
             assert ref is not None
             _attach_sanctions_entry(elem, ref, records)
             elem.clear()
+            seen_entries += 1
+            if seen_entries % 5000 == 0:
+                log.info("  %d sanctions entries joined", seen_entries)
 
+    log.info(
+        "parsed %d parties (%d kept), %d sanctions entries",
+        seen_parties,
+        len(records),
+        seen_entries,
+    )
     return list(records.values())
 
 

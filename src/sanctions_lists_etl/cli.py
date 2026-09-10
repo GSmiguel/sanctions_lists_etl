@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import argparse
+import logging
 import sys
 from pathlib import Path
 
@@ -36,6 +37,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--list", action="store_true", help="list registered sources and exit"
     )
+    parser.add_argument(
+        "-q", "--quiet", action="store_true", help="only log warnings and errors"
+    )
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", help="log debug-level detail"
+    )
 
     subparsers = parser.add_subparsers(dest="source", metavar="SOURCE")
     subparsers.add_parser("all", help="run every registered source (default)")
@@ -49,6 +56,13 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+
+    level = logging.WARNING if args.quiet else logging.DEBUG if args.verbose else logging.INFO
+    logging.basicConfig(
+        level=level,
+        format="%(asctime)s  %(message)s",
+        datefmt="%H:%M:%S",
+    )
 
     if args.list:
         for name, source in sorted(available_sources().items()):
