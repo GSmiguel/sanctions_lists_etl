@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Designations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <DateGenerated>10/09/2026</DateGenerated>
+  <Designation>
+    <LastUpdated>04/08/2026</LastUpdated>
+    <DateDesignated>29/06/2012</DateDesignated>
+    <UniqueID>AFG0001</UniqueID>
+    <OFSIGroupID>12703</OFSIGroupID>
+    <UNReferenceNumber>TAe.010</UNReferenceNumber>
+    <Names>
+      <Name>
+        <Name6>HAJI KHAIRULLAH MONEY EXCHANGE</Name6>
+        <NameType>Primary Name</NameType>
+      </Name>
+      <Name>
+        <Name6>Haji Alim Hawala</Name6>
+        <NameType>Alias</NameType>
+      </Name>
+    </Names>
+    <NonLatinNames>
+      <NonLatinName>
+        <NameNonLatinScript>حاجی خيرالله صرافی</NameNonLatinScript>
+      </NonLatinName>
+    </NonLatinNames>
+    <RegimeName>The Afghanistan (Sanctions) (EU Exit) Regulations 2020</RegimeName>
+    <IndividualEntityShip>Entity</IndividualEntityShip>
+    <DesignationSource>UN</DesignationSource>
+    <SanctionsImposed>Asset freeze</SanctionsImposed>
+    <SanctionsImposedIndicators>
+      <AssetFreeze>true</AssetFreeze>
+      <TravelBan>false</TravelBan>
+    </SanctionsImposedIndicators>
+    <OtherInformation>Afghan Money Service Provider License Number: 044. Associated with Abdul Sattar (TAi.162). INTERPOL-UN Security Council Special Notice web link:  https://www.interpol.int/en/How-we-work/Notices/View-UN-Notices-Individuals</OtherInformation>
+    <UKStatementofReasons>
+</UKStatementofReasons>
+    <Addresses>
+      <Address>
+        <AddressLine1>Ansari Market, 2nd Floor</AddressLine1>
+        <AddressLine6>Nimroz Province</AddressLine6>
+        <AddressCountry>Afghanistan</AddressCountry>
+      </Address>
+      <Address>
+        <AddressLine1>Branch Office 14</AddressLine1>
+        <AddressLine6>Dubai</AddressLine6>
+        <AddressCountry>United Arab Emirates</AddressCountry>
+      </Address>
+    </Addresses>
+    <PhoneNumbers>
+      <PhoneNumber>0202-104748</PhoneNumber>
+    </PhoneNumbers>
+    <EmailAddresses>
+      <EmailAddress>helmand_exchange_msp@yahoo.com</EmailAddress>
+    </EmailAddresses>
+  </Designation>
+  <Designation>
+    <LastUpdated>14/04/2026</LastUpdated>
+    <DateDesignated>25/01/2001</DateDesignated>
+    <UniqueID>AFG0006</UniqueID>
+    <OFSIGroupID>7172</OFSIGroupID>
+    <UNReferenceNumber>TAi.002</UNReferenceNumber>
+    <Names>
+      <Name>
+        <Name1>MOHAMMAD</Name1>
+        <Name2>HASSAN</Name2>
+        <Name6>AKHUND</Name6>
+        <NameType>Primary Name</NameType>
+      </Name>
+      <Name>
+        <Name1>Mohammad</Name1>
+        <Name6>Akhwand</Name6>
+        <NameType>Primary Name Variation</NameType>
+      </Name>
+    </Names>
+    <NonLatinNames>
+      <NonLatinName>
+        <NameNonLatinScript>محمد حسن آخوند</NameNonLatinScript>
+      </NonLatinName>
+    </NonLatinNames>
+    <Titles>
+      <Title>Mullah</Title>
+      <Title>Haji</Title>
+    </Titles>
+    <RegimeName>The Afghanistan (Sanctions) (EU Exit) Regulations 2020</RegimeName>
+    <IndividualEntityShip>Individual</IndividualEntityShip>
+    <DesignationSource>UK|UN</DesignationSource>
+    <SanctionsImposed>Asset freeze|Travel Ban</SanctionsImposed>
+    <SanctionsImposedIndicators>
+      <AssetFreeze>true</AssetFreeze>
+      <TravelBan>true</TravelBan>
+    </SanctionsImposedIndicators>
+    <OtherInformation>A close associate of Mullah Mohammed Omar (TAi.004). Belongs to Baabar tribe. Review pursuant to Security Council resolution 1822 (2008) was concluded on 21 Jul. 2010. INTERPOL-UN Security Council Special Notice web link: https://www.interpol.int/en/How-we-work/ Notices/View-UN-Notices-Individuals click here</OtherInformation>
+    <UKStatementofReasons>
+</UKStatementofReasons>
+    <Addresses>
+      <Address>
+        <AddressLine6>Kabul</AddressLine6>
+        <AddressCountry>Afghanistan</AddressCountry>
+      </Address>
+    </Addresses>
+    <IndividualDetails>
+      <Individual>
+        <DOBs>
+          <DOB>12/05/1958</DOB>
+          <DOB>dd/mm/1945</DOB>
+          <DOB>1946</DOB>
+        </DOBs>
+        <Nationalities>
+          <Nationality>Afghanistan</Nationality>
+        </Nationalities>
+        <Genders>
+          <Gender>Male</Gender>
+        </Genders>
+        <Positions>
+          <Position>Deputy Minister of Agriculture under the Taliban regime</Position>
+        </Positions>
+        <PassportDetails>
+          <Passport>
+            <PassportNumber>P04581926</PassportNumber>
+            <PassportAdditionalInformation>Afghanistan passport number P04581926, issued in Kandahar (expires 7 August 2034)</PassportAdditionalInformation>
+          </Passport>
+          <Passport>
+            <PassportNumber>P04581926</PassportNumber>
+            <PassportAdditionalInformation>Afghanistan passport number P04581926, issued in Kandahar (expires 7 August 2034)</PassportAdditionalInformation>
+          </Passport>
+        </PassportDetails>
+        <NationalIdentifierDetails>
+          <NationalIdentifier>
+            <NationalIdentifierNumber>2132370</NationalIdentifierNumber>
+            <NationalIdentifierAdditionalInformation>Afghan national identification card (tazkira) number</NationalIdentifierAdditionalInformation>
+          </NationalIdentifier>
+        </NationalIdentifierDetails>
+        <BirthDetails>
+          <Location>
+            <TownOfBirth>Pashmul village, Panjwai District</TownOfBirth>
+            <CountryOfBirth>Afghanistan</CountryOfBirth>
+          </Location>
+        </BirthDetails>
+      </Individual>
+    </IndividualDetails>
+  </Designation>
+  <Designation>
+    <LastUpdated>09/04/2025</LastUpdated>
+    <DateDesignated>21/06/2021</DateDesignated>
+    <UniqueID>BEL0107</UniqueID>
+    <OFSIGroupID>14124</OFSIGroupID>
+    <Names>
+      <Name>
+        <Name6>BNK (UK) Ltd</Name6>
+        <NameType>Primary Name</NameType>
+      </Name>
+      <Name>
+        <Name6>BNK UK Limited</Name6>
+        <NameType>Alias</NameType>
+        <AliasStrength>Good quality a.k.a</AliasStrength>
+      </Name>
+      <Name>
+        <Name6>BNK</Name6>
+        <NameType>Alias</NameType>
+        <AliasStrength>Low quality a.k.a</AliasStrength>
+      </Name>
+    </Names>
+    <NonLatinNames />
+    <RegimeName>The Republic of Belarus (Sanctions) (EU Exit) Regulations 2019</RegimeName>
+    <IndividualEntityShip>Entity</IndividualEntityShip>
+    <DesignationSource>UK</DesignationSource>
+    <SanctionsImposed>Asset freeze|Director Disqualification Sanction</SanctionsImposed>
+    <SanctionsImposedIndicators>
+      <AssetFreeze>true</AssetFreeze>
+      <DirectorDisqualificationSanction>true</DirectorDisqualificationSanction>
+    </SanctionsImposedIndicators>
+    <OtherInformation>The Director Disqualification Sanction was imposed on 09/04/2025.</OtherInformation>
+    <UKStatementofReasons>BNK (UK) Ltd is controlled by CJSC Belarusian Oil Company, the state exporter of oil products.</UKStatementofReasons>
+    <Addresses>
+      <Address>
+        <AddressLine1>Salatin House, 19 Cedar Road</AddressLine1>
+        <AddressLine5>Sutton, Surrey</AddressLine5>
+        <AddressPostalCode>SM2 5DA</AddressPostalCode>
+        <AddressCountry>United Kingdom</AddressCountry>
+      </Address>
+    </Addresses>
+    <Websites>
+      <Website>http://www.belnaft.co.uk/</Website>
+    </Websites>
+    <EntityDetails>
+      <Entity>
+        <TypeOfEntities>
+          <TypeOfEntity>Oil trading company</TypeOfEntity>
+        </TypeOfEntities>
+        <BusinessRegistrationNumbers>
+          <BusinessRegistrationNumber>UK Company no. 06527449</BusinessRegistrationNumber>
+        </BusinessRegistrationNumbers>
+        <ParentCompanies>
+          <ParentCompany>CJSC Belarusian Oil Company</ParentCompany>
+          <ParentCompany>Belneftekhim</ParentCompany>
+        </ParentCompanies>
+        <Subsidiaries>
+          <Subsidiary>BNK (Deutschland) GmbH</Subsidiary>
+        </Subsidiaries>
+      </Entity>
+    </EntityDetails>
+  </Designation>
+  <Designation>
+    <LastUpdated>18/12/2021</LastUpdated>
+    <DateDesignated>03/10/2017</DateDesignated>
+    <UniqueID>DPR0075</UniqueID>
+    <UNReferenceNumber>KPv.001</UNReferenceNumber>
+    <Names>
+      <Name>
+        <Name6>Petrel 8</Name6>
+        <NameType>Primary Name</NameType>
+      </Name>
+      <Name>
+        <Name6>Tian Tai 36</Name6>
+        <NameType>Alias</NameType>
+      </Name>
+    </Names>
+    <NonLatinNames />
+    <RegimeName>The Democratic People's Republic of Korea (Sanctions) (EU Exit) Regulations 2019</RegimeName>
+    <IndividualEntityShip>Ship</IndividualEntityShip>
+    <DesignationSource>UN</DesignationSource>
+    <SanctionsImposed>Prohibition of port entry</SanctionsImposed>
+    <SanctionsImposedIndicators>
+      <ProhibitionOfPortEntry>true</ProhibitionOfPortEntry>
+    </SanctionsImposedIndicators>
+    <OtherInformation>Pursuant to paragraph 6 of Security Council Resolution 2371 (2017).</OtherInformation>
+    <UKStatementofReasons>
+</UKStatementofReasons>
+    <ShipDetails>
+      <Ship>
+        <IMONumbers>
+          <IMONumber>IMO9562233</IMONumber>
+        </IMONumbers>
+        <CurrentOwnerOperators>
+          <CurrentOwnerOperator>Global United Shipping India</CurrentOwnerOperator>
+        </CurrentOwnerOperators>
+        <CurrentBelievedFlagOfShips>
+          <CurrentBelievedFlagOfShip>Comoros</CurrentBelievedFlagOfShip>
+        </CurrentBelievedFlagOfShips>
+        <PreviousFlags>
+          <PreviousFlag>India</PreviousFlag>
+        </PreviousFlags>
+        <TypeOfShipDetails>
+          <TypeOfShip>Bulk Carrier</TypeOfShip>
+        </TypeOfShipDetails>
+        <TonnageOfShipDetails>
+          <TonnageOfShip>7078</TonnageOfShip>
+        </TonnageOfShipDetails>
+        <LengthOfShipDetails>
+          <LengthOfShip>134.5</LengthOfShip>
+        </LengthOfShipDetails>
+      </Ship>
+    </ShipDetails>
+  </Designation>
+  <Designation>
+    <LastUpdated>15/11/2021</LastUpdated>
+    <DateDesignated>13/05/2010</DateDesignated>
+    <UniqueID>AQD0195</UniqueID>
+    <OFSIGroupID>6899</OFSIGroupID>
+    <UNReferenceNumber>QDi.196</UNReferenceNumber>
+    <Names>
+      <Name>
+        <Name1>Fadhil</Name1>
+        <Name2>Harun</Name2>
+        <NameType>Primary Name</NameType>
+      </Name>
+    </Names>
+    <NonLatinNames />
+    <RegimeName>Isil (Da'esh) and Al-Qaeda (United Nations Sanctions) (EU Exit) Regulations 2019</RegimeName>
+    <IndividualEntityShip>Individual</IndividualEntityShip>
+    <DesignationSource>UN</DesignationSource>
+    <SanctionsImposed>Asset freeze|Travel Ban</SanctionsImposed>
+    <SanctionsImposedIndicators>
+      <AssetFreeze>true</AssetFreeze>
+      <TravelBan>true</TravelBan>
+    </SanctionsImposedIndicators>
+    <OtherInformation>In detention in the Philippines as of May 2011. Photo available for inclusion in the INTERPOL-UN Security Council Special Notice. Review pursuant to Security Council resolution 1822 (2008) was concluded on 13 May 2010. web link: https://www.interpol.int/en/notice/search/un/1523805</OtherInformation>
+    <UKStatementofReasons>
+</UKStatementofReasons>
+    <IndividualDetails>
+      <Individual>
+        <DOBs>
+          <DOB>dd/mm/1972</DOB>
+        </DOBs>
+        <Nationalities>
+          <Nationality>Comoros</Nationality>
+        </Nationalities>
+        <Genders>
+          <Gender>Male</Gender>
+        </Genders>
+        <BirthDetails>
+          <Location>
+            <TownOfBirth>Moroni</TownOfBirth>
+            <CountryOfBirth>Comoros</CountryOfBirth>
+          </Location>
+        </BirthDetails>
+      </Individual>
+    </IndividualDetails>
+  </Designation>
+</Designations>

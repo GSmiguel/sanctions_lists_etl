@@ -1,15 +1,21 @@
 # sanctions_lists_etl
 
 ETL pipeline for ingesting, normalizing, and consolidating public sanctions lists
-(e.g. OFAC SDN, EU consolidated list, UN Security Council) plus the INTERPOL–UN
-Special Notices used for screening.
+(e.g. OFAC SDN + Non-SDN, EU consolidated list, UN Security Council, UK Sanctions
+List) plus the INTERPOL–UN Special Notices used for screening.
 
-## Stage 1 — OFAC SDN
+## Stage 1 — OFAC SDN + Consolidated (Non-SDN)
 
-Downloads the OFAC **SDN advanced XML** export
+Downloads OFAC's two **advanced XML** exports — the **SDN** list
 (`https://sanctionslistservice.ofac.treas.gov/api/download/sdn_advanced.xml`) and
-flattens every sanctioned party — individuals, entities, vessels and aircraft —
-into a single-sheet Excel workbook, one row per party.
+the **Consolidated / Non-SDN** list
+(`https://sanctionslistservice.ofac.treas.gov/api/download/cons_advanced.xml`:
+SSI, Non-SDN CMIC, Non-SDN Menu-Based Sanctions, Non-SDN Palestinian Legislative
+Council and CAPTA) — and flattens every sanctioned party (individuals, entities,
+vessels and aircraft) into a single-sheet Excel workbook, one row per party. The
+two lists share a schema, parser and column layout; each is written to its own
+workbook (`ofac_sdn.xlsx` / `ofac_consolidated.xlsx`). `--list sdn` /
+`--list consolidated` builds just one (default: both).
 
 The advanced format is a relational model (names, addresses, ID documents and
 features live in separate structures keyed by id), so the parser first reads the
@@ -101,6 +107,32 @@ error. `INTERPOL_API_BASE` overrides the service root. The service also rejects
 non-browser User-Agents, so this source sends a browser UA. The `.meta.json`
 sidecar records the SHA-256, the notice counts and the coverage note.
 
+## Stage 5 — UK Sanctions List
+
+Downloads the FCDO **UK Sanctions List** full XML from
+`https://sanctionslist.fcdo.gov.uk/docs/UK-Sanctions-List.xml` and flattens every
+`<Designation>` — individuals, entities and ships — into a single-sheet workbook
+with the same column layout as the other exports.
+
+This is the UK's autonomous regime (not a mirror of the EU or UN lists). It
+**replaced the OFSI "Consolidated List of Asset Freeze Targets"** (`ConList.xml`),
+which was frozen on 28 January 2026; the asset-freeze data OFSI used to publish
+now lives here (`OFSIGroupID` is carried through as `ofsi_group_id`).
+
+The format is flat like the UN one (no reference tables): every designation
+carries its names, aliases, addresses and type-specific details (individual /
+entity / ship) inline as child-element text. It is a single streaming pass, and
+the party type comes from `<IndividualEntityShip>` (`Ship` is mapped to `Vessel`
+to match the OFAC wording). There is one row per `UniqueID` (e.g. `RUS0123`,
+`AFG0006`) — the FCDO's own designation reference, which is the sort key and the
+`uk_unique_id` column; `UNReferenceNumber` cross-references the UN list where the
+designation originates there. The free-text `OtherInformation` field becomes
+`remarks` with the INTERPOL–UN Special Notice pointer stripped.
+
+The file is served straight from CloudFront/S3 (~21 MB, no redirect, no signed
+query string), so **no credential is required**. `UK_SANCTIONS_URL` overrides the
+whole URL.
+
 ### Usage
 
 Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/).
@@ -122,15 +154,23 @@ uv run sanctions-etl eu
 # just the UN list (no credential needed)
 uv run sanctions-etl un
 
+# just the UK Sanctions List (no credential needed)
+uv run sanctions-etl uk
+
+# just one OFAC list (default builds both SDN and Non-SDN Consolidated)
+uv run sanctions-etl ofac --list sdn
+uv run sanctions-etl ofac --list consolidated
+
 # just INTERPOL UN Special Notices (no credential; ~5 min)
 uv run sanctions-etl interpol
 uv run sanctions-etl interpol --limit 20   # smoke test: keep only 20 notices
 uv run sanctions-etl interpol --json data/raw/interpol.json   # parse a local snapshot
 
 # parse a local file instead of downloading
-uv run sanctions-etl ofac --xml data/raw/sdn_advanced.xml
+uv run sanctions-etl ofac --xml data/raw/sdn_advanced.xml   # parsed as the SDN list
 uv run sanctions-etl eu --xml data/raw/eu_fsf_full.xml
 uv run sanctions-etl un --xml data/raw/un_consolidated.xml
+uv run sanctions-etl uk --xml data/raw/uk_sanctions_list.xml
 
 # reuse the cached XML in data/raw/ instead of downloading a fresh copy
 uv run sanctions-etl ofac --no-download
@@ -139,6 +179,7 @@ uv run sanctions-etl ofac --no-download
 uv run sanctions-etl ofac --individuals-entities-only   # drop vessels/aircraft
 uv run sanctions-etl eu --persons-only                  # or --entities-only
 uv run sanctions-etl un --individuals-only              # or --entities-only
+uv run sanctions-etl uk --individuals-only              # or --entities-only / --no-ships
 
 uv run sanctions-etl --list          # show registered sources
 uv run sanctions-etl --output-dir OUT --raw-dir RAW   # override paths
@@ -149,9 +190,9 @@ Progress is logged to stderr as it runs (download progress, parsed-party
 counts, Excel write); `-q`/`-v` adjust the level. Top-level flags
 (`--output-dir`, `--raw-dir`, `-q`, `-v`) go **before** the source name.
 
-Each source writes `<output-dir>/<source>.xlsx` (OFAC → `data/output/ofac_sdn.xlsx`,
-EU → `data/output/eu_fsf.xlsx`, UN → `data/output/un_consolidated.xlsx`,
-INTERPOL → `data/output/interpol.xlsx`).
+Each source writes to `<output-dir>/` (OFAC → `ofac_sdn.xlsx` +
+`ofac_consolidated.xlsx`, EU → `eu_fsf.xlsx`, UN → `un_consolidated.xlsx`,
+UK → `uk_sanctions.xlsx`, INTERPOL → `interpol.xlsx`).
 `data/raw/` keeps the downloaded source files plus a `.meta.json` sidecar
 recording SHA-256, size and download timestamp. Everything under `data/` is
 gitignored.
@@ -194,6 +235,13 @@ line up with the other exports; `interpol_notice_id` replaces `ofac_id`;
 `un_reference` ties the row back to the UN Consolidated List (stage 3); and
 `notice_type`, `notice_url` and `image_url` are INTERPOL-specific.
 
+The UK workbook (`uk_sanctions.xlsx`, sheet `UK`) reuses the shared headers and
+swaps the rest: `uk_unique_id` / `ofsi_group_id` / `un_reference_number` replace
+`ofac_id`, `programmes` holds the UK sanctions regime (`RegimeName`), and it adds
+`designation_source` (UK / UN / UK|UN), `sanctions_imposed`,
+`name_original_script`, `last_updated`, `entity_type` / `parent_companies` /
+`subsidiaries`, `vessel_info` and `statement_of_reasons`.
+
 ### Tests
 
 ```bash
@@ -209,9 +257,13 @@ multi-part names, non-Latin scripts, exact / year-range / approximate birth
 dates, empty-alias placeholders and a trailing-space reference number).
 `sample_interpol.json` (4 UN Special Notice individuals + 2 entities covering
 exact / year-only / year-month / missing birth dates, a name with no forename,
-and a notice with no photo). The INTERPOL crawler is tested against an in-memory
-fake of the web service (`test_interpol_download.py`) that reproduces the
-~160-result cap so the `name` sweep is exercised offline.
+and a notice with no photo) and `sample_uk_sanctions.xml` (2 individuals + 2
+entities + 1 ship covering multi-part and non-Latin names, `Primary Name
+Variation` / weak-alias annotations, the `dd/mm/yyyy` placeholder birth-date
+formats, duplicate passport rows, entity parent/subsidiary details, ship IMO /
+flag / dimensions and the INTERPOL notice-pointer scrub). The INTERPOL crawler is
+tested against an in-memory fake of the web service (`test_interpol_download.py`)
+that reproduces the ~160-result cap so the `name` sweep is exercised offline.
 
 ## Architecture
 
@@ -224,11 +276,13 @@ src/sanctions_lists_etl/
     xmlutils.py  namespace-agnostic XML helpers (shared by all XML sources)
     excel.py     generic single-sheet workbook writer
   sources/
-    ofac/        OFAC SDN
+    ofac/        OFAC SDN + Consolidated (Non-SDN)
       download.py  references.py  columns.py  parser.py  pipeline.py
     eu/          EU consolidated list (FSF)
       download.py  columns.py  parser.py  pipeline.py
     un/          UN Security Council Consolidated List
+      download.py  columns.py  parser.py  pipeline.py
+    uk/          UK Sanctions List (FCDO)
       download.py  columns.py  parser.py  pipeline.py
     interpol/    INTERPOL UN Special Notices (JSON web service)
       download.py  columns.py  parser.py  pipeline.py
