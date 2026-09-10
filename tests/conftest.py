@@ -13,3 +13,8 @@ def sample_xml() -> Path:
 @pytest.fixture(scope="session")
 def sample_eu_xml() -> Path:
     return FIXTURES / "sample_eu_fsf.xml"
+
+
+@pytest.fixture(scope="session")
+def sample_un_xml() -> Path:
+    return FIXTURES / "sample_un_consolidated.xml"
