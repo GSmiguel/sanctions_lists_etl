@@ -69,14 +69,18 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{name:<8} {source.description}")
         return 0
 
-    if args.source in (None, "all"):
-        results = run_all(output_dir=args.output_dir, raw_dir=args.raw_dir)
-    else:
-        source = get_source(args.source)
-        options = source.options_from_args(args)
-        results = [
-            source.run(output_dir=args.output_dir, raw_dir=args.raw_dir, **options)
-        ]
+    try:
+        if args.source in (None, "all"):
+            results = run_all(output_dir=args.output_dir, raw_dir=args.raw_dir)
+        else:
+            source = get_source(args.source)
+            options = source.options_from_args(args)
+            results = [
+                source.run(output_dir=args.output_dir, raw_dir=args.raw_dir, **options)
+            ]
+    except RuntimeError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
 
     for result in results:
         _print_result(result)
