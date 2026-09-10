@@ -5,9 +5,12 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import logging
 from collections import Counter
 from pathlib import Path
 from typing import Any
+
+log = logging.getLogger(__name__)
 
 from ...base import Source, SourceResult
 from ...common.excel import write_workbook
@@ -36,14 +39,18 @@ def run(
     downloaded into ``raw_dir`` (unless ``download`` is ``False`` and a cached
     file already exists).
     """
+    log.info("[ofac] starting")
     downloaded: DownloadResult | None = None
     if xml_path is not None:
         source = Path(xml_path)
+        log.info("[ofac] using local XML %s", source)
     else:
         source = Path(raw_dir) / RAW_FILENAME
         if download or not source.exists():
             downloaded = download_sdn_advanced(raw_dir)
             source = downloaded.path
+        else:
+            log.info("[ofac] reusing cached XML %s", source)
 
     sha256 = downloaded.sha256 if downloaded else _cached_sha256(source)
 
@@ -61,14 +68,17 @@ def run(
         **{f"count_{ptype.lower()}": str(count) for ptype, count in sorted(counts.items())},
     }
 
+    dest = Path(output_dir) / OUTPUT_FILENAME
+    log.info("[ofac] writing %d rows to %s", len(records), dest)
     xlsx = write_workbook(
         HEADERS,
         rows_from_records(records),
-        Path(output_dir) / OUTPUT_FILENAME,
+        dest,
         sheet_name="SDN",
         column_widths=COLUMN_WIDTHS,
         metadata=metadata,
     )
+    log.info("[ofac] done -> %s", xlsx)
 
     return SourceResult(
         source=NAME,

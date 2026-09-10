@@ -36,7 +36,12 @@ uv run sanctions-etl ofac --individuals-entities-only
 
 uv run sanctions-etl --list          # show registered sources
 uv run sanctions-etl --output-dir OUT --raw-dir RAW   # override paths
+uv run sanctions-etl -q ofac         # -q quiet (warnings only), -v debug
 ```
+
+Progress is logged to stderr as it runs (download progress, parsed-party
+counts, Excel write); `-q`/`-v` adjust the level. Top-level flags
+(`--output-dir`, `--raw-dir`, `-q`, `-v`) go **before** the source name.
 
 Each source writes `<output-dir>/<source>.xlsx` (OFAC → `data/output/ofac_sdn.xlsx`).
 `data/raw/` keeps the downloaded source files plus a `.meta.json` sidecar

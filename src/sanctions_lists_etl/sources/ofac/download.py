@@ -10,10 +10,14 @@ from __future__ import annotations
 import datetime as dt
 import hashlib
 import json
+import logging
 import shutil
+import time
 import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
+
+log = logging.getLogger(__name__)
 
 SDN_ADVANCED_URL = (
     "https://sanctionslistservice.ofac.treas.gov/api/download/sdn_advanced.xml"
@@ -21,6 +25,7 @@ SDN_ADVANCED_URL = (
 
 _USER_AGENT = "sanctions-lists-etl/0.1 (+https://github.com/GSmiguel/sanctions_lists_etl)"
 _CHUNK = 1 << 20
+_PROGRESS_EVERY = 16 << 20  # log a line roughly every 16 MiB
 
 
 @dataclass(frozen=True)
@@ -56,13 +61,32 @@ def download_sdn_advanced(
     request = urllib.request.Request(url, headers={"User-Agent": _USER_AGENT})
     hasher = hashlib.sha256()
     size = 0
+    started = time.monotonic()
+    log.info("downloading %s", url)
     with urllib.request.urlopen(request, timeout=timeout) as response, tmp.open("wb") as fh:
+        total = int(response.headers.get("Content-Length") or 0)
+        log.info(
+            "  %s%s",
+            f"{total / (1024 * 1024):.1f} MB" if total else "unknown size",
+            "" if response.url == url else f" (redirected to {response.url.split('?')[0]})",
+        )
+        next_mark = _PROGRESS_EVERY
         while chunk := response.read(_CHUNK):
             fh.write(chunk)
             hasher.update(chunk)
             size += len(chunk)
+            if size >= next_mark:
+                pct = f" ({size / total:.0%})" if total else ""
+                log.info("  %.0f MB%s", size / (1024 * 1024), pct)
+                next_mark += _PROGRESS_EVERY
 
     shutil.move(tmp, dest)
+    log.info(
+        "downloaded %.1f MB in %.1fs -> %s",
+        size / (1024 * 1024),
+        time.monotonic() - started,
+        dest,
+    )
     result = DownloadResult(
         path=dest,
         sha256=hasher.hexdigest(),
