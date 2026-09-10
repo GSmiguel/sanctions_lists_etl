@@ -69,7 +69,7 @@ def run(
         "source_file": source.name,
         "source_url": redact(source_url) if source_url else "",
         "source_sha256": sha256 or "",
-        "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+        "generated_at": dt.datetime.now(dt.UTC).isoformat(timespec="seconds"),
         "record_count": str(len(records)),
         "subject_type_filter": ", ".join(subject_types) if subject_types else "(all)",
         **{f"count_{ptype.lower()}": str(count) for ptype, count in sorted(counts.items())},
@@ -118,9 +118,7 @@ def configure_parser(parser: argparse.ArgumentParser) -> None:
         ),
     )
     group = parser.add_mutually_exclusive_group()
-    group.add_argument(
-        "--persons-only", action="store_true", help="Keep only natural persons."
-    )
+    group.add_argument("--persons-only", action="store_true", help="Keep only natural persons.")
     group.add_argument(
         "--entities-only", action="store_true", help="Keep only enterprises/entities."
     )

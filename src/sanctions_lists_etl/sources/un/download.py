@@ -114,7 +114,7 @@ def download_un_consolidated(
         path=dest,
         sha256=hasher.hexdigest(),
         size_bytes=size,
-        downloaded_at=dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+        downloaded_at=dt.datetime.now(dt.UTC).isoformat(timespec="seconds"),
         url=redact(start_url),
     )
     meta = dest.with_name(dest.name + ".meta.json")

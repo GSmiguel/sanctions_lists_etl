@@ -66,7 +66,7 @@ def run(
         "source_file": source.name,
         "source_url": source_url or "",
         "source_sha256": sha256 or "",
-        "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+        "generated_at": dt.datetime.now(dt.UTC).isoformat(timespec="seconds"),
         "record_count": str(len(records)),
         "coverage": coverage or "",
         **{f"count_{ptype.lower()}": str(count) for ptype, count in sorted(counts.items())},

@@ -67,7 +67,7 @@ def run(
         "source_file": source.name,
         "source_url": source_url or "",
         "source_sha256": sha256 or "",
-        "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+        "generated_at": dt.datetime.now(dt.UTC).isoformat(timespec="seconds"),
         "record_count": str(len(records)),
         "subject_type_filter": ", ".join(subject_types) if subject_types else "(all)",
         **{f"count_{ptype.lower()}": str(count) for ptype, count in sorted(counts.items())},
@@ -107,12 +107,8 @@ def configure_parser(parser: argparse.ArgumentParser) -> None:
         help="Reuse the cached XML in --raw-dir if present.",
     )
     group = parser.add_mutually_exclusive_group()
-    group.add_argument(
-        "--individuals-only", action="store_true", help="Keep only individuals."
-    )
-    group.add_argument(
-        "--entities-only", action="store_true", help="Keep only entities."
-    )
+    group.add_argument("--individuals-only", action="store_true", help="Keep only individuals.")
+    group.add_argument("--entities-only", action="store_true", help="Keep only entities.")
 
 
 def options_from_args(args: argparse.Namespace) -> dict[str, Any]:

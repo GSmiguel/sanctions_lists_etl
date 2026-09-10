@@ -24,12 +24,8 @@ from pathlib import Path
 
 log = logging.getLogger(__name__)
 
-SDN_ADVANCED_URL = (
-    "https://sanctionslistservice.ofac.treas.gov/api/download/sdn_advanced.xml"
-)
-CONS_ADVANCED_URL = (
-    "https://sanctionslistservice.ofac.treas.gov/api/download/cons_advanced.xml"
-)
+SDN_ADVANCED_URL = "https://sanctionslistservice.ofac.treas.gov/api/download/sdn_advanced.xml"
+CONS_ADVANCED_URL = "https://sanctionslistservice.ofac.treas.gov/api/download/cons_advanced.xml"
 
 _USER_AGENT = "sanctions-lists-etl/0.1 (+https://github.com/GSmiguel/sanctions_lists_etl)"
 _CHUNK = 1 << 20
@@ -101,7 +97,7 @@ def download_advanced_xml(
         path=dest,
         sha256=hasher.hexdigest(),
         size_bytes=size,
-        downloaded_at=dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+        downloaded_at=dt.datetime.now(dt.UTC).isoformat(timespec="seconds"),
         url=url,
     )
     meta = dest.with_name(dest.name + ".meta.json")

@@ -18,14 +18,14 @@ from __future__ import annotations
 
 import logging
 import re
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable
 from xml.etree.ElementTree import Element, iterparse
 
 log = logging.getLogger(__name__)
 
-from ...common.xmlutils import child_text, children, first_child, localname
+from ...common.xmlutils import child_text, children, localname
 from .columns import COLUMNS
 
 _LIST_SEP = "; "
@@ -164,7 +164,11 @@ def _build_party(party: Element, tag: str) -> SanctionParty:
     record.birth_places = [
         rendered
         for node in children(party, "INDIVIDUAL_PLACE_OF_BIRTH")
-        if (rendered := _join_location(node, ("STREET", "CITY", "STATE_PROVINCE", "COUNTRY", "NOTE")))
+        if (
+            rendered := _join_location(
+                node, ("STREET", "CITY", "STATE_PROVINCE", "COUNTRY", "NOTE")
+            )
+        )
     ]
 
     record.nationalities = _values(party, "NATIONALITY")
@@ -233,9 +237,7 @@ def _format_alias(alias: Element) -> str:
         name += " (low quality)"
     elif quality in ("f.k.a.", "fka"):
         name += " (fka)"
-    born = _join_location(
-        alias, ("DATE_OF_BIRTH", "CITY_OF_BIRTH", "COUNTRY_OF_BIRTH")
-    )
+    born = _join_location(alias, ("DATE_OF_BIRTH", "CITY_OF_BIRTH", "COUNTRY_OF_BIRTH"))
     if born:
         name += f" (b. {born})"
     note = child_text(alias, "NOTE")

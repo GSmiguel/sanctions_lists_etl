@@ -155,7 +155,7 @@ def download_eu_fsf(
         path=dest,
         sha256=hasher.hexdigest(),
         size_bytes=size,
-        downloaded_at=dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+        downloaded_at=dt.datetime.now(dt.UTC).isoformat(timespec="seconds"),
         url=safe_url,
     )
     meta = dest.with_name(dest.name + ".meta.json")

@@ -13,9 +13,9 @@ via :mod:`sanctions_lists_etl.common.xmlutils`).
 from __future__ import annotations
 
 import logging
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable
 from xml.etree.ElementTree import Element, iterparse
 
 log = logging.getLogger(__name__)
@@ -191,7 +191,9 @@ def _resolve_names(entity: Element, record: SanctionEntity) -> None:
         if not whole:
             continue
         lid = alias.get("logicalId") or ""
-        aliases.append((int(lid) if lid.isdigit() else 2**63, whole, (alias.get("nameLanguage") or "").upper()))
+        aliases.append(
+            (int(lid) if lid.isdigit() else 2**63, whole, (alias.get("nameLanguage") or "").upper())
+        )
 
         gender = _GENDER.get((alias.get("gender") or "").lower())
         if gender:

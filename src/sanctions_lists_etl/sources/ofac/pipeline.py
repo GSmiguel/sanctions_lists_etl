@@ -52,12 +52,20 @@ class _ListSpec:
 
 _LISTS: dict[str, _ListSpec] = {
     "sdn": _ListSpec(
-        "sdn", SDN_ADVANCED_URL, "sdn_advanced.xml", "ofac_sdn.xlsx", "SDN",
+        "sdn",
+        SDN_ADVANCED_URL,
+        "sdn_advanced.xml",
+        "ofac_sdn.xlsx",
+        "SDN",
         "SDN — Specially Designated Nationals",
     ),
     "consolidated": _ListSpec(
-        "consolidated", CONS_ADVANCED_URL, "cons_advanced.xml",
-        "ofac_consolidated.xlsx", "CONS", "Consolidated (Non-SDN) sanctions list",
+        "consolidated",
+        CONS_ADVANCED_URL,
+        "cons_advanced.xml",
+        "ofac_consolidated.xlsx",
+        "CONS",
+        "Consolidated (Non-SDN) sanctions list",
     ),
 }
 ALL_LISTS = ("sdn", "consolidated")
@@ -87,14 +95,12 @@ def run(
 
     output_dir = Path(output_dir)
     raw_dir = Path(raw_dir)
-    generated_at = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
+    generated_at = dt.datetime.now(dt.UTC).isoformat(timespec="seconds")
 
     per_list: list[tuple[_ListSpec, Path, int, dict[str, int]]] = []
     for key in selected:
         spec = _LISTS[key]
-        source, sha256 = _resolve_source(
-            spec, raw_dir, xml_path=xml_path, download=download
-        )
+        source, sha256 = _resolve_source(spec, raw_dir, xml_path=xml_path, download=download)
         records = parse_sdn_advanced(source, party_types=party_types)
         records.sort(key=lambda record: _sort_key(record.fixed_ref))
         counts = dict(Counter(record.party_type for record in records))
@@ -132,12 +138,8 @@ def run(
         "lists_built": ", ".join(spec.key for spec, _, _, _ in per_list),
         "record_count": str(total),
         "party_type_filter": ", ".join(party_types) if party_types else "(all)",
-        **{
-            f"{spec.key}_xlsx": str(dest) for spec, dest, _, _ in per_list
-        },
-        **{
-            f"{spec.key}_record_count": str(count) for spec, _, count, _ in per_list
-        },
+        **{f"{spec.key}_xlsx": str(dest) for spec, dest, _, _ in per_list},
+        **{f"{spec.key}_record_count": str(count) for spec, _, count, _ in per_list},
     }
 
     return SourceResult(

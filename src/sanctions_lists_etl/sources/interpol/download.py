@@ -33,9 +33,10 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from collections import Counter
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 log = logging.getLogger(__name__)
 
@@ -125,10 +126,14 @@ class _Client:
                 if exc.code not in _RETRY_STATUS:
                     raise
                 if attempt < _MAX_RETRIES:
-                    wait = min(2 ** attempt, _BACKOFF_CAP)
+                    wait = min(2**attempt, _BACKOFF_CAP)
                     log.warning(
                         "  HTTP %s on %s — retry %d/%d in %ds",
-                        exc.code, url, attempt, _MAX_RETRIES, wait,
+                        exc.code,
+                        url,
+                        attempt,
+                        _MAX_RETRIES,
+                        wait,
                     )
                     time.sleep(wait)
                     continue
@@ -194,8 +199,13 @@ def _sweep_names(client: _Client, prefix: str, sink: dict[str, dict], depth: int
     if total <= _RETRIEVABLE or depth >= 2:
         got = _collect(client, "/un", params, sink)
         if total > _RETRIEVABLE:
-            log.warning("  /un name=%r has %d notices; only ~%d retrievable (got %d)",
-                        prefix, total, _RETRIEVABLE, got)
+            log.warning(
+                "  /un name=%r has %d notices; only ~%d retrievable (got %d)",
+                prefix,
+                total,
+                _RETRIEVABLE,
+                got,
+            )
         return
     for ch in _ALPHA:
         _sweep_names(client, prefix + ch, sink, depth + 1)
@@ -276,13 +286,18 @@ def download_interpol(
         path=dest,
         sha256=hashlib.sha256(data).hexdigest(),
         size_bytes=len(data),
-        downloaded_at=dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+        downloaded_at=dt.datetime.now(dt.UTC).isoformat(timespec="seconds"),
         url=base,
         notice_count=len(records),
         counts_by_kind=_counts_by_kind(records),
         coverage=coverage,
     )
     _write_meta(dest, result, client.calls, elapsed)
-    log.info("[interpol] wrote %d notices to %s in %.0fs (%d API calls)",
-             len(records), dest, elapsed, client.calls)
+    log.info(
+        "[interpol] wrote %d notices to %s in %.0fs (%d API calls)",
+        len(records),
+        dest,
+        elapsed,
+        client.calls,
+    )
     return result

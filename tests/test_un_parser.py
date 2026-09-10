@@ -84,9 +84,7 @@ def test_address_country_and_note(records):
 
 
 def test_document_rendering(records):
-    assert records["QDi.335"].documents == [
-        "National Identification Number: 273030601222 (Kuwait)"
-    ]
+    assert records["QDi.335"].documents == ["National Identification Number: 273030601222 (Kuwait)"]
     passport = records["QDi.356"].documents[0]
     assert passport.startswith(
         "Passport: 720134834 (United Kingdom of Great Britain and Northern Ireland)"

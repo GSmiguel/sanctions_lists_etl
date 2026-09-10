@@ -1,8 +1,7 @@
 import pytest
 from openpyxl import load_workbook
 
-from sanctions_lists_etl import available_sources, run_source
-from sanctions_lists_etl import runner
+from sanctions_lists_etl import available_sources, run_source, runner
 from sanctions_lists_etl.base import Source, SourceResult
 from sanctions_lists_etl.cli import main
 

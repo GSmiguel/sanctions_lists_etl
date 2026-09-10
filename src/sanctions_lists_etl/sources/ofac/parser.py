@@ -9,9 +9,9 @@ and are joined back onto the already-built records by profile id.
 from __future__ import annotations
 
 import logging
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable
 from xml.etree.ElementTree import Element, iterparse
 
 log = logging.getLogger(__name__)
@@ -205,9 +205,7 @@ def _resolve_names(identity: Element, ref: ReferenceData) -> tuple[str, list[str
         for master in children(groups, "MasterNamePartGroup"):
             npg = first_child(master, "NamePartGroup")
             if npg is not None:
-                group_type[npg.get("ID")] = ref.name_part_type.get(
-                    npg.get("NamePartTypeID"), ""
-                )
+                group_type[npg.get("ID")] = ref.name_part_type.get(npg.get("NamePartTypeID"), "")
 
     primary = ""
     aliases: list[str] = []

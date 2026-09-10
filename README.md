@@ -242,11 +242,16 @@ swaps the rest: `uk_unique_id` / `ofsi_group_id` / `un_reference_number` replace
 `name_original_script`, `last_updated`, `entity_type` / `parent_companies` /
 `subsidiaries`, `vessel_info` and `statement_of_reasons`.
 
-### Tests
+### Tests and lint
 
 ```bash
 uv run pytest
+uv run ruff check .
+uv run ruff format --check .
 ```
+
+CI (`.github/workflows/ci.yml`) runs all three on every pull request and on
+pushes to `main`, against Python 3.11 and 3.12.
 
 Tests run against trimmed real exports in `tests/fixtures/`:
 `sample_sdn_advanced.xml` (4 OFAC parties, one of each type, full reference
@@ -264,6 +269,9 @@ formats, duplicate passport rows, entity parent/subsidiary details, ship IMO /
 flag / dimensions and the INTERPOL notice-pointer scrub). The INTERPOL crawler is
 tested against an in-memory fake of the web service (`test_interpol_download.py`)
 that reproduces the ~160-result cap so the `name` sweep is exercised offline.
+`test_contract.py` pins the cross-source invariant that every source's
+`COLUMNS` / `HEADERS` stay in sync and that its flattened rows carry exactly the
+declared headers.
 
 ## Architecture
 

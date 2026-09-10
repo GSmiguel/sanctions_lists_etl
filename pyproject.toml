@@ -14,6 +14,7 @@ sanctions-etl = "sanctions_lists_etl.cli:main"
 [dependency-groups]
 dev = [
     "pytest>=8",
+    "ruff>=0.6",
 ]
 
 [build-system]
@@ -25,3 +26,13 @@ packages = ["src/sanctions_lists_etl"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+# The package deliberately binds `log = logging.getLogger(__name__)` just below the
+# stdlib imports and above the local ones; keep that idiom rather than churn every module.
+ignore = ["E402"]

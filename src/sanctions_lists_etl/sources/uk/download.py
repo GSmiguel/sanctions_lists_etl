@@ -110,7 +110,7 @@ def download_uk_sanctions(
         path=dest,
         sha256=hasher.hexdigest(),
         size_bytes=size,
-        downloaded_at=dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+        downloaded_at=dt.datetime.now(dt.UTC).isoformat(timespec="seconds"),
         url=_clean(start_url),
     )
     meta = dest.with_name(dest.name + ".meta.json")

@@ -6,8 +6,8 @@ widths); every source flattens its own records into ``dict[str, str]`` rows.
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Mapping, Sequence
 
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font
