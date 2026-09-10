@@ -21,6 +21,8 @@ htmlcov/
 # Environment / secrets
 .env
 *.local
+*.token
+secrets/
 
 # Data artifacts
 data/
