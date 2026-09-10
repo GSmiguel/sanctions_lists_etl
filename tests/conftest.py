@@ -23,3 +23,8 @@ def sample_un_xml() -> Path:
 @pytest.fixture(scope="session")
 def sample_interpol_json() -> Path:
     return FIXTURES / "sample_interpol.json"
+
+
+@pytest.fixture(scope="session")
+def sample_uk_xml() -> Path:
+    return FIXTURES / "sample_uk_sanctions.xml"

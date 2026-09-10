@@ -1,13 +1,18 @@
-"""Download an OFAC advanced XML export (SDN or Consolidated / Non-SDN).
+"""Download the UK Sanctions List (FCDO full XML).
 
-The Sanctions List Service publishes both lists in the same advanced-XML schema:
+The Foreign, Commonwealth & Development Office publishes the UK Sanctions List at
 
-    https://sanctionslistservice.ofac.treas.gov/api/download/sdn_advanced.xml
-    https://sanctionslistservice.ofac.treas.gov/api/download/cons_advanced.xml
+    https://sanctionslist.fcdo.gov.uk/docs/UK-Sanctions-List.xml
 
-Each endpoint answers with a 302 redirect to a short-lived (1 hour) signed S3
-URL, so the download must be performed fresh each run rather than caching the
-redirect target.
+as a plain ~21 MB file (served straight from CloudFront/S3, no redirect and no
+signed query string), so unlike the OFAC and UN endpoints it can be fetched
+directly.  No credential is required.
+
+This is the live list.  It replaced the OFSI "Consolidated List of Asset Freeze
+Targets" (``ConList.xml``), which was frozen on 28 January 2026; the asset-freeze
+data it used to carry now lives here (``AssetFreeze`` indicator, ``OFSIGroupID``).
+
+``UK_SANCTIONS_URL`` overrides the whole URL if the endpoint ever moves.
 """
 
 from __future__ import annotations
@@ -16,24 +21,22 @@ import datetime as dt
 import hashlib
 import json
 import logging
+import os
 import shutil
 import time
+import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 
 log = logging.getLogger(__name__)
 
-SDN_ADVANCED_URL = (
-    "https://sanctionslistservice.ofac.treas.gov/api/download/sdn_advanced.xml"
-)
-CONS_ADVANCED_URL = (
-    "https://sanctionslistservice.ofac.treas.gov/api/download/cons_advanced.xml"
-)
+UK_SANCTIONS_URL = "https://sanctionslist.fcdo.gov.uk/docs/UK-Sanctions-List.xml"
+URL_ENV = "UK_SANCTIONS_URL"
 
 _USER_AGENT = "sanctions-lists-etl/0.1 (+https://github.com/GSmiguel/sanctions_lists_etl)"
 _CHUNK = 1 << 20
-_PROGRESS_EVERY = 16 << 20  # log a line roughly every 16 MiB
+_PROGRESS_EVERY = 8 << 20  # log roughly every 8 MiB (the file is ~21 MiB)
 
 
 @dataclass(frozen=True)
@@ -49,37 +52,43 @@ class DownloadResult:
         return self.size_bytes / (1024 * 1024)
 
 
-def download_advanced_xml(
+def _clean(url: str) -> str:
+    """Drop any query string before logging or persisting the URL."""
+    split = urllib.parse.urlsplit(url)
+    return urllib.parse.urlunsplit((split.scheme, split.netloc, split.path, "", ""))
+
+
+def resolve_url(url: str | None = None) -> str:
+    return url or os.environ.get(URL_ENV) or UK_SANCTIONS_URL
+
+
+def download_uk_sanctions(
     dest_dir: Path | str = "data/raw",
     *,
-    url: str = SDN_ADVANCED_URL,
-    filename: str = "sdn_advanced.xml",
+    url: str | None = None,
+    filename: str = "uk_sanctions_list.xml",
     timeout: float = 300.0,
 ) -> DownloadResult:
-    """Fetch an OFAC advanced-XML export into ``dest_dir`` and record its metadata.
+    """Fetch the UK Sanctions List XML into ``dest_dir`` and record its metadata.
 
-    Works for either the SDN (``url=SDN_ADVANCED_URL``) or the Consolidated /
-    Non-SDN (``url=CONS_ADVANCED_URL``) list.  A sibling ``<filename>.meta.json``
-    file captures the checksum, size and timestamp so later stages can tell which
-    snapshot they are working from.
+    A sibling ``<filename>.meta.json`` captures the checksum, size and timestamp
+    so later stages can tell which snapshot they used.
     """
+    start_url = resolve_url(url)
+
     dest_dir = Path(dest_dir)
     dest_dir.mkdir(parents=True, exist_ok=True)
     dest = dest_dir / filename
     tmp = dest.with_suffix(dest.suffix + ".part")
 
-    request = urllib.request.Request(url, headers={"User-Agent": _USER_AGENT})
+    request = urllib.request.Request(start_url, headers={"User-Agent": _USER_AGENT})
     hasher = hashlib.sha256()
     size = 0
     started = time.monotonic()
-    log.info("downloading %s", url)
+    log.info("downloading %s", _clean(start_url))
     with urllib.request.urlopen(request, timeout=timeout) as response, tmp.open("wb") as fh:
         total = int(response.headers.get("Content-Length") or 0)
-        log.info(
-            "  %s%s",
-            f"{total / (1024 * 1024):.1f} MB" if total else "unknown size",
-            "" if response.url == url else f" (redirected to {response.url.split('?')[0]})",
-        )
+        log.info("  %s", f"{total / (1024 * 1024):.1f} MB" if total else "unknown size")
         next_mark = _PROGRESS_EVERY
         while chunk := response.read(_CHUNK):
             fh.write(chunk)
@@ -102,7 +111,7 @@ def download_advanced_xml(
         sha256=hasher.hexdigest(),
         size_bytes=size,
         downloaded_at=dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
-        url=url,
+        url=_clean(start_url),
     )
     meta = dest.with_name(dest.name + ".meta.json")
     meta.write_text(
