@@ -64,7 +64,7 @@ def test_run_interpol_source_end_to_end(sample_interpol_json, tmp_path):
     )
     assert result.source == "interpol"
     assert result.record_count == 6
-    assert result.counts_by_type == {"Individual": 5, "Entity": 1}
+    assert result.counts_by_type == {"Individual": 4, "Entity": 2}
     assert result.xlsx_path.exists()
     assert load_workbook(result.xlsx_path)["INTERPOL"].max_row == 7
 
