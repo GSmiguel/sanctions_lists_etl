@@ -47,17 +47,17 @@ gitignored.
 
 | column | contents |
 | --- | --- |
-| `id_ofac` | OFAC fixed reference number |
-| `tipo` | Individual / Entity / Vessel / Aircraft |
-| `nome_principal` | primary name (surname-first for individuals) |
-| `nomes_alternativos` | AKA / FKA / NKA and non-Latin script renderings |
-| `data_nascimento`, `local_nascimento` | birth date / place |
-| `nacionalidades`, `cidadanias`, `genero`, `titulos` | person attributes |
-| `paises`, `enderecos` | address countries and full address strings |
-| `documentos` | ID documents (`Type: Number (Country)`) |
-| `programas`, `listas`, `data_listagem` | sanctions programs, source list, first listing date |
-| `emails`, `websites`, `enderecos_cripto` | contact and digital-currency addresses |
-| `outras_caracteristicas` | every other feature (`Feature name: value`) |
+| `ofac_id` | OFAC fixed reference number |
+| `type` | Individual / Entity / Vessel / Aircraft |
+| `primary_name` | primary name (surname-first for individuals) |
+| `aliases` | AKA / FKA / NKA and non-Latin script renderings |
+| `dates_of_birth`, `places_of_birth` | birth date / place |
+| `nationalities`, `citizenships`, `gender`, `titles` | person attributes |
+| `countries`, `addresses` | address countries and full address strings |
+| `id_documents` | ID documents (`Type: Number (Country)`) |
+| `programs`, `lists`, `listed_on` | sanctions programs, source list, first listing date |
+| `emails`, `websites`, `digital_currency_addresses` | contact and digital-currency addresses |
+| `other_features` | every other feature (`Feature name: value`) |
 
 Multi-valued cells are joined with `; `.
 

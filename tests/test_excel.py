@@ -20,7 +20,7 @@ def test_write_workbook_roundtrip(sample_xml, tmp_path):
 
 
 def test_long_values_are_clipped(tmp_path):
-    rows = [{header: ("x" * 40_000 if header == "enderecos" else "") for header in HEADERS}]
+    rows = [{header: ("x" * 40_000 if header == "addresses" else "") for header in HEADERS}]
     dest = write_workbook(HEADERS, rows, tmp_path / "big.xlsx")
     sheet = load_workbook(dest)["data"]
-    assert len(sheet.cell(row=2, column=HEADERS.index("enderecos") + 1).value) <= 32_000
+    assert len(sheet.cell(row=2, column=HEADERS.index("addresses") + 1).value) <= 32_000
