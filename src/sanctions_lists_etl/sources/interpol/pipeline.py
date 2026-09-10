@@ -1,4 +1,4 @@
-"""INTERPOL source: public notices web service -> flat Excel workbook."""
+"""INTERPOL source: UN Special Notice list -> flat Excel workbook."""
 
 from __future__ import annotations
 
@@ -19,11 +19,9 @@ from .download import DownloadResult, download_interpol
 from .parser import Notice, parse_interpol, rows_from_records
 
 NAME = "interpol"
-DESCRIPTION = "INTERPOL Red Notices + UN Special Notices (public web service)"
+DESCRIPTION = "INTERPOL UN Special Notices (public web service)"
 OUTPUT_FILENAME = "interpol.xlsx"
 RAW_FILENAME = "interpol.json"
-RED_ONLY = ("red",)
-UN_ONLY = ("un",)
 
 
 def run(
@@ -31,18 +29,16 @@ def run(
     output_dir: Path | str = "data/output",
     raw_dir: Path | str = "data/raw",
     json_path: Path | str | None = None,
-    notice_types: tuple[str, ...] | None = None,
     download: bool = True,
     url: str | None = None,
     limit: int | None = None,
 ) -> SourceResult:
     """Run the INTERPOL pipeline end to end.
 
-    If ``json_path`` is given it is parsed as-is; otherwise the notices web
-    service is crawled into ``raw_dir`` (unless ``download`` is ``False`` and a
-    cached snapshot already exists).  No credential is required.  ``notice_types``
-    restricts both the crawl and the parse to the ``"red"`` and/or ``"un"``
-    families; ``limit`` caps how many full records are fetched (smoke tests).
+    If ``json_path`` is given it is parsed as-is; otherwise the UN Special Notice
+    list is crawled into ``raw_dir`` (unless ``download`` is ``False`` and a
+    cached snapshot already exists).  No credential is required.  ``limit`` caps
+    the snapshot size (smoke tests).
     """
     log.info("[interpol] starting")
     downloaded: DownloadResult | None = None
@@ -52,13 +48,7 @@ def run(
     else:
         source = Path(raw_dir) / RAW_FILENAME
         if download or not source.exists():
-            downloaded = download_interpol(
-                raw_dir,
-                url=url,
-                red=notice_types is None or "red" in notice_types,
-                un=notice_types is None or "un" in notice_types,
-                limit=limit,
-            )
+            downloaded = download_interpol(raw_dir, url=url, limit=limit)
             source = downloaded.path
         else:
             log.info("[interpol] reusing cached snapshot %s", source)
@@ -67,10 +57,9 @@ def run(
     source_url = downloaded.url if downloaded else _cached_meta(source, "url")
     coverage = downloaded.coverage if downloaded else _cached_meta(source, "coverage")
 
-    records = parse_interpol(source, notice_types=notice_types)
+    records = parse_interpol(source)
     records.sort(key=_sort_key)
     counts = dict(Counter(record.party_type for record in records))
-    by_notice = dict(Counter(record.notice_type for record in records))
 
     metadata = {
         "source": DESCRIPTION,
@@ -79,11 +68,8 @@ def run(
         "source_sha256": sha256 or "",
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
         "record_count": str(len(records)),
-        "notice_type_filter": ", ".join(notice_types) if notice_types else "(all)",
         "coverage": coverage or "",
         **{f"count_{ptype.lower()}": str(count) for ptype, count in sorted(counts.items())},
-        **{f"count_{label.lower().replace(' ', '_')}": str(count)
-           for label, count in sorted(by_notice.items())},
     }
 
     dest = Path(output_dir) / OUTPUT_FILENAME
@@ -123,14 +109,7 @@ def configure_parser(parser: argparse.ArgumentParser) -> None:
         "--limit",
         type=int,
         default=None,
-        help="Only fetch full records for the first N notices (smoke test).",
-    )
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument(
-        "--red-only", action="store_true", help="Crawl only Red Notices."
-    )
-    group.add_argument(
-        "--un-only", action="store_true", help="Crawl only UN Special Notices."
+        help="Keep only the first N notices in the snapshot (smoke test).",
     )
 
 
@@ -140,10 +119,6 @@ def options_from_args(args: argparse.Namespace) -> dict[str, Any]:
         options["json_path"] = args.json
     if getattr(args, "limit", None) is not None:
         options["limit"] = args.limit
-    if getattr(args, "red_only", False):
-        options["notice_types"] = RED_ONLY
-    elif getattr(args, "un_only", False):
-        options["notice_types"] = UN_ONLY
     return options
 
 
@@ -167,6 +142,6 @@ def _cached_meta(source: Path, key: str) -> str | None:
     return value if isinstance(value, str) else None
 
 
-def _sort_key(record: Notice) -> tuple[str, str, str]:
-    """Order rows by notice type, then name, then id."""
-    return record.notice_type, record.primary_name.upper(), record.interpol_notice_id
+def _sort_key(record: Notice) -> tuple[str, str]:
+    """Order rows by UN reference (falling back to name), then id."""
+    return (record.un_reference or record.primary_name).upper(), record.interpol_notice_id

@@ -1,96 +1,11 @@
 [
   {
-    "_notice_kind": "red",
-    "entity_id": "2020/12345",
-    "name": "TSUROEV",
-    "forename": "MOVLAT",
-    "date_of_birth": "1991/09/24",
-    "sex_id": "M",
-    "nationalities": ["RU"],
-    "place_of_birth": "ORDZHONIKIDZEVSKAYA STANITSA, SUNZHENSKY DISTRICT",
-    "country_of_birth_id": "RU",
-    "height": 1.75,
-    "weight": 0,
-    "eyes_colors_id": ["BROH"],
-    "hairs_id": ["OTHD"],
-    "distinguishing_marks": "Scar on left cheek.",
-    "languages_spoken_ids": ["CHE", "RUS"],
-    "arrest_warrants": [
-      {
-        "charge": "-\tParticipation in the activity of an illegal armed formation",
-        "issuing_country_id": "RU",
-        "charge_translation": null
-      },
-      {
-        "charge": "- Arrestation, enlèvement - Violence commise en réunion.",
-        "issuing_country_id": "FR",
-        "charge_translation": "- Kidnapping - Group violence."
-      }
-    ],
-    "_links": {
-      "self": {"href": "https://ws-public.interpol.int/notices/v1/red/2020-12345"},
-      "thumbnail": {"href": "https://ws-public.interpol.int/notices/v1/red/2020-12345/images/999"}
-    }
-  },
-  {
-    "_notice_kind": "red",
-    "entity_id": "2021/00001",
-    "name": "DOE",
-    "forename": "",
-    "date_of_birth": "0000/00/00",
-    "sex_id": "U",
-    "nationalities": [],
-    "distinguishing_marks": null,
-    "weight": 0,
-    "height": null,
-    "eyes_colors_id": null,
-    "hairs_id": null,
-    "arrest_warrants": null,
-    "languages_spoken_ids": null,
-    "_links": {
-      "self": {"href": "https://ws-public.interpol.int/notices/v1/red/2021-00001"}
-    }
-  },
-  {
-    "_notice_kind": "red",
-    "entity_id": "2019/54321",
-    "name": "SMITH",
-    "forename": "JOHN ALAN",
-    "date_of_birth": "1980/00/00",
-    "sex_id": "F",
-    "nationalities": ["US", "GB"],
-    "place_of_birth": "Chicago",
-    "country_of_birth_id": "US",
-    "arrest_warrants": [
-      {"charge": "Wire fraud and money laundering", "issuing_country_id": "US", "charge_translation": null}
-    ],
-    "_links": {
-      "self": {"href": "https://ws-public.interpol.int/notices/v1/red/2019-54321"},
-      "thumbnail": {"href": "https://ws-public.interpol.int/notices/v1/red/2019-54321/images/1"}
-    }
-  },
-  {
     "_notice_kind": "un-person",
     "entity_id": "2026/35448",
-    "un_reference": "SDi.011",
     "name": "DAGALO",
     "forename": "AL-GONEY HAMDAN",
-    "name_in_original_script": null,
-    "forename_in_original_script": null,
     "date_of_birth": "1990/08/07",
-    "sex_id": "M",
-    "nationalities": ["SD"],
-    "country_of_birth_id": null,
-    "aliases": [
-      {"name": "DAGALO", "forename": "ALGONEY HAMDAN", "date_of_birth": null},
-      {"name": "DAGALO", "forename": "AL-QONI HAMDAN", "date_of_birth": "1990/08/07"}
-    ],
-    "identity_documents": [
-      {"type": "NATIONAL IDENTIFICATION NR", "nr": "784199014302485", "citizenship_id": "AE", "issuing_country_id": null, "expiry_date": null, "issued_on": null, "place_of_issue": null},
-      {"type": "PASSPORT", "nr": "B00024943", "citizenship_id": "SD", "issuing_country_id": null, "expiry_date": "2031/09/27", "issued_on": null, "place_of_issue": null}
-    ],
-    "summary": "SDi.011\r\nAL-GONEY HAMDAN DAGALO\r\nReason for listing\r\nListed on 28 April 2026 pursuant to resolution 1591 (2005).",
-    "languages_spoken_ids": null,
+    "un_reference": "SDi.011",
     "_links": {
       "self": {"href": "https://ws-public.interpol.int/notices/v1/un/persons/2026-35448"},
       "images": {"href": "https://ws-public.interpol.int/notices/v1/un/persons/2026-35448/images"}
@@ -99,34 +14,53 @@
   {
     "_notice_kind": "un-person",
     "entity_id": "2015/70000",
-    "un_reference": "QDi.400",
     "name": "AL-EXAMPLE",
     "forename": "TEST",
-    "name_in_original_script": "المثال",
-    "forename_in_original_script": "تست",
-    "date_of_birth": "1975/06/15",
-    "sex_id": "M",
-    "nationalities": ["IQ"],
-    "name_at_birth": "AL-SAMPLE TEST",
-    "mother_name": "EXAMPLE",
-    "mother_forename": "MOTHER",
-    "father_forename": "FATHER",
-    "profession": "Engineer",
-    "aliases": [],
-    "identity_documents": [],
-    "summary": "",
+    "date_of_birth": "1975/00/00",
+    "un_reference": "QDi.400",
     "_links": {
-      "self": {"href": "https://ws-public.interpol.int/notices/v1/un/persons/2015-70000"}
+      "self": {"href": "https://ws-public.interpol.int/notices/v1/un/persons/2015-70000"},
+      "images": {"href": "https://ws-public.interpol.int/notices/v1/un/persons/2015-70000/images"}
+    }
+  },
+  {
+    "_notice_kind": "un-person",
+    "entity_id": "2019/54321",
+    "name": "SINGLENAME",
+    "forename": "",
+    "date_of_birth": "0000/00/00",
+    "un_reference": "TAi.005",
+    "_links": {
+      "self": {"href": "https://ws-public.interpol.int/notices/v1/un/persons/2019-54321"}
+    }
+  },
+  {
+    "_notice_kind": "un-person",
+    "entity_id": "2020/11111",
+    "name": "KIM",
+    "forename": "SONG",
+    "date_of_birth": "1985/03/00",
+    "un_reference": "KPi.010",
+    "_links": {
+      "self": {"href": "https://ws-public.interpol.int/notices/v1/un/persons/2020-11111"}
     }
   },
   {
     "_notice_kind": "un-entity",
     "entity_id": "2011/88000",
-    "un_reference": "QDe.001",
     "name": "EXAMPLE CHARITABLE FOUNDATION",
-    "summary": "QDe.001\r\nListed for providing support to a designated group.",
+    "un_reference": "QDe.001",
     "_links": {
       "self": {"href": "https://ws-public.interpol.int/notices/v1/un/entities/2011-88000"}
+    }
+  },
+  {
+    "_notice_kind": "un-entity",
+    "entity_id": "2013/90000",
+    "name": "SAMPLE TRADING COMPANY",
+    "un_reference": "IRe.002",
+    "_links": {
+      "self": {"href": "https://ws-public.interpol.int/notices/v1/un/entities/2013-90000"}
     }
   }
 ]

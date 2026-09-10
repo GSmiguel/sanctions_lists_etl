@@ -1,8 +1,8 @@
 # sanctions_lists_etl
 
 ETL pipeline for ingesting, normalizing, and consolidating public sanctions lists
-(e.g. OFAC SDN, EU consolidated list, UN Security Council) plus the INTERPOL
-notices used for screening.
+(e.g. OFAC SDN, EU consolidated list, UN Security Council) plus the INTERPOL–UN
+Special Notices used for screening.
 
 ## Stage 1 — OFAC SDN
 
@@ -67,35 +67,39 @@ Blob URL, so — like the OFAC endpoint — the file is fetched fresh each run. 
 credential is required.** `UN_CONSOLIDATED_URL` overrides the whole URL; every
 log line and the `.meta.json` sidecar store the URL with the signature stripped.
 
-## Stage 4 — INTERPOL notices
+## Stage 4 — INTERPOL UN Special Notices
 
 Crawls the INTERPOL **public notices web service**
-(`https://ws-public.interpol.int/notices/v1`) — the undocumented JSON backend
-behind the "View Red Notices" and UN Special Notice search pages on
-interpol.int — and flattens every **Red Notice** and **UN Special Notice** into a
-single-sheet workbook with the same shared column layout as the other exports.
+(`https://ws-public.interpol.int/notices/v1/un`) — the undocumented JSON backend
+behind the UN Special Notice search page on interpol.int — and flattens every
+**UN Special Notice** (`INDIVIDUAL` and `ENTITY`) into a single-sheet workbook.
 No credential is required.
 
-These are **wanted-person / law-enforcement notices, not sanctions** (no asset
-freeze or trade ban); the list is here as a screening/adverse-media signal.
+INTERPOL–UN Special Notices are issued for parties on the **UN Consolidated List**
+(stage 3); this export carries INTERPOL's own notice id and photo URL keyed to
+the `un_reference` (e.g. `SDi.011`, `QDe.001`), so it cross-references stage 3
+rather than duplicating it. It is a screening / photo-lookup aid, not a sanctions
+list in its own right.
+
+Only the notices' **summary** rows are pulled — id, name, date of birth,
+`un_reference`, notice and image URLs. The per-notice detail records (charges,
+aliases, physical description, narrative) are deliberately not fetched.
 
 The service is built for the website, not for export: every query returns **at
-most ~160 results and will not paginate past them**, and the `/notices/v1/un`
-list endpoint ignores its filter parameters. To pull a whole list the crawler
-recursively partitions the query space — Red Notices by `nationality`, then (only
-for a slice still over the cap) `sexId` → `forename` initial → two-letter
-`forename` → age bracket, plus a nationality-less `forename` sweep; UN persons by
-`name` substring — and de-duplicates on the notice id. **Coverage is high but not
-provably complete** (only *public* notices are exposed at all, and the residual
-the partitioning never reached is logged and recorded in `.meta.json`). Each
-notice's full record is then fetched individually, so a run makes **thousands of
-requests and takes ~30–60 min**; it retries HTTP 403/429/5xx with backoff (the
-edge rate-limits with 403 and can IP-block a heavy run for a while — raise
-`INTERPOL_REQUEST_DELAY` if that happens). `INTERPOL_REQUEST_DELAY` (seconds,
-default 0.5) paces the requests; `INTERPOL_API_BASE` overrides the service root.
-The service also rejects non-browser User-Agents, so this source sends a browser
-UA. The `.meta.json` sidecar records the SHA-256 of the snapshot, the notice
-counts and the coverage note.
+most ~160 results and will not paginate past them**, and it honours only the
+`name` filter (a substring match). So the crawler sweeps `name` over one letter,
+then two letters for any slice still over the cap, and de-duplicates on
+`entity_id`; `/un/entities` (~110 rows) comes back in one page and is fetched
+directly as a safety net. **Coverage is high but not provably complete** (only
+*public* notices are exposed, and the collected-vs-reported gap is logged and
+recorded in `.meta.json`). A run makes a few hundred requests (~5 min).
+
+It retries HTTP 403/429/5xx with backoff — the edge (Akamai) rate-limits with 403
+and can IP-block for a while, so raise `INTERPOL_REQUEST_DELAY` (seconds, default
+0.5) if that happens; once retries are exhausted the crawler fails with a clean
+error. `INTERPOL_API_BASE` overrides the service root. The service also rejects
+non-browser User-Agents, so this source sends a browser UA. The `.meta.json`
+sidecar records the SHA-256, the notice counts and the coverage note.
 
 ### Usage
 
@@ -118,9 +122,10 @@ uv run sanctions-etl eu
 # just the UN list (no credential needed)
 uv run sanctions-etl un
 
-# just INTERPOL (no credential; slow — thousands of requests, ~30–60 min)
+# just INTERPOL UN Special Notices (no credential; ~5 min)
 uv run sanctions-etl interpol
-uv run sanctions-etl interpol --limit 20   # smoke test: only enrich 20 notices
+uv run sanctions-etl interpol --limit 20   # smoke test: keep only 20 notices
+uv run sanctions-etl interpol --json data/raw/interpol.json   # parse a local snapshot
 
 # parse a local file instead of downloading
 uv run sanctions-etl ofac --xml data/raw/sdn_advanced.xml
@@ -183,15 +188,11 @@ headers and swaps the rest: `un_reference_number` / `data_id` replace `ofac_id`,
 `remarks` with the "INTERPOL-UN Security Council Special Notice" boilerplate
 stripped.
 
-The INTERPOL workbook (`interpol.xlsx`, sheet `INTERPOL`) reuses `type`,
-`primary_name`, `aliases`, `dates_of_birth`, `places_of_birth`, `nationalities`,
-`gender`, `id_documents` and `remarks`; `interpol_notice_id` replaces `ofac_id`,
-and it adds `notice_type` (Red Notice / UN Special Notice), `un_reference` (the
-UN designation reference on a Special Notice), `charges` + `warrant_countries`
-(arrest-warrant text and the countries that issued it), `languages_spoken`,
-`physical_description`, `notice_url` and `image_url`. Country / eye / hair / a
-few language codes are expanded to names (`common/countries.py` and small maps in
-the parser); the narrative `summary` on a UN Special Notice becomes `remarks`.
+The INTERPOL workbook (`interpol.xlsx`, sheet `INTERPOL`) is thin — only the
+notices' summary rows are pulled: `type`, `primary_name` and `dates_of_birth`
+line up with the other exports; `interpol_notice_id` replaces `ofac_id`;
+`un_reference` ties the row back to the UN Consolidated List (stage 3); and
+`notice_type`, `notice_url` and `image_url` are INTERPOL-specific.
 
 ### Tests
 
@@ -206,12 +207,11 @@ a UN cross-listing, ISO / year-range / non-Gregorian birth dates and contact
 info) and `sample_un_consolidated.xml` (4 individuals + 3 entities covering
 multi-part names, non-Latin scripts, exact / year-range / approximate birth
 dates, empty-alias placeholders and a trailing-space reference number).
-`sample_interpol.json` (3 Red Notices + 3 UN Special Notices covering partial
-birth dates, dual nationality, multi-warrant charges, physical description,
-original-script and family-name aliases, and a UN entity). The INTERPOL crawler
-is tested against an in-memory fake of the web service (`test_interpol_download.py`)
-that reproduces the ~160-result cap so the query partitioning is exercised
-offline.
+`sample_interpol.json` (4 UN Special Notice individuals + 2 entities covering
+exact / year-only / year-month / missing birth dates, a name with no forename,
+and a notice with no photo). The INTERPOL crawler is tested against an in-memory
+fake of the web service (`test_interpol_download.py`) that reproduces the
+~160-result cap so the `name` sweep is exercised offline.
 
 ## Architecture
 
@@ -222,7 +222,6 @@ src/sanctions_lists_etl/
   base.py        Source / SourceResult — the contract each list implements
   common/
     xmlutils.py  namespace-agnostic XML helpers (shared by all XML sources)
-    countries.py ISO 3166-1 alpha-2 code -> name lookup
     excel.py     generic single-sheet workbook writer
   sources/
     ofac/        OFAC SDN
@@ -231,7 +230,7 @@ src/sanctions_lists_etl/
       download.py  columns.py  parser.py  pipeline.py
     un/          UN Security Council Consolidated List
       download.py  columns.py  parser.py  pipeline.py
-    interpol/    INTERPOL Red Notices + UN Special Notices (JSON web service)
+    interpol/    INTERPOL UN Special Notices (JSON web service)
       download.py  columns.py  parser.py  pipeline.py
 ```
 
