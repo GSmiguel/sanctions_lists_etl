@@ -8,7 +8,7 @@ from sanctions_lists_etl.cli import main
 
 
 def test_sources_are_registered():
-    assert {"ofac", "eu", "un"} <= set(available_sources())
+    assert {"ofac", "eu", "un", "interpol"} <= set(available_sources())
 
 
 def test_run_source_end_to_end(sample_xml, tmp_path):
@@ -52,6 +52,21 @@ def test_run_un_source_end_to_end(sample_un_xml, tmp_path):
     assert result.counts_by_type == {"Individual": 4, "Entity": 3}
     assert result.xlsx_path.exists()
     assert load_workbook(result.xlsx_path)["UN"].max_row == 8
+
+
+def test_run_interpol_source_end_to_end(sample_interpol_json, tmp_path):
+    result = run_source(
+        "interpol",
+        output_dir=tmp_path,
+        raw_dir=tmp_path,
+        json_path=sample_interpol_json,
+        download=False,
+    )
+    assert result.source == "interpol"
+    assert result.record_count == 6
+    assert result.counts_by_type == {"Individual": 5, "Entity": 1}
+    assert result.xlsx_path.exists()
+    assert load_workbook(result.xlsx_path)["INTERPOL"].max_row == 7
 
 
 def test_cli_eu_requires_token_without_xml(tmp_path, capsys, monkeypatch):

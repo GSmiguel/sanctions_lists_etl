@@ -15,6 +15,7 @@ log = logging.getLogger(__name__)
 
 from .base import Source, SourceResult
 from .sources.eu import SOURCE as EU_SOURCE
+from .sources.interpol import SOURCE as INTERPOL_SOURCE
 from .sources.ofac import SOURCE as OFAC_SOURCE
 from .sources.un import SOURCE as UN_SOURCE
 
@@ -22,6 +23,7 @@ _SOURCES: dict[str, Source] = {
     OFAC_SOURCE.name: OFAC_SOURCE,
     EU_SOURCE.name: EU_SOURCE,
     UN_SOURCE.name: UN_SOURCE,
+    INTERPOL_SOURCE.name: INTERPOL_SOURCE,
 }
 
 DEFAULT_OUTPUT_DIR = Path("data/output")

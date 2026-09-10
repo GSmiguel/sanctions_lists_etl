@@ -1,7 +1,7 @@
 [project]
 name = "sanctions-lists-etl"
 version = "0.1.0"
-description = "ETL pipeline for public sanctions lists (OFAC SDN, EU FSF, UN Security Council)"
+description = "ETL pipeline for public sanctions lists (OFAC SDN, EU FSF, UN Security Council) and INTERPOL notices"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

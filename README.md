@@ -1,7 +1,8 @@
 # sanctions_lists_etl
 
 ETL pipeline for ingesting, normalizing, and consolidating public sanctions lists
-(e.g. OFAC SDN, EU consolidated list, UN Security Council).
+(e.g. OFAC SDN, EU consolidated list, UN Security Council) plus the INTERPOL
+notices used for screening.
 
 ## Stage 1 — OFAC SDN
 
@@ -66,6 +67,36 @@ Blob URL, so — like the OFAC endpoint — the file is fetched fresh each run. 
 credential is required.** `UN_CONSOLIDATED_URL` overrides the whole URL; every
 log line and the `.meta.json` sidecar store the URL with the signature stripped.
 
+## Stage 4 — INTERPOL notices
+
+Crawls the INTERPOL **public notices web service**
+(`https://ws-public.interpol.int/notices/v1`) — the undocumented JSON backend
+behind the "View Red Notices" and UN Special Notice search pages on
+interpol.int — and flattens every **Red Notice** and **UN Special Notice** into a
+single-sheet workbook with the same shared column layout as the other exports.
+No credential is required.
+
+These are **wanted-person / law-enforcement notices, not sanctions** (no asset
+freeze or trade ban); the list is here as a screening/adverse-media signal.
+
+The service is built for the website, not for export: every query returns **at
+most ~160 results and will not paginate past them**, and the `/notices/v1/un`
+list endpoint ignores its filter parameters. To pull a whole list the crawler
+recursively partitions the query space — Red Notices by `nationality`, then (only
+for a slice still over the cap) `sexId` → `forename` initial → two-letter
+`forename` → age bracket, plus a nationality-less `forename` sweep; UN persons by
+`name` substring — and de-duplicates on the notice id. **Coverage is high but not
+provably complete** (only *public* notices are exposed at all, and the residual
+the partitioning never reached is logged and recorded in `.meta.json`). Each
+notice's full record is then fetched individually, so a run makes **thousands of
+requests and takes ~30–60 min**; it retries HTTP 403/429/5xx with backoff (the
+edge rate-limits with 403 and can IP-block a heavy run for a while — raise
+`INTERPOL_REQUEST_DELAY` if that happens). `INTERPOL_REQUEST_DELAY` (seconds,
+default 0.5) paces the requests; `INTERPOL_API_BASE` overrides the service root.
+The service also rejects non-browser User-Agents, so this source sends a browser
+UA. The `.meta.json` sidecar records the SHA-256 of the snapshot, the notice
+counts and the coverage note.
+
 ### Usage
 
 Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/).
@@ -86,6 +117,10 @@ uv run sanctions-etl eu
 
 # just the UN list (no credential needed)
 uv run sanctions-etl un
+
+# just INTERPOL (no credential; slow — thousands of requests, ~30–60 min)
+uv run sanctions-etl interpol
+uv run sanctions-etl interpol --limit 20   # smoke test: only enrich 20 notices
 
 # parse a local file instead of downloading
 uv run sanctions-etl ofac --xml data/raw/sdn_advanced.xml
@@ -110,7 +145,8 @@ counts, Excel write); `-q`/`-v` adjust the level. Top-level flags
 (`--output-dir`, `--raw-dir`, `-q`, `-v`) go **before** the source name.
 
 Each source writes `<output-dir>/<source>.xlsx` (OFAC → `data/output/ofac_sdn.xlsx`,
-EU → `data/output/eu_fsf.xlsx`, UN → `data/output/un_consolidated.xlsx`).
+EU → `data/output/eu_fsf.xlsx`, UN → `data/output/un_consolidated.xlsx`,
+INTERPOL → `data/output/interpol.xlsx`).
 `data/raw/` keeps the downloaded source files plus a `.meta.json` sidecar
 recording SHA-256, size and download timestamp. Everything under `data/` is
 gitignored.
@@ -147,6 +183,16 @@ headers and swaps the rest: `un_reference_number` / `data_id` replace `ofac_id`,
 `remarks` with the "INTERPOL-UN Security Council Special Notice" boilerplate
 stripped.
 
+The INTERPOL workbook (`interpol.xlsx`, sheet `INTERPOL`) reuses `type`,
+`primary_name`, `aliases`, `dates_of_birth`, `places_of_birth`, `nationalities`,
+`gender`, `id_documents` and `remarks`; `interpol_notice_id` replaces `ofac_id`,
+and it adds `notice_type` (Red Notice / UN Special Notice), `un_reference` (the
+UN designation reference on a Special Notice), `charges` + `warrant_countries`
+(arrest-warrant text and the countries that issued it), `languages_spoken`,
+`physical_description`, `notice_url` and `image_url`. Country / eye / hair / a
+few language codes are expanded to names (`common/countries.py` and small maps in
+the parser); the narrative `summary` on a UN Special Notice becomes `remarks`.
+
 ### Tests
 
 ```bash
@@ -160,6 +206,12 @@ a UN cross-listing, ISO / year-range / non-Gregorian birth dates and contact
 info) and `sample_un_consolidated.xml` (4 individuals + 3 entities covering
 multi-part names, non-Latin scripts, exact / year-range / approximate birth
 dates, empty-alias placeholders and a trailing-space reference number).
+`sample_interpol.json` (3 Red Notices + 3 UN Special Notices covering partial
+birth dates, dual nationality, multi-warrant charges, physical description,
+original-script and family-name aliases, and a UN entity). The INTERPOL crawler
+is tested against an in-memory fake of the web service (`test_interpol_download.py`)
+that reproduces the ~160-result cap so the query partitioning is exercised
+offline.
 
 ## Architecture
 
@@ -170,6 +222,7 @@ src/sanctions_lists_etl/
   base.py        Source / SourceResult — the contract each list implements
   common/
     xmlutils.py  namespace-agnostic XML helpers (shared by all XML sources)
+    countries.py ISO 3166-1 alpha-2 code -> name lookup
     excel.py     generic single-sheet workbook writer
   sources/
     ofac/        OFAC SDN
@@ -177,6 +230,8 @@ src/sanctions_lists_etl/
     eu/          EU consolidated list (FSF)
       download.py  columns.py  parser.py  pipeline.py
     un/          UN Security Council Consolidated List
+      download.py  columns.py  parser.py  pipeline.py
+    interpol/    INTERPOL Red Notices + UN Special Notices (JSON web service)
       download.py  columns.py  parser.py  pipeline.py
 ```
 
