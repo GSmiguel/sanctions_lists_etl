@@ -31,6 +31,9 @@ uv run sanctions-etl ofac
 # parse a local file instead of downloading
 uv run sanctions-etl ofac --xml data/raw/sdn_advanced.xml
 
+# reuse the cached XML in data/raw/ instead of downloading a fresh copy
+uv run sanctions-etl ofac --no-download
+
 # individuals and entities only (drop vessels/aircraft)
 uv run sanctions-etl ofac --individuals-entities-only
 
