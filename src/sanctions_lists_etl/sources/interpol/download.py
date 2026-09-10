@@ -38,6 +38,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from ...common.meta import write_meta
+
 log = logging.getLogger(__name__)
 
 INTERPOL_API_BASE = "https://ws-public.interpol.int/notices/v1"
@@ -216,25 +218,19 @@ def _counts_by_kind(records: list[dict]) -> dict[str, int]:
 
 
 def _write_meta(dest: Path, result: DownloadResult, api_calls: int, seconds: float) -> None:
-    meta = dest.with_name(dest.name + ".meta.json")
-    meta.write_text(
-        json.dumps(
-            {
-                "sha256": result.sha256,
-                "size_bytes": result.size_bytes,
-                "downloaded_at": result.downloaded_at,
-                "url": result.url,
-                "notice_count": result.notice_count,
-                "counts_by_kind": result.counts_by_kind,
-                "coverage": result.coverage,
-                "api_calls": api_calls,
-                "crawl_seconds": round(seconds, 1),
-            },
-            indent=2,
-            ensure_ascii=False,
-        )
-        + "\n",
-        encoding="utf-8",
+    write_meta(
+        dest,
+        {
+            "sha256": result.sha256,
+            "size_bytes": result.size_bytes,
+            "downloaded_at": result.downloaded_at,
+            "url": result.url,
+            "notice_count": result.notice_count,
+            "counts_by_kind": result.counts_by_kind,
+            "coverage": result.coverage,
+            "api_calls": api_calls,
+            "crawl_seconds": round(seconds, 1),
+        },
     )
 
 
