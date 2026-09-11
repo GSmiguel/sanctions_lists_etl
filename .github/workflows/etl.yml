@@ -1,6 +1,6 @@
 name: etl
 
-# Daily refresh of every list except the slow INTERPOL crawl (see etl-interpol.yml).
+# Daily refresh of every registered source.
 # Outputs are uploaded as build artifacts for now; loading into BigQuery is P1.
 on:
   workflow_dispatch:
@@ -26,10 +26,10 @@ jobs:
           python-version: "3.12"
           enable-cache: true
       - run: uv sync --no-dev
-      - name: Run ETL (all sources except interpol)
+      - name: Run ETL (every registered source)
         env:
           EU_FSF_TOKEN: ${{ secrets.EU_FSF_TOKEN }}
-        run: uv run sanctions-etl --exclude interpol
+        run: uv run sanctions-etl
       - name: Upload workbooks
         if: always()
         uses: actions/upload-artifact@v4

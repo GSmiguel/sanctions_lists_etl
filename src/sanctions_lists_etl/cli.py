@@ -1,10 +1,10 @@
 """``sanctions-etl`` command line.
 
-sanctions-etl                        run every source
-sanctions-etl all                    same, explicit
-sanctions-etl all --exclude interpol run every source but one
-sanctions-etl ofac [opts]            run one source with its own flags
-sanctions-etl --list                 show registered sources
+sanctions-etl                   run every source
+sanctions-etl all               same, explicit
+sanctions-etl all --exclude eu  run every source but one
+sanctions-etl ofac [opts]       run one source with its own flags
+sanctions-etl --list            show registered sources
 """
 
 from __future__ import annotations
