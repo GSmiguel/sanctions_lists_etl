@@ -146,6 +146,9 @@ uv run sanctions-etl --list          # show registered sources
 uv run sanctions-etl --exclude uk    # run every source but one (repeatable)
 uv run sanctions-etl --output-dir OUT --raw-dir RAW   # override paths
 uv run sanctions-etl -q ofac         # -q quiet (warnings only), -v debug
+
+# also load into BigQuery (needs `uv sync --extra bigquery` and BQ_PROJECT set)
+BQ_PROJECT=sanctions-screening-508311 uv run sanctions-etl --bigquery
 ```
 
 Progress is logged to stderr as it runs (download progress, parsed-party
@@ -198,6 +201,40 @@ swaps the rest: `uk_unique_id` / `ofsi_group_id` / `un_reference_number` replace
 `name_original_script`, `last_updated`, `entity_type` / `parent_companies` /
 `subsidiaries`, `vessel_info` and `statement_of_reasons`.
 
+### BigQuery
+
+`--bigquery` (needs the optional `bigquery` extra: `uv sync --extra bigquery`)
+also loads each source's parsed rows into a single unified table,
+`{BQ_PROJECT}.{BQ_DATASET}.entries` — one row per sanctioned party per source
+per day its upstream snapshot changed (a dated-snapshot strategy, not a live
+sync). A source whose upstream is unchanged since the last run — the
+conditional-GET check in `common/download.py` — is skipped rather than
+reloaded. See `common/schema.py` for the field list and
+`common/sinks/bigquery.py` for the load strategy (`DELETE` then `INSERT` per
+`(source, snapshot_date)`, not `WRITE_TRUNCATE` on the whole day-partition,
+since sources refresh independently).
+
+```bash
+export BQ_PROJECT=sanctions-screening-508311   # required
+export BQ_DATASET=sanctions                    # optional, this is the default
+uv run sanctions-etl --bigquery                # every source
+uv run sanctions-etl --bigquery un             # just one
+```
+
+`entries` is partitioned by `snapshot_date` and clustered by
+`source, party_type, primary_name`; `snapshot_manifest` tracks each source's
+latest snapshot date, and the `entries_current` view joins against it so a
+reader gets the current state without scanning history.
+`scripts/gcp_bootstrap.sh` provisions all of this — dataset, tables, view,
+loader service account, Workload Identity Federation for GitHub Actions — and
+is idempotent (safe to re-run).
+
+BigQuery's zero-billing "sandbox" mode blocks `DELETE`/`MERGE` outright (not
+just the usual 60-day table expiry), so a billing account must be linked to
+the project for the loader to work at all. At this data volume the expected
+cost is $0/month — well within BigQuery's always-free tier (10 GB storage /
+1 TB queries per month).
+
 ### Tests and lint
 
 ```bash
@@ -211,18 +248,25 @@ pushes to `main`, against Python 3.11 and 3.12.
 
 ### Scheduled runs (GitHub Actions)
 
-**`etl.yml`** — daily (`workflow_dispatch` + cron), runs `sanctions-etl` and
-uploads the workbooks + `.meta.json` sidecars as a build artifact (retention 45
-days).
+**`etl.yml`** — daily (`workflow_dispatch` + cron), runs
+`sanctions-etl --bigquery` (loading into BigQuery — see above) and also
+uploads the workbooks + `.meta.json` sidecars as a build artifact (retention
+45 days).
 
-The EU list needs `EU_FSF_TOKEN` as a **repository secret**
+GCP auth uses **Workload Identity Federation**
+(`google-github-actions/auth`): the workflow exchanges its OIDC token for
+short-lived GCP credentials scoped to this one repo — no service account key
+is stored as a GitHub secret. The provider path and service account email
+hardcoded in the workflow aren't secrets; the security comes from the WIF
+provider's attribute condition (`assertion.repository ==
+'GSmiguel/sanctions_lists_etl'`), not from keeping them hidden.
+
+The EU list still needs `EU_FSF_TOKEN` as a **repository secret**
 (*Settings → Secrets and variables → Actions*); the workflow passes it to the
 run step as an environment variable, so nothing has to be exported locally. The
 token from the FSD web gate is short-lived — when it expires the `etl` run goes
-red on the EU step (the other lists still upload) until the secret is rotated.
-
-Loading the outputs into BigQuery instead of build artifacts is the next step
-(P1).
+red on the EU step (the other lists still load/upload) until the secret is
+rotated.
 
 Tests run against trimmed real exports in `tests/fixtures/`:
 `sample_sdn_advanced.xml` (4 OFAC parties, one of each type, full reference
@@ -254,24 +298,28 @@ src/sanctions_lists_etl/
     pipeline.py  SourceSpec + build_rows() (download->parse->flatten) + write_excel()
     records.py   flatten_row() — record dataclass -> "; "-joined row dict
     sortkeys.py  reference_sort_key() — order rows by designation reference
+    schema.py    ENTRIES_FIELDS — the unified BigQuery table's field list
     xmlutils.py  namespace-agnostic XML helpers (shared by all XML sources)
     excel.py     generic single-sheet workbook writer
+    sinks/
+      bigquery.py  BigQuerySink + load_bigquery() (the --bigquery sink)
   sources/
     ofac/        OFAC SDN + Consolidated (Non-SDN)
-      download.py  references.py  columns.py  parser.py  pipeline.py
+      download.py  references.py  columns.py  parser.py  pipeline.py  normalize.py
     eu/          EU consolidated list (FSF)
-      download.py  columns.py  parser.py  pipeline.py
+      download.py  columns.py  parser.py  pipeline.py  normalize.py
     un/          UN Security Council Consolidated List
-      download.py  columns.py  parser.py  pipeline.py
+      download.py  columns.py  parser.py  pipeline.py  normalize.py
     uk/          UK Sanctions List (FCDO)
-      download.py  columns.py  parser.py  pipeline.py
+      download.py  columns.py  parser.py  pipeline.py  normalize.py
 ```
 
 **Adding a list** (EU consolidated, UN Security Council, ...): create
 `sources/<name>/` with a `pipeline.py` that builds a `common.pipeline.SourceSpec`
 (filenames, headers, `parse` / `rows_from_records` / `sort_key`) and a
 `run(**opts) -> SourceResult` that calls `resolve_input` -> `build_rows` ->
-`write_excel`, exports a `SOURCE` object (`base.Source`: name, description, `run`,
-optional CLI hooks), and register it in `runner._SOURCES`. The CLI subcommand and
-`run_all` pick it up automatically. `download.py` is a thin wrapper over
-`common.download.fetch`.
+`write_excel` (then, if `bigquery=True`, `load_bigquery` using the source's own
+`normalize.py::to_normalized`), exports a `SOURCE` object (`base.Source`: name,
+description, `run`, optional CLI hooks), and register it in `runner._SOURCES`.
+The CLI subcommand and `run_all` pick it up automatically. `download.py` is a
+thin wrapper over `common.download.fetch`.
