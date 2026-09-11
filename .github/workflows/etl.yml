@@ -2,9 +2,9 @@ name: etl
 
 # Daily refresh of every registered source, loaded into BigQuery
 # (sanctions-screening-508311.sanctions) via Workload Identity Federation — no
-# service account key is stored anywhere. Workbooks are still uploaded as a
-# build artifact alongside the load. See scripts/gcp_bootstrap.sh for how the
-# GCP side (dataset/tables, service account, WIF pool+provider) was set up.
+# service account key is stored anywhere. Everything runs in memory: nothing is
+# written to disk. See scripts/gcp_bootstrap.sh for how the GCP side
+# (dataset/tables, service account, WIF pool+provider) was set up.
 on:
   workflow_dispatch:
   schedule:
@@ -43,13 +43,3 @@ jobs:
         env:
           EU_FSF_TOKEN: ${{ secrets.EU_FSF_TOKEN }}
         run: uv run sanctions-etl --bigquery
-      - name: Upload workbooks
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: sanctions-lists
-          path: |
-            data/output/*.xlsx
-            data/raw/*.meta.json
-          retention-days: 45
-          if-no-files-found: warn

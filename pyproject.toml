@@ -4,9 +4,7 @@ version = "0.1.0"
 description = "ETL pipeline for public sanctions lists (OFAC SDN + Non-SDN, EU FSF, UN Security Council, UK Sanctions List)"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = [
-    "openpyxl>=3.1",
-]
+dependencies = []
 
 [project.optional-dependencies]
 # Only needed for `--bigquery`; the default `uv sync` stays lightweight.

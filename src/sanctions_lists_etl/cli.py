@@ -13,18 +13,11 @@ import argparse
 import logging
 import os
 import sys
-from pathlib import Path
 from typing import Any
 
 from .base import SourceResult
 from .common.schema import DATASET_NAME
-from .runner import (
-    DEFAULT_OUTPUT_DIR,
-    DEFAULT_RAW_DIR,
-    available_sources,
-    get_source,
-    run_all,
-)
+from .runner import available_sources, get_source, run_all
 
 BQ_PROJECT_ENV = "BQ_PROJECT"
 BQ_DATASET_ENV = "BQ_DATASET"
@@ -33,16 +26,7 @@ BQ_DATASET_ENV = "BQ_DATASET"
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="sanctions-etl",
-        description="Download public sanctions lists and flatten them into Excel workbooks.",
-    )
-    parser.add_argument(
-        "--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR, help="where .xlsx files are written"
-    )
-    parser.add_argument(
-        "--raw-dir",
-        type=Path,
-        default=DEFAULT_RAW_DIR,
-        help="where downloaded source files are cached",
+        description="Download public sanctions lists and load them into BigQuery.",
     )
     parser.add_argument("--list", action="store_true", help="list registered sources and exit")
     parser.add_argument(
@@ -92,22 +76,13 @@ def main(argv: list[str] | None = None) -> int:
     try:
         bq_options = _bigquery_options(args)
         if args.source in (None, "all"):
-            results = run_all(
-                output_dir=args.output_dir,
-                raw_dir=args.raw_dir,
-                exclude=args.exclude,
-                **bq_options,
-            )
+            results = run_all(exclude=args.exclude, **bq_options)
         else:
             if args.exclude:
                 parser.error("--exclude only applies when running every source")
             source = get_source(args.source)
             options = source.options_from_args(args)
-            results = [
-                source.run(
-                    output_dir=args.output_dir, raw_dir=args.raw_dir, **options, **bq_options
-                )
-            ]
+            results = [source.run(**options, **bq_options)]
     except RuntimeError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
@@ -131,10 +106,10 @@ def _bigquery_options(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def _print_result(result: SourceResult) -> None:
-    print(f"[{result.source}] {result.record_count} records -> {result.xlsx_path}")
+    print(f"[{result.source}] {result.record_count} records")
     for party_type, count in sorted(result.counts_by_type.items()):
         print(f"    {party_type:<12} {count}")
-    # "bigquery" for single-workbook sources, "{list}_bigquery" for ofac's two.
+    # "bigquery" for single-list sources, "{list}_bigquery" for ofac's two.
     for key, value in sorted(result.metadata.items()):
         if key == "bigquery" or key.endswith("_bigquery"):
             print(f"    {key}: {value}")

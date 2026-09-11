@@ -8,8 +8,8 @@ which answers with a 302 redirect to a short-lived signed Azure Blob URL (a
 ``?sv=...&sig=...`` SAS query string), so — like the OFAC endpoint — the download
 has to be performed fresh each run rather than caching the redirect target.  No
 credential is required; the signature is minted by the redirect.  Every log line
-and the ``.meta.json`` sidecar store the URL with the query string stripped so
-the transient signature is never persisted.
+stores the URL with the query string stripped so the transient signature is
+never persisted.
 
 ``UN_CONSOLIDATED_URL`` overrides the whole URL if the endpoint ever moves.
 """
@@ -17,7 +17,6 @@ the transient signature is never persisted.
 from __future__ import annotations
 
 import os
-from pathlib import Path
 
 from ...common.download import FetchResult, Opener, fetch, strip_query
 
@@ -40,17 +39,14 @@ def resolve_url(url: str | None = None) -> str:
 
 
 def download_un_consolidated(
-    dest_dir: Path | str = "data/raw",
     *,
     url: str | None = None,
-    filename: str = "un_consolidated.xml",
     timeout: float = 300.0,
     opener: Opener | None = None,
 ) -> FetchResult:
-    """Fetch the UN consolidated list XML into ``dest_dir`` and record its metadata."""
+    """Fetch the UN consolidated list XML into memory."""
     return fetch(
         resolve_url(url),
-        Path(dest_dir) / filename,
         timeout=timeout,
         redact=redact,
         progress_every=_PROGRESS_EVERY,

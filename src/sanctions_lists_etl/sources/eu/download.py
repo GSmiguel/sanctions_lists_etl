@@ -8,8 +8,8 @@ The ``token`` query parameter is a **credential**: it authenticates the request
 in place of a normal login, so it must never be committed to the repository or
 written into a build artifact.  This module only ever reads it from the
 environment (``EU_FSF_TOKEN``) or a file pointed at by ``EU_FSF_TOKEN_FILE`` /
-``--token-file``, and every log line and metadata sidecar stores the URL with
-the query string stripped.
+``--token-file``, and every log line stores the URL with the query string
+stripped.
 """
 
 from __future__ import annotations
@@ -84,22 +84,18 @@ def resolve_url(*, token: str | None = None, url: str | None = None) -> str:
 
 
 def download_eu_fsf(
-    dest_dir: Path | str = "data/raw",
     *,
     token: str | None = None,
     url: str | None = None,
-    filename: str = "eu_fsf_full.xml",
     timeout: float = 300.0,
     opener: Opener | None = None,
 ) -> FetchResult:
-    """Fetch the full EU sanctions XML into ``dest_dir`` and record its metadata.
+    """Fetch the full EU sanctions XML into memory.
 
-    The sibling ``<filename>.meta.json`` stores the checksum, size, timestamp,
-    HTTP validators and the *redacted* URL.
+    The returned provenance stores the *redacted* URL (the token stripped).
     """
     return fetch(
         resolve_url(token=token, url=url),
-        Path(dest_dir) / filename,
         timeout=timeout,
         redact=redact,
         progress_every=_PROGRESS_EVERY,

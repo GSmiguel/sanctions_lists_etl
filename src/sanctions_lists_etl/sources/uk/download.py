@@ -18,7 +18,6 @@ data it used to carry now lives here (``AssetFreeze`` indicator, ``OFSIGroupID``
 from __future__ import annotations
 
 import os
-from pathlib import Path
 
 from ...common.download import FetchResult, Opener, fetch, strip_query
 
@@ -36,17 +35,14 @@ def resolve_url(url: str | None = None) -> str:
 
 
 def download_uk_sanctions(
-    dest_dir: Path | str = "data/raw",
     *,
     url: str | None = None,
-    filename: str = "uk_sanctions_list.xml",
     timeout: float = 300.0,
     opener: Opener | None = None,
 ) -> FetchResult:
-    """Fetch the UK Sanctions List XML into ``dest_dir`` and record its metadata."""
+    """Fetch the UK Sanctions List XML into memory."""
     return fetch(
         resolve_url(url),
-        Path(dest_dir) / filename,
         timeout=timeout,
         redact=strip_query,
         progress_every=_PROGRESS_EVERY,

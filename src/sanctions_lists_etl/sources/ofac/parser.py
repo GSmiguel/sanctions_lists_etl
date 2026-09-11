@@ -8,10 +8,10 @@ and are joined back onto the already-built records by profile id.
 
 from __future__ import annotations
 
+import io
 import logging
 from collections.abc import Iterable
 from dataclasses import dataclass, field
-from pathlib import Path
 from xml.etree.ElementTree import Element, iterparse
 
 log = logging.getLogger(__name__)
@@ -79,11 +79,12 @@ class PartyRecord:
 
 
 def parse_sdn_advanced(
-    source: Path | str,
+    source: bytes,
     *,
     party_types: Iterable[str] | None = None,
 ) -> list[PartyRecord]:
-    """Parse ``source`` and return one :class:`PartyRecord` per sanctioned party.
+    """Parse ``source`` (raw XML bytes) and return one :class:`PartyRecord` per
+    sanctioned party.
 
     ``party_types`` optionally restricts the output (e.g. ``{"Individual",
     "Entity"}``); by default every party type is kept.
@@ -98,8 +99,8 @@ def parse_sdn_advanced(
     seen_parties = 0
     seen_entries = 0
 
-    log.info("parsing %s", source)
-    for _, elem in iterparse(str(source), events=("end",)):
+    log.info("parsing %d bytes of XML", len(source))
+    for _, elem in iterparse(io.BytesIO(source), events=("end",)):
         tag = localname(elem.tag)
 
         if tag == "ReferenceValueSets":

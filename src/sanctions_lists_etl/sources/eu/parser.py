@@ -12,10 +12,10 @@ via :mod:`sanctions_lists_etl.common.xmlutils`).
 
 from __future__ import annotations
 
+import io
 import logging
 from collections.abc import Iterable
 from dataclasses import dataclass, field
-from pathlib import Path
 from xml.etree.ElementTree import Element, iterparse
 
 log = logging.getLogger(__name__)
@@ -71,11 +71,12 @@ class SanctionEntity:
 
 
 def parse_eu_fsf(
-    source: Path | str,
+    source: bytes,
     *,
     subject_types: Iterable[str] | None = None,
 ) -> list[SanctionEntity]:
-    """Parse ``source`` and return one :class:`SanctionEntity` per listed party.
+    """Parse ``source`` (raw XML bytes) and return one :class:`SanctionEntity`
+    per listed party.
 
     ``subject_types`` optionally restricts the output to the given
     ``subjectType/@code`` values (``"person"`` and/or ``"enterprise"``).
@@ -85,8 +86,8 @@ def parse_eu_fsf(
     records: list[SanctionEntity] = []
     seen = 0
 
-    log.info("parsing %s", source)
-    for _, elem in iterparse(str(source), events=("end",)):
+    log.info("parsing %d bytes of XML", len(source))
+    for _, elem in iterparse(io.BytesIO(source), events=("end",)):
         if localname(elem.tag) != "sanctionEntity":
             continue
         seen += 1

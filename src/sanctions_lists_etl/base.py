@@ -11,24 +11,17 @@ from __future__ import annotations
 import argparse
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Any
 
 
 @dataclass(frozen=True)
 class SourceResult:
-    """Outcome of running one source end to end.
-
-    ``xlsx_path`` is the primary workbook (kept for callers that predate multiple
-    sinks); ``outputs`` lists every file the run wrote, in the same order.
-    """
+    """Outcome of running one source end to end — no file artifact, just counts."""
 
     source: str
-    xlsx_path: Path
     record_count: int
     counts_by_type: dict[str, int] = field(default_factory=dict)
     metadata: dict[str, str] = field(default_factory=dict)
-    outputs: list[Path] = field(default_factory=list)
 
 
 ConfigureParser = Callable[[argparse.ArgumentParser], None]

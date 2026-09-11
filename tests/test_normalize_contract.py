@@ -48,7 +48,7 @@ _IDS = [c.name for c in CONTRACTS]
 
 def _rows(contract: Contract, request) -> list[dict]:
     sample = request.getfixturevalue(contract.fixture)
-    records = contract.parse(sample)
+    records = contract.parse(sample.read_bytes())
     assert records, f"{contract.name}: fixture produced no records"
     return [
         contract.to_normalized(
