@@ -1,9 +1,10 @@
 """``sanctions-etl`` command line.
 
-sanctions-etl                 run every source
-sanctions-etl all             same, explicit
-sanctions-etl ofac [opts]     run one source with its own flags
-sanctions-etl --list          show registered sources
+sanctions-etl                        run every source
+sanctions-etl all                    same, explicit
+sanctions-etl all --exclude interpol run every source but one
+sanctions-etl ofac [opts]            run one source with its own flags
+sanctions-etl --list                 show registered sources
 """
 
 from __future__ import annotations
@@ -38,6 +39,14 @@ def build_parser() -> argparse.ArgumentParser:
         help="where downloaded source files are cached",
     )
     parser.add_argument("--list", action="store_true", help="list registered sources and exit")
+    parser.add_argument(
+        "--exclude",
+        action="append",
+        default=[],
+        metavar="SOURCE",
+        choices=sorted(available_sources()),
+        help="skip this source when running all (repeatable)",
+    )
     parser.add_argument("-q", "--quiet", action="store_true", help="only log warnings and errors")
     parser.add_argument("-v", "--verbose", action="store_true", help="log debug-level detail")
 
@@ -68,8 +77,12 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         if args.source in (None, "all"):
-            results = run_all(output_dir=args.output_dir, raw_dir=args.raw_dir)
+            results = run_all(
+                output_dir=args.output_dir, raw_dir=args.raw_dir, exclude=args.exclude
+            )
         else:
+            if args.exclude:
+                parser.error("--exclude only applies when running every source")
             source = get_source(args.source)
             options = source.options_from_args(args)
             results = [source.run(output_dir=args.output_dir, raw_dir=args.raw_dir, **options)]

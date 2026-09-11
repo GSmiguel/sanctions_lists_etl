@@ -25,6 +25,7 @@ from xml.etree.ElementTree import Element, iterparse
 
 log = logging.getLogger(__name__)
 
+from ...common.records import flatten_row
 from ...common.xmlutils import child_text, children, first_child, localname
 from .columns import COLUMNS
 
@@ -123,18 +124,7 @@ class SanctionParty:
     other_information: str = ""
 
     def to_row(self) -> dict[str, str]:
-        row: dict[str, str] = {}
-        for attr, header in COLUMNS:
-            value = getattr(self, attr)
-            if isinstance(value, list):
-                seen: list[str] = []
-                for item in value:
-                    if item and item not in seen:
-                        seen.append(item)
-                row[header] = _LIST_SEP.join(seen)
-            else:
-                row[header] = value or ""
-        return row
+        return flatten_row(self, COLUMNS)
 
 
 def parse_uk_sanctions(

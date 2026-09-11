@@ -1,7 +1,7 @@
 """The contract every sanctions source implements.
 
 A source is a small bundle: a name, a description, a ``run`` callable that does
-the whole download -> parse -> Excel job, and two optional hooks that let it add
+the whole download -> parse -> load job, and two optional hooks that let it add
 its own CLI flags.  ``runner`` keeps a registry of these; ``cli`` turns each into
 a subcommand.
 """
@@ -17,13 +17,18 @@ from typing import Any
 
 @dataclass(frozen=True)
 class SourceResult:
-    """Outcome of running one source end to end."""
+    """Outcome of running one source end to end.
+
+    ``xlsx_path`` is the primary workbook (kept for callers that predate multiple
+    sinks); ``outputs`` lists every file the run wrote, in the same order.
+    """
 
     source: str
     xlsx_path: Path
     record_count: int
     counts_by_type: dict[str, int] = field(default_factory=dict)
     metadata: dict[str, str] = field(default_factory=dict)
+    outputs: list[Path] = field(default_factory=list)
 
 
 ConfigureParser = Callable[[argparse.ArgumentParser], None]

@@ -118,6 +118,41 @@ def test_cli_list(capsys):
     assert "ofac" in capsys.readouterr().out
 
 
+def test_run_all_exclude_skips_named_sources(monkeypatch, tmp_path):
+    ran: list[str] = []
+
+    def make_run(name):
+        def _run(*, output_dir, raw_dir, **_):
+            ran.append(name)
+            return SourceResult(source=name, xlsx_path=tmp_path / f"{name}.xlsx", record_count=0)
+
+        return _run
+
+    monkeypatch.setattr(
+        runner,
+        "_SOURCES",
+        {n: Source(name=n, description="", run=make_run(n)) for n in ("a", "b", "c")},
+    )
+
+    runner.run_all(output_dir=tmp_path, raw_dir=tmp_path, exclude=["b"])
+    assert ran == ["a", "c"]
+
+
+def test_run_all_exclude_rejects_unknown_source(monkeypatch, tmp_path):
+    monkeypatch.setattr(
+        runner, "_SOURCES", {"a": Source(name="a", description="", run=lambda **_: None)}
+    )
+    with pytest.raises(KeyError, match="nope"):
+        runner.run_all(output_dir=tmp_path, raw_dir=tmp_path, exclude=["nope"])
+
+
+def test_cli_exclude_only_with_all(sample_xml, capsys):
+    with pytest.raises(SystemExit) as exc:
+        main(["--exclude", "eu", "ofac", "--xml", str(sample_xml)])
+    assert exc.value.code == 2
+    assert "--exclude only applies" in capsys.readouterr().err
+
+
 def test_run_all_keeps_going_past_a_failing_source(monkeypatch, tmp_path):
     def ok_run(*, output_dir, raw_dir, **_):
         return SourceResult(source="ok", xlsx_path=tmp_path / "ok.xlsx", record_count=1)

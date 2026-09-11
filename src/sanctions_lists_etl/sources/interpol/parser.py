@@ -17,9 +17,8 @@ from typing import Any
 
 log = logging.getLogger(__name__)
 
+from ...common.records import flatten_row
 from .columns import COLUMNS
-
-_LIST_SEP = "; "
 
 _NOTICE_TYPE = "UN Special Notice"
 _ENTITY_KINDS = {"un-entity"}
@@ -37,18 +36,7 @@ class Notice:
     image_url: str = ""
 
     def to_row(self) -> dict[str, str]:
-        row: dict[str, str] = {}
-        for attr, header in COLUMNS:
-            value = getattr(self, attr)
-            if isinstance(value, list):
-                seen: list[str] = []
-                for item in value:
-                    if item and item not in seen:
-                        seen.append(item)
-                row[header] = _LIST_SEP.join(seen)
-            else:
-                row[header] = value or ""
-        return row
+        return flatten_row(self, COLUMNS)
 
 
 def parse_interpol(source: Path | str) -> list[Notice]:
