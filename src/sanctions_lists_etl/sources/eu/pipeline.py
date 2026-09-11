@@ -11,13 +11,16 @@ log = logging.getLogger(__name__)
 
 from ...base import Source, SourceResult
 from ...common.pipeline import SourceSpec, build_rows, resolve_input, write_excel
+from ...common.sinks.bigquery import load_bigquery
 from ...common.sortkeys import reference_sort_key
 from .columns import COLUMN_WIDTHS, HEADERS
 from .download import download_eu_fsf, redact
+from .normalize import to_normalized
 from .parser import parse_eu_fsf, rows_from_records
 
 NAME = "eu"
 DESCRIPTION = "EU consolidated financial sanctions list (FSF full XML)"
+BQ_SOURCE_KEY = "eu_fsf"
 PERSONS_ONLY = ("person",)
 ENTITIES_ONLY = ("enterprise",)
 
@@ -45,6 +48,9 @@ def run(
     download: bool = True,
     token: str | None = None,
     url: str | None = None,
+    bigquery: bool = False,
+    bq_project: str | None = None,
+    bq_dataset: str | None = None,
 ) -> SourceResult:
     """Run the EU pipeline end to end.
 
@@ -52,6 +58,7 @@ def run(
     downloaded into ``raw_dir`` (unless ``download`` is ``False`` and a cached
     file already exists).  ``token`` / ``url`` are only consulted when a download
     actually happens — see :mod:`.download` for how the token is resolved.
+    ``bigquery`` also loads the parsed rows into BigQuery.
     """
     log.info("[eu] starting")
     source_path, provenance = resolve_input(
@@ -71,6 +78,10 @@ def run(
         },
     )
     dest = write_excel(build, output_dir)
+    if bigquery:
+        load_bigquery(
+            build, to_normalized, source_key=BQ_SOURCE_KEY, project=bq_project, dataset=bq_dataset
+        )
     log.info("[eu] done -> %s", dest)
     return build.to_source_result([dest])
 

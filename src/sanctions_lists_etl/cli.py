@@ -11,10 +11,13 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
 import sys
 from pathlib import Path
+from typing import Any
 
 from .base import SourceResult
+from .common.schema import DATASET_NAME
 from .runner import (
     DEFAULT_OUTPUT_DIR,
     DEFAULT_RAW_DIR,
@@ -22,6 +25,9 @@ from .runner import (
     get_source,
     run_all,
 )
+
+BQ_PROJECT_ENV = "BQ_PROJECT"
+BQ_DATASET_ENV = "BQ_DATASET"
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -46,6 +52,14 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="SOURCE",
         choices=sorted(available_sources()),
         help="skip this source when running all (repeatable)",
+    )
+    parser.add_argument(
+        "--bigquery",
+        action="store_true",
+        help=(
+            "also load parsed rows into BigQuery (needs the 'bigquery' extra and "
+            f"{BQ_PROJECT_ENV} set; {BQ_DATASET_ENV} defaults to {DATASET_NAME!r})"
+        ),
     )
     parser.add_argument("-q", "--quiet", action="store_true", help="only log warnings and errors")
     parser.add_argument("-v", "--verbose", action="store_true", help="log debug-level detail")
@@ -76,16 +90,24 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     try:
+        bq_options = _bigquery_options(args)
         if args.source in (None, "all"):
             results = run_all(
-                output_dir=args.output_dir, raw_dir=args.raw_dir, exclude=args.exclude
+                output_dir=args.output_dir,
+                raw_dir=args.raw_dir,
+                exclude=args.exclude,
+                **bq_options,
             )
         else:
             if args.exclude:
                 parser.error("--exclude only applies when running every source")
             source = get_source(args.source)
             options = source.options_from_args(args)
-            results = [source.run(output_dir=args.output_dir, raw_dir=args.raw_dir, **options)]
+            results = [
+                source.run(
+                    output_dir=args.output_dir, raw_dir=args.raw_dir, **options, **bq_options
+                )
+            ]
     except RuntimeError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
@@ -95,10 +117,27 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
+def _bigquery_options(args: argparse.Namespace) -> dict[str, Any]:
+    if not args.bigquery:
+        return {"bigquery": False}
+    project = os.environ.get(BQ_PROJECT_ENV)
+    if not project:
+        raise RuntimeError(f"--bigquery requires {BQ_PROJECT_ENV} to be set")
+    return {
+        "bigquery": True,
+        "bq_project": project,
+        "bq_dataset": os.environ.get(BQ_DATASET_ENV, DATASET_NAME),
+    }
+
+
 def _print_result(result: SourceResult) -> None:
     print(f"[{result.source}] {result.record_count} records -> {result.xlsx_path}")
     for party_type, count in sorted(result.counts_by_type.items()):
         print(f"    {party_type:<12} {count}")
+    # "bigquery" for single-workbook sources, "{list}_bigquery" for ofac's two.
+    for key, value in sorted(result.metadata.items()):
+        if key == "bigquery" or key.endswith("_bigquery"):
+            print(f"    {key}: {value}")
 
 
 if __name__ == "__main__":
