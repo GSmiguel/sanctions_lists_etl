@@ -1,7 +1,10 @@
 name: etl
 
-# Daily refresh of every registered source.
-# Outputs are uploaded as build artifacts for now; loading into BigQuery is P1.
+# Daily refresh of every registered source, loaded into BigQuery
+# (sanctions-screening-508311.sanctions) via Workload Identity Federation — no
+# service account key is stored anywhere. Workbooks are still uploaded as a
+# build artifact alongside the load. See scripts/gcp_bootstrap.sh for how the
+# GCP side (dataset/tables, service account, WIF pool+provider) was set up.
 on:
   workflow_dispatch:
   schedule:
@@ -9,10 +12,15 @@ on:
 
 permissions:
   contents: read
+  id-token: write  # required to mint the WIF token
 
 concurrency:
   group: etl
   cancel-in-progress: false
+
+env:
+  BQ_PROJECT: sanctions-screening-508311
+  BQ_DATASET: sanctions
 
 jobs:
   run:
@@ -20,16 +28,21 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+      - name: Authenticate to GCP (Workload Identity Federation)
+        uses: google-github-actions/auth@v3.0.0
+        with:
+          workload_identity_provider: projects/750884087789/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
+          service_account: sanctions-etl-loader@sanctions-screening-508311.iam.gserviceaccount.com
       - name: Install uv
         uses: astral-sh/setup-uv@v10.1.0
         with:
           python-version: "3.12"
           enable-cache: true
-      - run: uv sync --no-dev
-      - name: Run ETL (every registered source)
+      - run: uv sync --no-dev --extra bigquery
+      - name: Run ETL (every registered source, loaded into BigQuery)
         env:
           EU_FSF_TOKEN: ${{ secrets.EU_FSF_TOKEN }}
-        run: uv run sanctions-etl
+        run: uv run sanctions-etl --bigquery
       - name: Upload workbooks
         if: always()
         uses: actions/upload-artifact@v4

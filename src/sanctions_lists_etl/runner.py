@@ -60,19 +60,21 @@ def run_sources(
     output_dir: Path | str = DEFAULT_OUTPUT_DIR,
     raw_dir: Path | str = DEFAULT_RAW_DIR,
     keep_going: bool = False,
+    **options: Any,
 ) -> list[SourceResult]:
     """Run each named source in turn.
 
     With ``keep_going`` a source that raises is logged and skipped rather than
     aborting the batch; the collected failures are re-raised as one
     :class:`RuntimeError` once every source has had its turn, so a run that is
-    missing a list still exits non-zero.
+    missing a list still exits non-zero.  ``options`` (e.g. ``bigquery=True``)
+    is forwarded to every source's ``run()``.
     """
     results: list[SourceResult] = []
     failures: list[str] = []
     for name in names:
         try:
-            results.append(run_source(name, output_dir=output_dir, raw_dir=raw_dir))
+            results.append(run_source(name, output_dir=output_dir, raw_dir=raw_dir, **options))
         except Exception as exc:  # noqa: BLE001 - surfaced below
             if not keep_going:
                 raise
@@ -89,12 +91,14 @@ def run_all(
     raw_dir: Path | str = DEFAULT_RAW_DIR,
     keep_going: bool = True,
     exclude: Iterable[str] = (),
+    **options: Any,
 ) -> list[SourceResult]:
     """Run every registered source with its defaults.
 
-    ``exclude`` drops named sources from the batch.  One source failing (e.g. the
-    EU list without ``EU_FSF_TOKEN`` set) does not stop the others; the run still
-    ends with an error listing what failed.
+    ``exclude`` drops named sources from the batch. ``options`` (e.g.
+    ``bigquery=True``) is forwarded to every source's ``run()``. One source
+    failing (e.g. the EU list without ``EU_FSF_TOKEN`` set) does not stop the
+    others; the run still ends with an error listing what failed.
     """
     skip = {name for name in exclude}
     unknown = skip - set(_SOURCES)
@@ -104,4 +108,6 @@ def run_all(
             f"available: {', '.join(sorted(_SOURCES))}"
         )
     names = [name for name in _SOURCES if name not in skip]
-    return run_sources(names, output_dir=output_dir, raw_dir=raw_dir, keep_going=keep_going)
+    return run_sources(
+        names, output_dir=output_dir, raw_dir=raw_dir, keep_going=keep_going, **options
+    )

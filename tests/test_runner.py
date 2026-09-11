@@ -138,6 +138,54 @@ def test_cli_exclude_only_with_all(sample_xml, capsys):
     assert "--exclude only applies" in capsys.readouterr().err
 
 
+def test_cli_bigquery_requires_project_env(sample_xml, tmp_path, capsys, monkeypatch):
+    monkeypatch.delenv("BQ_PROJECT", raising=False)
+    exit_code = main(
+        [
+            "--output-dir",
+            str(tmp_path),
+            "--raw-dir",
+            str(tmp_path),
+            "--bigquery",
+            "ofac",
+            "--xml",
+            str(sample_xml),
+        ]
+    )
+    assert exit_code == 1
+    assert "BQ_PROJECT" in capsys.readouterr().err
+
+
+def test_cli_bigquery_flag_reaches_source_run(tmp_path, monkeypatch):
+    monkeypatch.setenv("BQ_PROJECT", "proj")
+    monkeypatch.delenv("BQ_DATASET", raising=False)
+    seen: dict = {}
+
+    def fake_run(*, output_dir, raw_dir, bigquery=False, bq_project=None, bq_dataset=None, **_):
+        seen.update(bigquery=bigquery, bq_project=bq_project, bq_dataset=bq_dataset)
+        return SourceResult(source="ofac", xlsx_path=tmp_path / "x.xlsx", record_count=0)
+
+    monkeypatch.setattr(
+        runner,
+        "_SOURCES",
+        {
+            "ofac": Source(
+                name="ofac",
+                description="",
+                run=fake_run,
+                configure_parser=lambda p: None,
+                options_from_args=lambda a: {},
+            )
+        },
+    )
+
+    exit_code = main(
+        ["--output-dir", str(tmp_path), "--raw-dir", str(tmp_path), "--bigquery", "ofac"]
+    )
+    assert exit_code == 0
+    assert seen == {"bigquery": True, "bq_project": "proj", "bq_dataset": "sanctions"}
+
+
 def test_run_all_keeps_going_past_a_failing_source(monkeypatch, tmp_path):
     def ok_run(*, output_dir, raw_dir, **_):
         return SourceResult(source="ok", xlsx_path=tmp_path / "ok.xlsx", record_count=1)

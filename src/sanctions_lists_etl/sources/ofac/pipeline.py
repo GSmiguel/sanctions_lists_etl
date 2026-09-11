@@ -24,9 +24,11 @@ log = logging.getLogger(__name__)
 
 from ...base import Source, SourceResult
 from ...common.pipeline import SourceSpec, build_rows, resolve_input, write_excel
+from ...common.sinks.bigquery import load_bigquery
 from ...common.sortkeys import reference_sort_key
 from .columns import COLUMN_WIDTHS, HEADERS
 from .download import CONS_ADVANCED_URL, SDN_ADVANCED_URL, download_advanced_xml
+from .normalize import to_normalized
 from .parser import parse_sdn_advanced, rows_from_records
 
 NAME = "ofac"
@@ -36,6 +38,8 @@ INDIVIDUALS_AND_ENTITIES = ("Individual", "Entity")
 ALL_LISTS = ("sdn", "consolidated")
 
 _URLS = {"sdn": SDN_ADVANCED_URL, "consolidated": CONS_ADVANCED_URL}
+# common.schema.SOURCE_KEYS — the BigQuery `source` value for each sub-list.
+_BQ_SOURCE_KEYS = {"sdn": "ofac_sdn", "consolidated": "ofac_consolidated"}
 
 
 def _spec(description: str, raw_filename: str, output_filename: str, sheet: str) -> SourceSpec:
@@ -77,6 +81,9 @@ def run(
     party_types: tuple[str, ...] | None = None,
     download: bool = True,
     lists: tuple[str, ...] = ALL_LISTS,
+    bigquery: bool = False,
+    bq_project: str | None = None,
+    bq_dataset: str | None = None,
 ) -> SourceResult:
     """Run the OFAC pipeline end to end for each requested list.
 
@@ -84,7 +91,9 @@ def run(
     If ``xml_path`` is given it is parsed as the SDN list (a local file cannot
     imply more than one list); otherwise a fresh copy of each list is downloaded
     into ``raw_dir`` unless ``download`` is ``False`` and a cache already exists.
-    Each list is written to its own workbook.
+    Each list is written to its own workbook.  ``bigquery`` also loads each
+    list's rows into BigQuery, keyed by its own `source` (``ofac_sdn`` /
+    ``ofac_consolidated``).
     """
     log.info("[ofac] starting")
     selected = ("sdn",) if xml_path is not None else lists
@@ -92,7 +101,7 @@ def run(
         raise ValueError("no OFAC list selected")
 
     filter_label = ", ".join(party_types) if party_types else "(all)"
-    builds: list[tuple[str, Path, int]] = []
+    builds: list[tuple[str, Path, int, str]] = []
     merged: Counter[str] = Counter()
 
     for key in selected:
@@ -114,19 +123,28 @@ def run(
             extra_metadata={"party_type_filter": filter_label},
         )
         dest = write_excel(build, output_dir)
+        if bigquery:
+            load_bigquery(
+                build,
+                to_normalized,
+                source_key=_BQ_SOURCE_KEYS[key],
+                project=bq_project,
+                dataset=bq_dataset,
+            )
         log.info("[ofac] %s done -> %s", key, dest)
-        builds.append((key, dest, build.record_count))
+        builds.append((key, dest, build.record_count, build.metadata.get("bigquery", "")))
         merged.update(build.counts_by_type)
 
-    total = sum(count for _, _, count in builds)
+    total = sum(count for _, _, count, _ in builds)
     summary = {
         "source": DESCRIPTION,
         "generated_at": dt.datetime.now(dt.UTC).isoformat(timespec="seconds"),
-        "lists_built": ", ".join(key for key, _, _ in builds),
+        "lists_built": ", ".join(key for key, _, _, _ in builds),
         "record_count": str(total),
         "party_type_filter": filter_label,
-        **{f"{key}_xlsx": str(dest) for key, dest, _ in builds},
-        **{f"{key}_record_count": str(count) for key, _, count in builds},
+        **{f"{key}_xlsx": str(dest) for key, dest, _, _ in builds},
+        **{f"{key}_record_count": str(count) for key, _, count, _ in builds},
+        **({f"{key}_bigquery": outcome for key, _, _, outcome in builds} if bigquery else {}),
     }
     return SourceResult(
         source=NAME,
@@ -134,7 +152,7 @@ def run(
         record_count=total,
         counts_by_type=dict(merged),
         metadata=summary,
-        outputs=[dest for _, dest, _ in builds],
+        outputs=[dest for _, dest, _, _ in builds],
     )
 
 
