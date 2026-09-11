@@ -219,6 +219,20 @@ reader gets the current state without scanning history.
 loader service account, Workload Identity Federation for GitHub Actions — and
 is idempotent (safe to re-run).
 
+**`entries` vs. `entries_current` — query the right one.** `entries` is an
+append-only history log: the same `uid` gets a new row every day it is
+(re)loaded, so filtering it by `uid` alone returns one row per snapshot, old
+values and all — nothing there is ever updated or deleted in place, by design.
+`entries_current` is what "current state" queries should hit instead: since it
+only ever surfaces each source's *latest* snapshot, an entity whose data
+changed shows only its newest values (the older row is still in `entries`, just
+not in this view), and an entity OFAC/EU/UN/UK delisted simply has no row at
+the latest snapshot date and drops out of the view on its own — no explicit
+delete needed. There's no tombstone recording *when* or *that* something was
+delisted, though — reconstructing that today means diffing `uid` sets across
+consecutive `snapshot_date`s yourself (`entries_changes`, a ready-made diff
+view, is backlog, not built).
+
 BigQuery's zero-billing "sandbox" mode blocks `DELETE`/`MERGE` outright (not
 just the usual 60-day table expiry), so a billing account must be linked to
 the project for the loader to work at all. At this data volume the expected
