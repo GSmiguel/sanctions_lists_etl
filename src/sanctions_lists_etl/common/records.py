@@ -33,3 +33,20 @@ def flatten_row(record: object, columns: Sequence[tuple[str, str]]) -> dict[str,
         else:
             row[header] = value or ""
     return row
+
+
+def as_array(value: object) -> list[str]:
+    """Coerce a record attribute (list or scalar) into a clean ``list[str]``.
+
+    Used by ``to_normalized`` functions to fill BigQuery ``REPEATED`` fields:
+    a list is de-duplicated and stripped of falsy items (same rule as
+    :func:`flatten_row`, just not joined into one string); a scalar becomes a
+    single-item list, or ``[]`` if falsy.
+    """
+    if isinstance(value, list):
+        seen: list[str] = []
+        for item in value:
+            if item and item not in seen:
+                seen.append(str(item))
+        return seen
+    return [str(value)] if value else []
