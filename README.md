@@ -1,8 +1,8 @@
 # sanctions_lists_etl
 
-ETL pipeline for ingesting, normalizing, and consolidating public sanctions lists
-(e.g. OFAC SDN + Non-SDN, EU consolidated list, UN Security Council, UK Sanctions
-List) plus the INTERPOL–UN Special Notices used for screening.
+ETL pipeline for ingesting, normalizing, and consolidating public sanctions lists:
+OFAC SDN + Non-SDN, EU consolidated list, UN Security Council, and UK Sanctions
+List.
 
 ## Stage 1 — OFAC SDN + Consolidated (Non-SDN)
 
@@ -73,41 +73,7 @@ Blob URL, so — like the OFAC endpoint — the file is fetched fresh each run. 
 credential is required.** `UN_CONSOLIDATED_URL` overrides the whole URL; every
 log line and the `.meta.json` sidecar store the URL with the signature stripped.
 
-## Stage 4 — INTERPOL UN Special Notices
-
-Crawls the INTERPOL **public notices web service**
-(`https://ws-public.interpol.int/notices/v1/un`) — the undocumented JSON backend
-behind the UN Special Notice search page on interpol.int — and flattens every
-**UN Special Notice** (`INDIVIDUAL` and `ENTITY`) into a single-sheet workbook.
-No credential is required.
-
-INTERPOL–UN Special Notices are issued for parties on the **UN Consolidated List**
-(stage 3); this export carries INTERPOL's own notice id and photo URL keyed to
-the `un_reference` (e.g. `SDi.011`, `QDe.001`), so it cross-references stage 3
-rather than duplicating it. It is a screening / photo-lookup aid, not a sanctions
-list in its own right.
-
-Only the notices' **summary** rows are pulled — id, name, date of birth,
-`un_reference`, notice and image URLs. The per-notice detail records (charges,
-aliases, physical description, narrative) are deliberately not fetched.
-
-The service is built for the website, not for export: every query returns **at
-most ~160 results and will not paginate past them**, and it honours only the
-`name` filter (a substring match). So the crawler sweeps `name` over one letter,
-then two letters for any slice still over the cap, and de-duplicates on
-`entity_id`; `/un/entities` (~110 rows) comes back in one page and is fetched
-directly as a safety net. **Coverage is high but not provably complete** (only
-*public* notices are exposed, and the collected-vs-reported gap is logged and
-recorded in `.meta.json`). A run makes a few hundred requests (~5 min).
-
-It retries HTTP 403/429/5xx with backoff — the edge (Akamai) rate-limits with 403
-and can IP-block for a while, so raise `INTERPOL_REQUEST_DELAY` (seconds, default
-0.5) if that happens; once retries are exhausted the crawler fails with a clean
-error. `INTERPOL_API_BASE` overrides the service root. The service also rejects
-non-browser User-Agents, so this source sends a browser UA. The `.meta.json`
-sidecar records the SHA-256, the notice counts and the coverage note.
-
-## Stage 5 — UK Sanctions List
+## Stage 4 — UK Sanctions List
 
 Downloads the FCDO **UK Sanctions List** full XML from
 `https://sanctionslist.fcdo.gov.uk/docs/UK-Sanctions-List.xml` and flattens every
@@ -161,11 +127,6 @@ uv run sanctions-etl uk
 uv run sanctions-etl ofac --list sdn
 uv run sanctions-etl ofac --list consolidated
 
-# just INTERPOL UN Special Notices (no credential; ~5 min)
-uv run sanctions-etl interpol
-uv run sanctions-etl interpol --limit 20   # smoke test: keep only 20 notices
-uv run sanctions-etl interpol --json data/raw/interpol.json   # parse a local snapshot
-
 # parse a local file instead of downloading
 uv run sanctions-etl ofac --xml data/raw/sdn_advanced.xml   # parsed as the SDN list
 uv run sanctions-etl eu --xml data/raw/eu_fsf_full.xml
@@ -182,7 +143,7 @@ uv run sanctions-etl un --individuals-only              # or --entities-only
 uv run sanctions-etl uk --individuals-only              # or --entities-only / --no-ships
 
 uv run sanctions-etl --list          # show registered sources
-uv run sanctions-etl --exclude interpol   # run every source but the slow INTERPOL crawl
+uv run sanctions-etl --exclude uk    # run every source but one (repeatable)
 uv run sanctions-etl --output-dir OUT --raw-dir RAW   # override paths
 uv run sanctions-etl -q ofac         # -q quiet (warnings only), -v debug
 ```
@@ -193,7 +154,7 @@ counts, Excel write); `-q`/`-v` adjust the level. Top-level flags
 
 Each source writes to `<output-dir>/` (OFAC → `ofac_sdn.xlsx` +
 `ofac_consolidated.xlsx`, EU → `eu_fsf.xlsx`, UN → `un_consolidated.xlsx`,
-UK → `uk_sanctions.xlsx`, INTERPOL → `interpol.xlsx`).
+UK → `uk_sanctions.xlsx`).
 `data/raw/` keeps the downloaded source files plus a `.meta.json` sidecar
 recording SHA-256, size and download timestamp. Everything under `data/` is
 gitignored.
@@ -230,12 +191,6 @@ headers and swaps the rest: `un_reference_number` / `data_id` replace `ofac_id`,
 `remarks` with the "INTERPOL-UN Security Council Special Notice" boilerplate
 stripped.
 
-The INTERPOL workbook (`interpol.xlsx`, sheet `INTERPOL`) is thin — only the
-notices' summary rows are pulled: `type`, `primary_name` and `dates_of_birth`
-line up with the other exports; `interpol_notice_id` replaces `ofac_id`;
-`un_reference` ties the row back to the UN Consolidated List (stage 3); and
-`notice_type`, `notice_url` and `image_url` are INTERPOL-specific.
-
 The UK workbook (`uk_sanctions.xlsx`, sheet `UK`) reuses the shared headers and
 swaps the rest: `uk_unique_id` / `ofsi_group_id` / `un_reference_number` replace
 `ofac_id`, `programmes` holds the UK sanctions regime (`RegimeName`), and it adds
@@ -256,11 +211,9 @@ pushes to `main`, against Python 3.11 and 3.12.
 
 ### Scheduled runs (GitHub Actions)
 
-- **`etl.yml`** — daily (`workflow_dispatch` + cron), runs
-  `sanctions-etl --exclude interpol` and uploads the workbooks + `.meta.json`
-  sidecars as a build artifact (retention 45 days).
-- **`etl-interpol.yml`** — weekly, the INTERPOL crawl on its own (slow, and the
-  service rate-limits shared runner IPs with HTTP 403).
+**`etl.yml`** — daily (`workflow_dispatch` + cron), runs `sanctions-etl` and
+uploads the workbooks + `.meta.json` sidecars as a build artifact (retention 45
+days).
 
 The EU list needs `EU_FSF_TOKEN` as a **repository secret**
 (*Settings → Secrets and variables → Actions*); the workflow passes it to the
@@ -278,15 +231,12 @@ a UN cross-listing, ISO / year-range / non-Gregorian birth dates and contact
 info) and `sample_un_consolidated.xml` (4 individuals + 3 entities covering
 multi-part names, non-Latin scripts, exact / year-range / approximate birth
 dates, empty-alias placeholders and a trailing-space reference number).
-`sample_interpol.json` (4 UN Special Notice individuals + 2 entities covering
-exact / year-only / year-month / missing birth dates, a name with no forename,
-and a notice with no photo) and `sample_uk_sanctions.xml` (2 individuals + 2
-entities + 1 ship covering multi-part and non-Latin names, `Primary Name
-Variation` / weak-alias annotations, the `dd/mm/yyyy` placeholder birth-date
-formats, duplicate passport rows, entity parent/subsidiary details, ship IMO /
-flag / dimensions and the INTERPOL notice-pointer scrub). The INTERPOL crawler is
-tested against an in-memory fake of the web service (`test_interpol_download.py`)
-that reproduces the ~160-result cap so the `name` sweep is exercised offline.
+`sample_uk_sanctions.xml` (2 individuals + 2 entities + 1 ship covering
+multi-part and non-Latin names, `Primary Name Variation` / weak-alias
+annotations, the `dd/mm/yyyy` placeholder birth-date formats, duplicate passport
+rows, entity parent/subsidiary details, ship IMO / flag / dimensions and the
+INTERPOL notice-pointer scrub — the UK list's own `OtherInformation` field, not
+the (removed) INTERPOL source).
 `test_contract.py` pins the cross-source invariant that every source's
 `COLUMNS` / `HEADERS` stay in sync and that its flattened rows carry exactly the
 declared headers.
@@ -314,8 +264,6 @@ src/sanctions_lists_etl/
     un/          UN Security Council Consolidated List
       download.py  columns.py  parser.py  pipeline.py
     uk/          UK Sanctions List (FCDO)
-      download.py  columns.py  parser.py  pipeline.py
-    interpol/    INTERPOL UN Special Notices (JSON web service)
       download.py  columns.py  parser.py  pipeline.py
 ```
 

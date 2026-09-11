@@ -24,8 +24,6 @@ from openpyxl import load_workbook
 from sanctions_lists_etl import run_source
 from sanctions_lists_etl.sources.eu import columns as eu_columns
 from sanctions_lists_etl.sources.eu import parser as eu_parser
-from sanctions_lists_etl.sources.interpol import columns as interpol_columns
-from sanctions_lists_etl.sources.interpol import parser as interpol_parser
 from sanctions_lists_etl.sources.ofac import columns as ofac_columns
 from sanctions_lists_etl.sources.ofac import parser as ofac_parser
 from sanctions_lists_etl.sources.uk import columns as uk_columns
@@ -90,17 +88,6 @@ CONTRACTS: list[Contract] = [
         "sample_uk_xml",
         "xml_path",
         "UK",
-    ),
-    Contract(
-        "interpol",
-        interpol_parser.Notice,
-        interpol_columns.COLUMNS,
-        interpol_columns.HEADERS,
-        interpol_parser.parse_interpol,
-        interpol_parser.rows_from_records,
-        "sample_interpol_json",
-        "json_path",
-        "INTERPOL",
     ),
 ]
 

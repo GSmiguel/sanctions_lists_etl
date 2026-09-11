@@ -16,7 +16,6 @@ log = logging.getLogger(__name__)
 
 from .base import Source, SourceResult
 from .sources.eu import SOURCE as EU_SOURCE
-from .sources.interpol import SOURCE as INTERPOL_SOURCE
 from .sources.ofac import SOURCE as OFAC_SOURCE
 from .sources.uk import SOURCE as UK_SOURCE
 from .sources.un import SOURCE as UN_SOURCE
@@ -26,7 +25,6 @@ _SOURCES: dict[str, Source] = {
     EU_SOURCE.name: EU_SOURCE,
     UN_SOURCE.name: UN_SOURCE,
     UK_SOURCE.name: UK_SOURCE,
-    INTERPOL_SOURCE.name: INTERPOL_SOURCE,
 }
 
 DEFAULT_OUTPUT_DIR = Path("data/output")
@@ -94,10 +92,9 @@ def run_all(
 ) -> list[SourceResult]:
     """Run every registered source with its defaults.
 
-    ``exclude`` drops named sources from the batch (e.g. the slow INTERPOL crawl
-    on a daily schedule).  One source failing (e.g. the EU list without
-    ``EU_FSF_TOKEN`` set) does not stop the others; the run still ends with an
-    error listing what failed.
+    ``exclude`` drops named sources from the batch.  One source failing (e.g. the
+    EU list without ``EU_FSF_TOKEN`` set) does not stop the others; the run still
+    ends with an error listing what failed.
     """
     skip = {name for name in exclude}
     unknown = skip - set(_SOURCES)
