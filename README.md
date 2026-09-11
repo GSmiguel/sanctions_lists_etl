@@ -2,7 +2,9 @@
 
 ETL pipeline for ingesting, normalizing, and consolidating public sanctions lists:
 OFAC SDN + Non-SDN, EU consolidated list, UN Security Council, and UK Sanctions
-List.
+List — into a unified schema loaded into BigQuery. The whole pipeline runs
+entirely in memory: nothing is downloaded or cached to disk (see
+[BigQuery](#bigquery) below).
 
 ## Stage 1 — OFAC SDN + Consolidated (Non-SDN)
 
@@ -269,8 +271,8 @@ rows, entity parent/subsidiary details, ship IMO / flag / dimensions and the
 INTERPOL notice-pointer scrub — the UK list's own `OtherInformation` field, not
 the (removed) INTERPOL source).
 `test_contract.py` pins the cross-source invariant that every source's
-`COLUMNS` / `HEADERS` stay in sync and that its flattened rows carry exactly the
-declared headers.
+`COLUMNS` maps real attributes to unique headers and that its flattened rows
+carry exactly those headers.
 
 ## Architecture
 
