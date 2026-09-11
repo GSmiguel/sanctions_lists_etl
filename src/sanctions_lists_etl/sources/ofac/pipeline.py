@@ -1,4 +1,4 @@
-"""OFAC source: the SDN and Consolidated (Non-SDN) advanced XML -> flat Excel.
+"""OFAC source: the SDN and Consolidated (Non-SDN) advanced XML -> BigQuery.
 
 OFAC publishes two lists in the same advanced-XML schema:
 
@@ -6,9 +6,8 @@ OFAC publishes two lists in the same advanced-XML schema:
 * **Consolidated / Non-SDN** — SSI, Non-SDN CMIC, Non-SDN Menu-Based Sanctions,
   Non-SDN Palestinian Legislative Council and CAPTA lists (``cons_advanced.xml``).
 
-Both are parsed by the same :func:`~.parser.parse_sdn_advanced` and written with
-the same column layout; each list gets its own workbook.  ``--list`` selects
-which to build (default: both).
+Both are parsed by the same :func:`~.parser.parse_sdn_advanced`.  ``--list``
+selects which to build (default: both).
 """
 
 from __future__ import annotations
@@ -23,10 +22,9 @@ from typing import Any
 log = logging.getLogger(__name__)
 
 from ...base import Source, SourceResult
-from ...common.pipeline import SourceSpec, build_rows, resolve_input, write_excel
+from ...common.pipeline import SourceSpec, build_rows, resolve_input
 from ...common.sinks.bigquery import load_bigquery
 from ...common.sortkeys import reference_sort_key
-from .columns import COLUMN_WIDTHS, HEADERS
 from .download import CONS_ADVANCED_URL, SDN_ADVANCED_URL, download_advanced_xml
 from .normalize import to_normalized
 from .parser import parse_sdn_advanced, rows_from_records
@@ -42,15 +40,11 @@ _URLS = {"sdn": SDN_ADVANCED_URL, "consolidated": CONS_ADVANCED_URL}
 _BQ_SOURCE_KEYS = {"sdn": "ofac_sdn", "consolidated": "ofac_consolidated"}
 
 
-def _spec(description: str, raw_filename: str, output_filename: str, sheet: str) -> SourceSpec:
+def _spec(description: str, raw_filename: str) -> SourceSpec:
     return SourceSpec(
         name=NAME,
         description=description,
         raw_filename=raw_filename,
-        output_filename=output_filename,
-        sheet_name=sheet,
-        headers=HEADERS,
-        column_widths=COLUMN_WIDTHS,
         parse=parse_sdn_advanced,
         rows_from_records=rows_from_records,
         sort_key=lambda record: reference_sort_key(record.fixed_ref),
@@ -58,28 +52,15 @@ def _spec(description: str, raw_filename: str, output_filename: str, sheet: str)
 
 
 _LIST_SPECS: dict[str, SourceSpec] = {
-    "sdn": _spec(
-        "OFAC SDN — Specially Designated Nationals",
-        "sdn_advanced.xml",
-        "ofac_sdn.xlsx",
-        "SDN",
-    ),
-    "consolidated": _spec(
-        "OFAC Consolidated (Non-SDN) sanctions list",
-        "cons_advanced.xml",
-        "ofac_consolidated.xlsx",
-        "CONS",
-    ),
+    "sdn": _spec("OFAC SDN — Specially Designated Nationals", "sdn_advanced.xml"),
+    "consolidated": _spec("OFAC Consolidated (Non-SDN) sanctions list", "cons_advanced.xml"),
 }
 
 
 def run(
     *,
-    output_dir: Path | str = "data/output",
-    raw_dir: Path | str = "data/raw",
     xml_path: Path | str | None = None,
     party_types: tuple[str, ...] | None = None,
-    download: bool = True,
     lists: tuple[str, ...] = ALL_LISTS,
     bigquery: bool = False,
     bq_project: str | None = None,
@@ -89,11 +70,9 @@ def run(
 
     ``lists`` picks the sub-lists to build (``"sdn"`` and/or ``"consolidated"``).
     If ``xml_path`` is given it is parsed as the SDN list (a local file cannot
-    imply more than one list); otherwise a fresh copy of each list is downloaded
-    into ``raw_dir`` unless ``download`` is ``False`` and a cache already exists.
-    Each list is written to its own workbook.  ``bigquery`` also loads each
-    list's rows into BigQuery, keyed by its own `source` (``ofac_sdn`` /
-    ``ofac_consolidated``).
+    imply more than one list); otherwise a fresh copy of each list is
+    downloaded.  ``bigquery`` also loads each list's rows into BigQuery, keyed
+    by its own `source` (``ofac_sdn`` / ``ofac_consolidated``).
     """
     log.info("[ofac] starting")
     selected = ("sdn",) if xml_path is not None else lists
@@ -101,28 +80,23 @@ def run(
         raise ValueError("no OFAC list selected")
 
     filter_label = ", ".join(party_types) if party_types else "(all)"
-    builds: list[tuple[str, Path, int, str]] = []
+    builds: list[tuple[str, int, str]] = []
     merged: Counter[str] = Counter()
 
     for key in selected:
         spec = _LIST_SPECS[key]
-        source_path, provenance = resolve_input(
+        content, provenance = resolve_input(
             spec,
-            raw_dir=raw_dir,
-            fetch=lambda k=key: download_advanced_xml(
-                raw_dir, url=_URLS[k], filename=_LIST_SPECS[k].raw_filename
-            ),
+            fetch=lambda k=key: download_advanced_xml(url=_URLS[k]),
             local_path=xml_path,
-            download=download,
         )
         build = build_rows(
             spec,
-            source_path=source_path,
+            content=content,
             provenance=provenance,
             parse_kwargs={"party_types": party_types},
             extra_metadata={"party_type_filter": filter_label},
         )
-        dest = write_excel(build, output_dir)
         if bigquery:
             load_bigquery(
                 build,
@@ -131,28 +105,25 @@ def run(
                 project=bq_project,
                 dataset=bq_dataset,
             )
-        log.info("[ofac] %s done -> %s", key, dest)
-        builds.append((key, dest, build.record_count, build.metadata.get("bigquery", "")))
+        log.info("[ofac] %s done: %d records", key, build.record_count)
+        builds.append((key, build.record_count, build.metadata.get("bigquery", "")))
         merged.update(build.counts_by_type)
 
-    total = sum(count for _, _, count, _ in builds)
+    total = sum(count for _, count, _ in builds)
     summary = {
         "source": DESCRIPTION,
         "generated_at": dt.datetime.now(dt.UTC).isoformat(timespec="seconds"),
-        "lists_built": ", ".join(key for key, _, _, _ in builds),
+        "lists_built": ", ".join(key for key, _, _ in builds),
         "record_count": str(total),
         "party_type_filter": filter_label,
-        **{f"{key}_xlsx": str(dest) for key, dest, _, _ in builds},
-        **{f"{key}_record_count": str(count) for key, _, count, _ in builds},
-        **({f"{key}_bigquery": outcome for key, _, _, outcome in builds} if bigquery else {}),
+        **{f"{key}_record_count": str(count) for key, count, _ in builds},
+        **({f"{key}_bigquery": outcome for key, _, outcome in builds} if bigquery else {}),
     }
     return SourceResult(
         source=NAME,
-        xlsx_path=builds[0][1],
         record_count=total,
         counts_by_type=dict(merged),
         metadata=summary,
-        outputs=[dest for _, dest, _, _ in builds],
     )
 
 
@@ -171,11 +142,6 @@ def configure_parser(parser: argparse.ArgumentParser) -> None:
         help="Parse this local advanced XML (as the SDN list) instead of downloading.",
     )
     parser.add_argument(
-        "--no-download",
-        action="store_true",
-        help="Reuse the cached XML in --raw-dir if present.",
-    )
-    parser.add_argument(
         "--individuals-entities-only",
         action="store_true",
         help="Keep only individuals and entities (drop vessels and aircraft).",
@@ -183,7 +149,7 @@ def configure_parser(parser: argparse.ArgumentParser) -> None:
 
 
 def options_from_args(args: argparse.Namespace) -> dict[str, Any]:
-    options: dict[str, Any] = {"download": not getattr(args, "no_download", False)}
+    options: dict[str, Any] = {}
     choice = getattr(args, "ofac_list", "both")
     options["lists"] = ALL_LISTS if choice == "both" else (choice,)
     if getattr(args, "xml", None) is not None:

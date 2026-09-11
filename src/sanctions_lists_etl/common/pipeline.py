@@ -1,34 +1,30 @@
 """The shared download -> parse -> flatten skeleton every source's ``run`` used.
 
-Each source repeated the same body: resolve the input (a local file, a fresh
-download, or the cached copy), parse it, sort, count party types, assemble a
-provenance-flavoured metadata dict, flatten to rows, write a workbook.  This
-module holds the parts that never varied:
+Each source repeated the same body: resolve the input (a local file or a fresh
+download), parse it, sort, count party types, assemble a provenance-flavoured
+metadata dict, flatten to rows.  This module holds the parts that never varied:
 
 * :class:`SourceSpec` — a source's static configuration.
-* :func:`build_rows` — everything up to (but not including) writing a sink,
-  returning a :class:`BuildResult` that carries both the typed records and the
-  flattened rows.
-* :func:`write_excel` — the one sink there is today.
+* :func:`build_rows` — everything from bytes to a :class:`BuildResult` that
+  carries both the typed records and the flattened rows.
 
-A source's ``run`` becomes: ``build_rows(SPEC, ...)`` then ``write_excel(...)``
-then ``BuildResult.to_source_result(...)``.
+A source's ``run`` becomes: ``resolve_input(...)`` then ``build_rows(SPEC,
+...)`` then, optionally, ``load_bigquery(...)``.
 """
 
 from __future__ import annotations
 
 import datetime as dt
+import hashlib
 import logging
 from collections import Counter
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 from ..base import SourceResult
 from .download import FetchResult
-from .excel import write_workbook
-from .meta import read_meta
 
 log = logging.getLogger(__name__)
 
@@ -45,10 +41,6 @@ class SourceSpec:
     name: str
     description: str
     raw_filename: str
-    output_filename: str
-    sheet_name: str
-    headers: Sequence[str]
-    column_widths: Mapping[str, int]
     parse: Parser
     rows_from_records: RowsFromRecords
     sort_key: SortKey
@@ -61,7 +53,6 @@ class Provenance:
     source_file: str
     source_sha256: str
     source_url: str
-    not_modified: bool = False
 
 
 @dataclass(frozen=True)
@@ -79,12 +70,9 @@ class BuildResult:
     def record_count(self) -> int:
         return len(self.records)
 
-    def to_source_result(self, outputs: Sequence[Path | str]) -> SourceResult:
-        paths = [Path(p) for p in outputs]
+    def to_source_result(self) -> SourceResult:
         return SourceResult(
             source=self.spec.name,
-            xlsx_path=paths[0],
-            outputs=paths,
             record_count=self.record_count,
             counts_by_type=self.counts_by_type,
             metadata=self.metadata,
@@ -94,56 +82,45 @@ class BuildResult:
 def resolve_input(
     spec: SourceSpec,
     *,
-    raw_dir: Path | str,
     fetch: Fetcher,
     local_path: Path | str | None,
-    download: bool,
-) -> tuple[Path, Provenance]:
-    """Return the file to parse and where it came from.
+) -> tuple[bytes, Provenance]:
+    """Return the bytes to parse and where they came from.
 
-    ``local_path`` wins; otherwise a fresh download unless ``download`` is
-    ``False`` and ``raw_dir/<raw_filename>`` already exists.
+    ``local_path`` wins — its bytes are read straight off disk and hashed for
+    provenance; otherwise a fresh download is fetched via ``fetch``.
     """
     if local_path is not None:
         path = Path(local_path)
         log.info("[%s] using local %s %s", spec.name, spec.input_kind, path)
-        return path, _provenance(spec, path, read_meta(path))
-
-    cached = Path(raw_dir) / spec.raw_filename
-    if download or not cached.exists():
-        result = fetch()
-        return result.path, Provenance(
-            source_file=result.path.name,
-            source_sha256=result.sha256,
-            source_url=result.url,
-            not_modified=result.not_modified,
+        content = path.read_bytes()
+        return content, Provenance(
+            source_file=path.name,
+            source_sha256=hashlib.sha256(content).hexdigest(),
+            source_url="",
         )
 
-    log.info("[%s] reusing cached %s %s", spec.name, spec.input_kind, cached)
-    return cached, _provenance(spec, cached, read_meta(cached))
-
-
-def _provenance(spec: SourceSpec, path: Path, meta: Mapping[str, Any]) -> Provenance:
-    url = meta.get("url") or ""
+    result = fetch()
+    url = result.url
     if url and spec.redact_url is not None:
         url = spec.redact_url(url)
-    return Provenance(
-        source_file=path.name,
-        source_sha256=str(meta.get("sha256") or ""),
-        source_url=str(url),
+    return result.content, Provenance(
+        source_file=spec.raw_filename,
+        source_sha256=result.sha256,
+        source_url=url,
     )
 
 
 def build_rows(
     spec: SourceSpec,
     *,
-    source_path: Path,
+    content: bytes,
     provenance: Provenance,
     parse_kwargs: Mapping[str, Any] | None = None,
     extra_metadata: Mapping[str, str] | None = None,
 ) -> BuildResult:
-    """Parse ``source_path``, sort, count, and flatten — no sink is written."""
-    records = spec.parse(source_path, **(parse_kwargs or {}))
+    """Parse ``content``, sort, count, and flatten — no sink is written."""
+    records = spec.parse(content, **(parse_kwargs or {}))
     records.sort(key=spec.sort_key)
     counts = dict(Counter(getattr(r, "party_type", "Unknown") for r in records))
 
@@ -167,18 +144,4 @@ def build_rows(
         counts_by_type=counts,
         metadata=metadata,
         provenance=provenance,
-    )
-
-
-def write_excel(build: BuildResult, output_dir: Path | str) -> Path:
-    """Write ``build`` to ``output_dir/<output_filename>`` and return the path."""
-    dest = Path(output_dir) / build.spec.output_filename
-    log.info("[%s] writing %d rows to %s", build.spec.name, build.record_count, dest)
-    return write_workbook(
-        build.spec.headers,
-        build.rows,
-        dest,
-        sheet_name=build.spec.sheet_name,
-        column_widths=build.spec.column_widths,
-        metadata=build.metadata,
     )

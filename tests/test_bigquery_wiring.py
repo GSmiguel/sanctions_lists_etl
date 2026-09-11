@@ -24,13 +24,10 @@ def _spy(monkeypatch, module):
     return calls
 
 
-def test_un_run_calls_load_bigquery_when_enabled(sample_un_xml, tmp_path, monkeypatch):
+def test_un_run_calls_load_bigquery_when_enabled(sample_un_xml, monkeypatch):
     calls = _spy(monkeypatch, un_pipeline)
     result = un_pipeline.run(
-        output_dir=tmp_path,
-        raw_dir=tmp_path,
         xml_path=sample_un_xml,
-        download=False,
         bigquery=True,
         bq_project="proj",
     )
@@ -38,45 +35,36 @@ def test_un_run_calls_load_bigquery_when_enabled(sample_un_xml, tmp_path, monkey
     assert result.metadata["bigquery"] == "loaded (spy)"
 
 
-def test_un_run_skips_load_bigquery_when_disabled(sample_un_xml, tmp_path, monkeypatch):
+def test_un_run_skips_load_bigquery_when_disabled(sample_un_xml, monkeypatch):
     calls = _spy(monkeypatch, un_pipeline)
-    un_pipeline.run(output_dir=tmp_path, raw_dir=tmp_path, xml_path=sample_un_xml, download=False)
+    un_pipeline.run(xml_path=sample_un_xml)
     assert calls == []
 
 
-def test_eu_run_calls_load_bigquery_when_enabled(sample_eu_xml, tmp_path, monkeypatch):
+def test_eu_run_calls_load_bigquery_when_enabled(sample_eu_xml, monkeypatch):
     calls = _spy(monkeypatch, eu_pipeline)
     eu_pipeline.run(
-        output_dir=tmp_path,
-        raw_dir=tmp_path,
         xml_path=sample_eu_xml,
-        download=False,
         bigquery=True,
         bq_project="proj",
     )
     assert calls == [{"source_key": "eu_fsf", "project": "proj", "dataset": None}]
 
 
-def test_uk_run_calls_load_bigquery_when_enabled(sample_uk_xml, tmp_path, monkeypatch):
+def test_uk_run_calls_load_bigquery_when_enabled(sample_uk_xml, monkeypatch):
     calls = _spy(monkeypatch, uk_pipeline)
     uk_pipeline.run(
-        output_dir=tmp_path,
-        raw_dir=tmp_path,
         xml_path=sample_uk_xml,
-        download=False,
         bigquery=True,
         bq_project="proj",
     )
     assert calls == [{"source_key": "uk_fcdo", "project": "proj", "dataset": None}]
 
 
-def test_ofac_run_calls_load_bigquery_once_per_list(sample_xml, tmp_path, monkeypatch):
+def test_ofac_run_calls_load_bigquery_once_per_list(sample_xml, monkeypatch):
     calls = _spy(monkeypatch, ofac_pipeline)
     result = ofac_pipeline.run(
-        output_dir=tmp_path,
-        raw_dir=tmp_path,
         xml_path=sample_xml,
-        download=False,
         bigquery=True,
         bq_project="proj",
     )

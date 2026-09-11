@@ -50,7 +50,7 @@ def entries_schema() -> list[Any]:
 @dataclass(frozen=True)
 class LoadOutcome:
     source_key: str
-    status: str  # "loaded" | "skipped (unchanged)" | "skipped (no rows)"
+    status: str  # "loaded" | "skipped (no rows)"
     row_count: int = 0
 
     def __str__(self) -> str:
@@ -161,27 +161,25 @@ def load_bigquery(
     dataset: str | None = None,
     client: Any | None = None,
 ) -> LoadOutcome:
-    """Load ``build`` into BigQuery unless its upstream snapshot is unchanged.
+    """Load ``build`` into BigQuery.
 
     Mutates ``build.metadata["bigquery"]`` with a human-readable summary (also
-    the return value's ``str()``), so call this after ``write_excel`` — the
-    workbook's info sheet is already written by then and callers still get the
-    summary back via ``SourceResult.metadata``.
+    the return value's ``str()``), so callers get the summary back via
+    ``SourceResult.metadata``.  Safe to call on every run: ``BigQuerySink.load``
+    deletes then re-appends per ``(source, snapshot_date)``, so a rerun for the
+    same source/day is idempotent.
     """
-    if build.provenance.not_modified:
-        outcome = LoadOutcome(source_key, "skipped (unchanged)")
-    else:
-        snapshot_date = dt.datetime.now(dt.UTC).date().isoformat()
-        ingested_at = dt.datetime.now(dt.UTC).isoformat(timespec="seconds")
-        rows = normalized_rows(
-            build,
-            to_normalized,
-            source_key=source_key,
-            snapshot_date=snapshot_date,
-            ingested_at=ingested_at,
-        )
-        sink = BigQuerySink(project=project, dataset=dataset, client=client)
-        outcome = sink.load(rows, source_key=source_key, snapshot_date=snapshot_date)
+    snapshot_date = dt.datetime.now(dt.UTC).date().isoformat()
+    ingested_at = dt.datetime.now(dt.UTC).isoformat(timespec="seconds")
+    rows = normalized_rows(
+        build,
+        to_normalized,
+        source_key=source_key,
+        snapshot_date=snapshot_date,
+        ingested_at=ingested_at,
+    )
+    sink = BigQuerySink(project=project, dataset=dataset, client=client)
+    outcome = sink.load(rows, source_key=source_key, snapshot_date=snapshot_date)
     build.metadata["bigquery"] = str(outcome)
     log.info("[%s] bigquery: %s", source_key, outcome)
     return outcome

@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Iterable
-from pathlib import Path
 from typing import Any
 
 log = logging.getLogger(__name__)
@@ -27,9 +26,6 @@ _SOURCES: dict[str, Source] = {
     UK_SOURCE.name: UK_SOURCE,
 }
 
-DEFAULT_OUTPUT_DIR = Path("data/output")
-DEFAULT_RAW_DIR = Path("data/raw")
-
 
 def available_sources() -> dict[str, Source]:
     return dict(_SOURCES)
@@ -44,21 +40,13 @@ def get_source(name: str) -> Source:
         ) from None
 
 
-def run_source(
-    name: str,
-    *,
-    output_dir: Path | str = DEFAULT_OUTPUT_DIR,
-    raw_dir: Path | str = DEFAULT_RAW_DIR,
-    **options: Any,
-) -> SourceResult:
-    return get_source(name).run(output_dir=output_dir, raw_dir=raw_dir, **options)
+def run_source(name: str, **options: Any) -> SourceResult:
+    return get_source(name).run(**options)
 
 
 def run_sources(
     names: Iterable[str],
     *,
-    output_dir: Path | str = DEFAULT_OUTPUT_DIR,
-    raw_dir: Path | str = DEFAULT_RAW_DIR,
     keep_going: bool = False,
     **options: Any,
 ) -> list[SourceResult]:
@@ -74,7 +62,7 @@ def run_sources(
     failures: list[str] = []
     for name in names:
         try:
-            results.append(run_source(name, output_dir=output_dir, raw_dir=raw_dir, **options))
+            results.append(run_source(name, **options))
         except Exception as exc:  # noqa: BLE001 - surfaced below
             if not keep_going:
                 raise
@@ -87,8 +75,6 @@ def run_sources(
 
 def run_all(
     *,
-    output_dir: Path | str = DEFAULT_OUTPUT_DIR,
-    raw_dir: Path | str = DEFAULT_RAW_DIR,
     keep_going: bool = True,
     exclude: Iterable[str] = (),
     **options: Any,
@@ -108,6 +94,4 @@ def run_all(
             f"available: {', '.join(sorted(_SOURCES))}"
         )
     names = [name for name in _SOURCES if name not in skip]
-    return run_sources(
-        names, output_dir=output_dir, raw_dir=raw_dir, keep_going=keep_going, **options
-    )
+    return run_sources(names, keep_going=keep_going, **options)

@@ -1,9 +1,9 @@
-"""Flat-sheet schema for the UK Sanctions List (FCDO).
+"""Flat row schema for the UK Sanctions List (FCDO).
 
 ``COLUMNS`` pairs each :class:`~.parser.SanctionParty` attribute with its output
 header.  Headers line up with the OFAC SDN, EU FSF and UN Consolidated exports
-wherever the lists carry the same information, so the workbooks can be compared
-side by side.
+wherever the lists carry the same information, so they can be compared side by
+side.
 
 UK-specific swaps: ``uk_unique_id`` / ``ofsi_group_id`` replace ``ofac_id``,
 ``un_reference_number`` cross-refs the UN list, ``programmes`` holds the UK
@@ -47,38 +47,3 @@ COLUMNS: list[tuple[str, str]] = [
     ("statement_of_reasons", "statement_of_reasons"),
     ("other_information", "remarks"),
 ]
-
-HEADERS: list[str] = [header for _, header in COLUMNS]
-
-COLUMN_WIDTHS: dict[str, int] = {
-    "uk_unique_id": 14,
-    "ofsi_group_id": 12,
-    "un_reference_number": 16,
-    "type": 12,
-    "primary_name": 40,
-    "name_original_script": 30,
-    "aliases": 60,
-    "titles": 20,
-    "dates_of_birth": 18,
-    "places_of_birth": 30,
-    "nationalities": 20,
-    "gender": 10,
-    "functions": 40,
-    "countries": 24,
-    "addresses": 60,
-    "id_documents": 50,
-    "programmes": 44,
-    "designation_source": 16,
-    "sanctions_imposed": 26,
-    "listed_on": 14,
-    "last_updated": 14,
-    "phones": 22,
-    "emails": 28,
-    "websites": 28,
-    "entity_type": 24,
-    "parent_companies": 30,
-    "subsidiaries": 30,
-    "vessel_info": 50,
-    "statement_of_reasons": 70,
-    "remarks": 70,
-}

@@ -16,11 +16,11 @@ straight from the ``INDIVIDUAL`` / ``ENTITY`` tag, so no forward join is needed.
 
 from __future__ import annotations
 
+import io
 import logging
 import re
 from collections.abc import Iterable
 from dataclasses import dataclass, field
-from pathlib import Path
 from xml.etree.ElementTree import Element, iterparse
 
 log = logging.getLogger(__name__)
@@ -90,11 +90,12 @@ class SanctionParty:
 
 
 def parse_un_consolidated(
-    source: Path | str,
+    source: bytes,
     *,
     subject_types: Iterable[str] | None = None,
 ) -> list[SanctionParty]:
-    """Parse ``source`` and return one :class:`SanctionParty` per listed party.
+    """Parse ``source`` (raw XML bytes) and return one :class:`SanctionParty` per
+    listed party.
 
     ``subject_types`` optionally restricts the output to ``"INDIVIDUAL"`` and/or
     ``"ENTITY"`` (case-insensitive).
@@ -104,8 +105,8 @@ def parse_un_consolidated(
     records: list[SanctionParty] = []
     seen = 0
 
-    log.info("parsing %s", source)
-    for _, elem in iterparse(str(source), events=("end",)):
+    log.info("parsing %d bytes of XML", len(source))
+    for _, elem in iterparse(io.BytesIO(source), events=("end",)):
         tag = localname(elem.tag)
         if tag not in _TYPE_BY_TAG:
             continue

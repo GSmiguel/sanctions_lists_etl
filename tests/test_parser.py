@@ -5,7 +5,7 @@ from sanctions_lists_etl.sources.ofac.parser import parse_sdn_advanced
 
 @pytest.fixture(scope="module")
 def records(sample_xml):
-    return {record.fixed_ref: record for record in parse_sdn_advanced(sample_xml)}
+    return {record.fixed_ref: record for record in parse_sdn_advanced(sample_xml.read_bytes())}
 
 
 def test_all_party_types_present(records):
@@ -56,5 +56,5 @@ def test_row_serialisation_uses_semicolons(records):
 
 
 def test_party_type_filter(sample_xml):
-    only = parse_sdn_advanced(sample_xml, party_types={"Individual", "Entity"})
+    only = parse_sdn_advanced(sample_xml.read_bytes(), party_types={"Individual", "Entity"})
     assert {r.party_type for r in only} == {"Individual", "Entity"}

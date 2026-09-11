@@ -5,7 +5,7 @@ from sanctions_lists_etl.sources.uk.parser import parse_uk_sanctions
 
 @pytest.fixture(scope="module")
 def records(sample_uk_xml):
-    return {r.uk_unique_id: r for r in parse_uk_sanctions(sample_uk_xml)}
+    return {r.uk_unique_id: r for r in parse_uk_sanctions(sample_uk_xml.read_bytes())}
 
 
 def test_all_designations_parsed(records):
@@ -26,9 +26,9 @@ def test_ship_is_mapped_to_vessel(records):
 
 
 def test_subject_type_filter(sample_uk_xml):
+    content = sample_uk_xml.read_bytes()
     kinds = {
-        r.party_type
-        for r in parse_uk_sanctions(sample_uk_xml, subject_types=("INDIVIDUAL", "ENTITY"))
+        r.party_type for r in parse_uk_sanctions(content, subject_types=("INDIVIDUAL", "ENTITY"))
     }
     assert kinds == {"Individual", "Entity"}
 

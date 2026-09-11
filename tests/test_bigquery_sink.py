@@ -44,17 +44,13 @@ _SPEC = SourceSpec(
     name="demo",
     description="Demo",
     raw_filename="demo.xml",
-    output_filename="demo.xlsx",
-    sheet_name="DEMO",
-    headers=[],
-    column_widths={},
     parse=lambda p, **_: [],
     rows_from_records=lambda records: [],
     sort_key=lambda r: r.ref,
 )
 
 
-def _build(*, not_modified: bool = False, records=None) -> BuildResult:
+def _build(*, records=None) -> BuildResult:
     records = records if records is not None else [_Record("A1", "Alice"), _Record("B2", "Bob")]
     return BuildResult(
         spec=_SPEC,
@@ -62,9 +58,7 @@ def _build(*, not_modified: bool = False, records=None) -> BuildResult:
         rows=[],
         counts_by_type={},
         metadata={},
-        provenance=Provenance(
-            source_file="demo.xml", source_sha256="abc123", source_url="", not_modified=not_modified
-        ),
+        provenance=Provenance(source_file="demo.xml", source_sha256="abc123", source_url=""),
     )
 
 
@@ -134,21 +128,8 @@ def test_sink_load_skips_when_no_rows():
     assert not client.loads
 
 
-def test_load_bigquery_skips_unchanged_source():
-    build = _build(not_modified=True)
-    client = _FakeClient()
-
-    outcome = load_bigquery(
-        build, _to_normalized, source_key="demo_src", project="proj", client=client
-    )
-
-    assert outcome.status == "skipped (unchanged)"
-    assert not client.loads
-    assert build.metadata["bigquery"] == "skipped (unchanged)"
-
-
-def test_load_bigquery_loads_changed_source_and_records_metadata():
-    build = _build(not_modified=False)
+def test_load_bigquery_loads_every_run_and_records_metadata():
+    build = _build()
     client = _FakeClient()
 
     outcome = load_bigquery(

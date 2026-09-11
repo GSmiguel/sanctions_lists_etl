@@ -12,8 +12,6 @@ redirect target.  No credential is required.
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from ...common.download import FetchResult, Opener, fetch
 
 SDN_ADVANCED_URL = "https://sanctionslistservice.ofac.treas.gov/api/download/sdn_advanced.xml"
@@ -26,24 +24,14 @@ DownloadResult = FetchResult
 
 
 def download_advanced_xml(
-    dest_dir: Path | str = "data/raw",
     *,
     url: str = SDN_ADVANCED_URL,
-    filename: str = "sdn_advanced.xml",
     timeout: float = 300.0,
     opener: Opener | None = None,
 ) -> FetchResult:
-    """Fetch an OFAC advanced-XML export into ``dest_dir`` and record its metadata.
+    """Fetch an OFAC advanced-XML export into memory.
 
     Works for either the SDN (``url=SDN_ADVANCED_URL``) or the Consolidated /
-    Non-SDN (``url=CONS_ADVANCED_URL``) list.  The sibling ``<filename>.meta.json``
-    captures the checksum, size, timestamp and HTTP validators so a later run can
-    tell whether the snapshot moved.
+    Non-SDN (``url=CONS_ADVANCED_URL``) list.
     """
-    return fetch(
-        url,
-        Path(dest_dir) / filename,
-        timeout=timeout,
-        progress_every=_PROGRESS_EVERY,
-        opener=opener,
-    )
+    return fetch(url, timeout=timeout, progress_every=_PROGRESS_EVERY, opener=opener)

@@ -7,7 +7,6 @@ import urllib.error
 import pytest
 
 from sanctions_lists_etl.common.download import FetchResult, fetch, strip_query
-from sanctions_lists_etl.common.meta import read_meta
 
 _URL = "https://example.test/list.xml"
 
@@ -50,66 +49,48 @@ def test_strip_query_removes_credentials():
     assert strip_query(f"{_URL}?x=1", note="sig redacted") == f"{_URL} (sig redacted)"
 
 
-def test_fetch_writes_file_and_meta(tmp_path):
-    dest = tmp_path / "list.xml"
+def test_fetch_returns_content_in_memory():
     opener = _Opener(
         _Response(
             b"<a/>", headers={"ETag": '"v1"', "Last-Modified": "Mon, 01 Jan 2026 00:00:00 GMT"}
         )
     )
 
-    result = fetch(_URL, dest, opener=opener)
+    result = fetch(_URL, opener=opener)
 
     assert isinstance(result, FetchResult)
-    assert dest.read_bytes() == b"<a/>"
-    assert result.not_modified is False
-    meta = read_meta(dest)
-    assert meta["sha256"] == result.sha256
-    assert meta["etag"] == '"v1"'
-    assert meta["last_modified"] == "Mon, 01 Jan 2026 00:00:00 GMT"
-    assert meta["url"] == _URL
+    assert result.content == b"<a/>"
+    assert result.size_bytes == len(b"<a/>")
+    assert result.url == _URL
 
 
-def test_fetch_sends_validators_from_previous_meta(tmp_path):
-    dest = tmp_path / "list.xml"
-    fetch(_URL, dest, opener=_Opener(_Response(b"<a/>", headers={"ETag": '"v1"'})))
+def test_fetch_computes_sha256_over_the_streamed_content():
+    import hashlib
 
-    opener = _Opener(_Response(b"<b/>", headers={"ETag": '"v2"'}))
-    fetch(_URL, dest, opener=opener)
-
-    assert opener.request.get_header("If-none-match") == '"v1"'
+    payload = b"<a/><b/><c/>"
+    result = fetch(_URL, opener=_Opener(_Response(payload)))
+    assert result.sha256 == hashlib.sha256(payload).hexdigest()
 
 
-def test_fetch_304_keeps_cached_copy(tmp_path):
-    dest = tmp_path / "list.xml"
-    first = fetch(_URL, dest, opener=_Opener(_Response(b"<a/>", headers={"ETag": '"v1"'})))
-
-    not_modified = urllib.error.HTTPError(_URL, 304, "Not Modified", {}, None)
-    result = fetch(_URL, dest, opener=_Opener(error=not_modified))
-
-    assert result.not_modified is True
-    assert result.sha256 == first.sha256
-    assert dest.read_bytes() == b"<a/>"
-    assert "checked_at" in read_meta(dest)
+def test_fetch_sends_no_conditional_headers():
+    opener = _Opener(_Response(b"<a/>"))
+    fetch(_URL, opener=opener)
+    assert opener.request.get_header("If-none-match") is None
+    assert opener.request.get_header("If-modified-since") is None
 
 
-def test_fetch_identical_content_reports_not_modified(tmp_path):
-    dest = tmp_path / "list.xml"
-    fetch(_URL, dest, opener=_Opener(_Response(b"<a/>")))
-
-    result = fetch(_URL, dest, opener=_Opener(_Response(b"<a/>")))
-
-    assert result.not_modified is True
-
-
-def test_fetch_reraises_other_http_errors(tmp_path):
+def test_fetch_reraises_http_errors():
     err = urllib.error.HTTPError(_URL, 500, "Server Error", {}, None)
     with pytest.raises(urllib.error.HTTPError):
-        fetch(_URL, tmp_path / "list.xml", opener=_Opener(error=err))
+        fetch(_URL, opener=_Opener(error=err))
 
 
-def test_fetch_redacts_url_in_meta(tmp_path):
-    dest = tmp_path / "list.xml"
-    result = fetch(f"{_URL}?token=abc", dest, opener=_Opener(_Response(b"<a/>")))
+def test_fetch_redacts_url_in_result():
+    result = fetch(f"{_URL}?token=abc", opener=_Opener(_Response(b"<a/>")))
     assert "abc" not in result.url
-    assert "abc" not in read_meta(dest)["url"]
+
+
+def test_fetch_sets_extra_headers():
+    opener = _Opener(_Response(b"<a/>"))
+    fetch(_URL, headers={"X-Custom": "yes"}, opener=opener)
+    assert opener.request.get_header("X-custom") == "yes"

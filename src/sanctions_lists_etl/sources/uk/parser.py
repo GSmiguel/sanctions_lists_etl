@@ -16,11 +16,11 @@ after each designation is enough; the party type comes from the
 
 from __future__ import annotations
 
+import io
 import logging
 import re
 from collections.abc import Iterable
 from dataclasses import dataclass, field
-from pathlib import Path
 from xml.etree.ElementTree import Element, iterparse
 
 log = logging.getLogger(__name__)
@@ -128,11 +128,12 @@ class SanctionParty:
 
 
 def parse_uk_sanctions(
-    source: Path | str,
+    source: bytes,
     *,
     subject_types: Iterable[str] | None = None,
 ) -> list[SanctionParty]:
-    """Parse ``source`` and return one :class:`SanctionParty` per designation.
+    """Parse ``source`` (raw XML bytes) and return one :class:`SanctionParty` per
+    designation.
 
     ``subject_types`` optionally restricts the output to ``"INDIVIDUAL"``,
     ``"ENTITY"`` and/or ``"SHIP"`` (case-insensitive).
@@ -142,8 +143,8 @@ def parse_uk_sanctions(
     records: list[SanctionParty] = []
     seen = 0
 
-    log.info("parsing %s", source)
-    for _, elem in iterparse(str(source), events=("end",)):
+    log.info("parsing %d bytes of XML", len(source))
+    for _, elem in iterparse(io.BytesIO(source), events=("end",)):
         if localname(elem.tag) != "Designation":
             continue
         seen += 1

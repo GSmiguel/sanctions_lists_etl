@@ -5,7 +5,8 @@ from sanctions_lists_etl.sources.un.parser import parse_un_consolidated
 
 @pytest.fixture(scope="module")
 def records(sample_un_xml):
-    return {r.un_reference_number: r for r in parse_un_consolidated(sample_un_xml)}
+    parsed = parse_un_consolidated(sample_un_xml.read_bytes())
+    return {r.un_reference_number: r for r in parsed}
 
 
 def test_all_parties_parsed(records):
@@ -125,5 +126,5 @@ def test_comments_strip_interpol_boilerplate(records):
 
 
 def test_subject_type_filter(sample_un_xml):
-    only = parse_un_consolidated(sample_un_xml, subject_types={"entity"})
+    only = parse_un_consolidated(sample_un_xml.read_bytes(), subject_types={"entity"})
     assert {r.party_type for r in only} == {"Entity"}

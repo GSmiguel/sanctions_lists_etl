@@ -11,10 +11,10 @@ Downloads OFAC's two **advanced XML** exports — the **SDN** list
 the **Consolidated / Non-SDN** list
 (`https://sanctionslistservice.ofac.treas.gov/api/download/cons_advanced.xml`:
 SSI, Non-SDN CMIC, Non-SDN Menu-Based Sanctions, Non-SDN Palestinian Legislative
-Council and CAPTA) — and flattens every sanctioned party (individuals, entities,
-vessels and aircraft) into a single-sheet Excel workbook, one row per party. The
-two lists share a schema, parser and column layout; each is written to its own
-workbook (`ofac_sdn.xlsx` / `ofac_consolidated.xlsx`). `--list sdn` /
+Council and CAPTA) — entirely in memory — and flattens every sanctioned party
+(individuals, entities, vessels and aircraft) into rows, one per party. The two
+lists share a schema, parser and column layout; each is loaded under its own
+BigQuery `source` (`ofac_sdn` / `ofac_consolidated`). `--list sdn` /
 `--list consolidated` builds just one (default: both).
 
 The advanced format is a relational model (names, addresses, ID documents and
@@ -25,10 +25,10 @@ records, then joins the `SanctionsEntries` (programs, listing dates) back on.
 ## Stage 2 — EU consolidated list
 
 Downloads the EU **Financial Sanctions Files (FSF)** full XML from the EC FSD web
-gate and flattens every `sanctionEntity` — persons and enterprises — into a
-single-sheet workbook with the same column layout as the OFAC export (shared
-headers wherever the two lists carry the same information), so the two workbooks
-line up side by side.
+gate into memory and flattens every `sanctionEntity` — persons and enterprises —
+into rows with the same column layout as the OFAC export (shared headers
+wherever the two lists carry the same information), so the two line up side by
+side.
 
 The EU format is flat: no reference tables, every name / birth date / address /
 identification / citizenship hangs off the entity with its values in attributes,
@@ -48,15 +48,14 @@ it one of these ways (checked in order):
 - `EU_FSF_TOKEN` — the token itself, via env var
 
 `EU_FSF_URL` overrides the whole download URL if the web gate changes. Every log
-line and the `.meta.json` sidecar store the URL with the token stripped. See
-`.env.example`.
+line stores the URL with the token stripped. See `.env.example`.
 
 ## Stage 3 — UN Security Council Consolidated List
 
 Downloads the UN Security Council **Consolidated List** full XML from
-`https://scsanctions.un.org/resources/xml/en/consolidated.xml` and flattens every
-listed party — `<INDIVIDUAL>` and `<ENTITY>` — into a single-sheet workbook with
-the same column layout as the OFAC and EU exports (shared headers wherever the
+`https://scsanctions.un.org/resources/xml/en/consolidated.xml` into memory and
+flattens every listed party — `<INDIVIDUAL>` and `<ENTITY>` — into rows with the
+same column layout as the OFAC and EU exports (shared headers wherever the
 lists carry the same information).
 
 The UN format is flat like the EU one (no reference tables): every party carries
@@ -71,13 +70,13 @@ is the sort key and the `un_reference_number` column.
 The published endpoint answers with a 302 redirect to a short-lived signed Azure
 Blob URL, so — like the OFAC endpoint — the file is fetched fresh each run. **No
 credential is required.** `UN_CONSOLIDATED_URL` overrides the whole URL; every
-log line and the `.meta.json` sidecar store the URL with the signature stripped.
+log line stores the URL with the signature stripped.
 
 ## Stage 4 — UK Sanctions List
 
 Downloads the FCDO **UK Sanctions List** full XML from
-`https://sanctionslist.fcdo.gov.uk/docs/UK-Sanctions-List.xml` and flattens every
-`<Designation>` — individuals, entities and ships — into a single-sheet workbook
+`https://sanctionslist.fcdo.gov.uk/docs/UK-Sanctions-List.xml` into memory and
+flattens every `<Designation>` — individuals, entities and ships — into rows
 with the same column layout as the other exports.
 
 This is the UK's autonomous regime (not a mirror of the EU or UN lists). It
@@ -127,14 +126,12 @@ uv run sanctions-etl uk
 uv run sanctions-etl ofac --list sdn
 uv run sanctions-etl ofac --list consolidated
 
-# parse a local file instead of downloading
-uv run sanctions-etl ofac --xml data/raw/sdn_advanced.xml   # parsed as the SDN list
-uv run sanctions-etl eu --xml data/raw/eu_fsf_full.xml
-uv run sanctions-etl un --xml data/raw/un_consolidated.xml
-uv run sanctions-etl uk --xml data/raw/uk_sanctions_list.xml
-
-# reuse the cached XML in data/raw/ instead of downloading a fresh copy
-uv run sanctions-etl ofac --no-download
+# parse a local file instead of downloading (a saved-to-disk copy, for tests
+# or manual debugging — nothing is written to disk during a normal run)
+uv run sanctions-etl ofac --xml sdn_advanced.xml   # parsed as the SDN list
+uv run sanctions-etl eu --xml eu_fsf_full.xml
+uv run sanctions-etl un --xml un_consolidated.xml
+uv run sanctions-etl uk --xml uk_sanctions_list.xml
 
 # restrict party types
 uv run sanctions-etl ofac --individuals-entities-only   # drop vessels/aircraft
@@ -144,7 +141,6 @@ uv run sanctions-etl uk --individuals-only              # or --entities-only / -
 
 uv run sanctions-etl --list          # show registered sources
 uv run sanctions-etl --exclude uk    # run every source but one (repeatable)
-uv run sanctions-etl --output-dir OUT --raw-dir RAW   # override paths
 uv run sanctions-etl -q ofac         # -q quiet (warnings only), -v debug
 
 # also load into BigQuery (needs `uv sync --extra bigquery` and BQ_PROJECT set)
@@ -152,15 +148,10 @@ BQ_PROJECT=sanctions-screening-508311 uv run sanctions-etl --bigquery
 ```
 
 Progress is logged to stderr as it runs (download progress, parsed-party
-counts, Excel write); `-q`/`-v` adjust the level. Top-level flags
-(`--output-dir`, `--raw-dir`, `-q`, `-v`) go **before** the source name.
-
-Each source writes to `<output-dir>/` (OFAC → `ofac_sdn.xlsx` +
-`ofac_consolidated.xlsx`, EU → `eu_fsf.xlsx`, UN → `un_consolidated.xlsx`,
-UK → `uk_sanctions.xlsx`).
-`data/raw/` keeps the downloaded source files plus a `.meta.json` sidecar
-recording SHA-256, size and download timestamp. Everything under `data/` is
-gitignored.
+counts, BigQuery load); `-q`/`-v` adjust the level and go **before** the
+source name. The whole pipeline runs in memory — nothing is downloaded to or
+cached on disk — except the `--xml` escape hatch, which reads a file already
+saved somewhere.
 
 ### Output columns
 
@@ -180,39 +171,36 @@ gitignored.
 
 Multi-valued cells are joined with `; `.
 
-The EU workbook (`eu_fsf.xlsx`, sheet `EU`) reuses these headers where the data
-matches and swaps the rest: `eu_reference_number` / `un_id` replace `ofac_id`,
-`programmes` + `regulations` replace `programs` + `lists`, and it adds
-`functions`, `phones` and `remarks` (no `nationalities` /
-`digital_currency_addresses` / `other_features`).
+The EU rows reuse these headers where the data matches and swap the rest:
+`eu_reference_number` / `un_id` replace `ofac_id`, `programmes` + `regulations`
+replace `programs` + `lists`, and they add `functions`, `phones` and `remarks`
+(no `nationalities` / `digital_currency_addresses` / `other_features`).
 
-The UN workbook (`un_consolidated.xlsx`, sheet `UN`) likewise reuses the shared
-headers and swaps the rest: `un_reference_number` / `data_id` replace `ofac_id`,
-`un_list_type` (the sanctions committee — Al-Qaida, Taliban, DPRK, …) fills the
-`programmes` slot, and it adds `name_original_script`, `last_updated`,
-`last_reviewed_on` and `interpol_notice`. The free-text `COMMENTS1` field becomes
-`remarks` with the "INTERPOL-UN Security Council Special Notice" boilerplate
-stripped.
+The UN rows likewise reuse the shared headers and swap the rest:
+`un_reference_number` / `data_id` replace `ofac_id`, `un_list_type` (the
+sanctions committee — Al-Qaida, Taliban, DPRK, …) fills the `programmes` slot,
+and they add `name_original_script`, `last_updated`, `last_reviewed_on` and
+`interpol_notice`. The free-text `COMMENTS1` field becomes `remarks` with the
+"INTERPOL-UN Security Council Special Notice" boilerplate stripped.
 
-The UK workbook (`uk_sanctions.xlsx`, sheet `UK`) reuses the shared headers and
-swaps the rest: `uk_unique_id` / `ofsi_group_id` / `un_reference_number` replace
-`ofac_id`, `programmes` holds the UK sanctions regime (`RegimeName`), and it adds
-`designation_source` (UK / UN / UK|UN), `sanctions_imposed`,
-`name_original_script`, `last_updated`, `entity_type` / `parent_companies` /
-`subsidiaries`, `vessel_info` and `statement_of_reasons`.
+The UK rows reuse the shared headers and swap the rest: `uk_unique_id` /
+`ofsi_group_id` / `un_reference_number` replace `ofac_id`, `programmes` holds
+the UK sanctions regime (`RegimeName`), and they add `designation_source`
+(UK / UN / UK|UN), `sanctions_imposed`, `name_original_script`, `last_updated`,
+`entity_type` / `parent_companies` / `subsidiaries`, `vessel_info` and
+`statement_of_reasons`.
 
 ### BigQuery
 
 `--bigquery` (needs the optional `bigquery` extra: `uv sync --extra bigquery`)
 also loads each source's parsed rows into a single unified table,
 `{BQ_PROJECT}.{BQ_DATASET}.entries` — one row per sanctioned party per source
-per day its upstream snapshot changed (a dated-snapshot strategy, not a live
-sync). A source whose upstream is unchanged since the last run — the
-conditional-GET check in `common/download.py` — is skipped rather than
-reloaded. See `common/schema.py` for the field list and
+per day it ran (a dated-snapshot strategy, not a live sync). Every run loads
+unconditionally; see `common/schema.py` for the field list and
 `common/sinks/bigquery.py` for the load strategy (`DELETE` then `INSERT` per
 `(source, snapshot_date)`, not `WRITE_TRUNCATE` on the whole day-partition,
-since sources refresh independently).
+since sources refresh independently — this also makes a rerun for the same
+source/day idempotent).
 
 ```bash
 export BQ_PROJECT=sanctions-screening-508311   # required
@@ -249,9 +237,8 @@ pushes to `main`, against Python 3.11 and 3.12.
 ### Scheduled runs (GitHub Actions)
 
 **`etl.yml`** — daily (`workflow_dispatch` + cron), runs
-`sanctions-etl --bigquery` (loading into BigQuery — see above) and also
-uploads the workbooks + `.meta.json` sidecars as a build artifact (retention
-45 days).
+`sanctions-etl --bigquery` (loading into BigQuery — see above). Everything
+runs in memory; no build artifact is produced.
 
 GCP auth uses **Workload Identity Federation**
 (`google-github-actions/auth`): the workflow exchanges its OIDC token for
@@ -293,14 +280,12 @@ src/sanctions_lists_etl/
   runner.py      source registry + run_all() / run_source()
   base.py        Source / SourceResult — the contract each list implements
   common/
-    download.py  shared HTTP fetch: stream + checksum + .meta.json + conditional GET
-    meta.py      read/write the <file>.meta.json provenance sidecar
-    pipeline.py  SourceSpec + build_rows() (download->parse->flatten) + write_excel()
+    download.py  shared HTTP fetch: stream into memory + checksum
+    pipeline.py  SourceSpec + resolve_input() + build_rows() (bytes->parse->flatten)
     records.py   flatten_row() — record dataclass -> "; "-joined row dict
     sortkeys.py  reference_sort_key() — order rows by designation reference
     schema.py    ENTRIES_FIELDS — the unified BigQuery table's field list
     xmlutils.py  namespace-agnostic XML helpers (shared by all XML sources)
-    excel.py     generic single-sheet workbook writer
     sinks/
       bigquery.py  BigQuerySink + load_bigquery() (the --bigquery sink)
   sources/
@@ -316,10 +301,10 @@ src/sanctions_lists_etl/
 
 **Adding a list** (EU consolidated, UN Security Council, ...): create
 `sources/<name>/` with a `pipeline.py` that builds a `common.pipeline.SourceSpec`
-(filenames, headers, `parse` / `rows_from_records` / `sort_key`) and a
-`run(**opts) -> SourceResult` that calls `resolve_input` -> `build_rows` ->
-`write_excel` (then, if `bigquery=True`, `load_bigquery` using the source's own
-`normalize.py::to_normalized`), exports a `SOURCE` object (`base.Source`: name,
-description, `run`, optional CLI hooks), and register it in `runner._SOURCES`.
-The CLI subcommand and `run_all` pick it up automatically. `download.py` is a
-thin wrapper over `common.download.fetch`.
+(`parse` / `rows_from_records` / `sort_key`) and a `run(**opts) -> SourceResult`
+that calls `resolve_input` -> `build_rows` (then, if `bigquery=True`,
+`load_bigquery` using the source's own `normalize.py::to_normalized`), exports a
+`SOURCE` object (`base.Source`: name, description, `run`, optional CLI hooks),
+and register it in `runner._SOURCES`. The CLI subcommand and `run_all` pick it
+up automatically. `download.py` is a thin wrapper over `common.download.fetch`
+that returns bytes in memory — nothing is written to disk.

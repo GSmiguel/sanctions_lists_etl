@@ -5,7 +5,7 @@ from sanctions_lists_etl.sources.eu.parser import parse_eu_fsf
 
 @pytest.fixture(scope="module")
 def records(sample_eu_xml):
-    return {r.eu_reference_number: r for r in parse_eu_fsf(sample_eu_xml)}
+    return {r.eu_reference_number: r for r in parse_eu_fsf(sample_eu_xml.read_bytes())}
 
 
 def test_all_entities_parsed(records):
@@ -79,5 +79,5 @@ def test_row_serialisation_uses_semicolons(records):
 
 
 def test_subject_type_filter(sample_eu_xml):
-    only = parse_eu_fsf(sample_eu_xml, subject_types={"enterprise"})
+    only = parse_eu_fsf(sample_eu_xml.read_bytes(), subject_types={"enterprise"})
     assert {r.party_type for r in only} == {"Entity"}
