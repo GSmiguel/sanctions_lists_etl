@@ -1,245 +1,60 @@
 # sanctions_lists_etl
 
-ETL pipeline for ingesting, normalizing, and consolidating public sanctions lists:
-OFAC SDN + Non-SDN, EU consolidated list, UN Security Council, and UK Sanctions
-List — into a unified schema loaded into BigQuery. The whole pipeline runs
-entirely in memory: nothing is downloaded or cached to disk (see
-[BigQuery](#bigquery) below).
+Consolidates the major international sanctions / restrictive-party lists into
+a single, always-current dataset for compliance screening:
 
-## Stage 1 — OFAC SDN + Consolidated (Non-SDN)
+- **OFAC** (US Treasury) — SDN + Consolidated (Non-SDN)
+- **EU** consolidated financial sanctions list
+- **UN** Security Council Consolidated List
+- **UK** Sanctions List (FCDO)
 
-Downloads OFAC's two **advanced XML** exports — the **SDN** list
-(`https://sanctionslistservice.ofac.treas.gov/api/download/sdn_advanced.xml`) and
-the **Consolidated / Non-SDN** list
-(`https://sanctionslistservice.ofac.treas.gov/api/download/cons_advanced.xml`:
-SSI, Non-SDN CMIC, Non-SDN Menu-Based Sanctions, Non-SDN Palestinian Legislative
-Council and CAPTA) — entirely in memory — and flattens every sanctioned party
-(individuals, entities, vessels and aircraft) into rows, one per party. The two
-lists share a schema, parser and column layout; each is loaded under its own
-BigQuery `source` (`ofac_sdn` / `ofac_consolidated`). `--list sdn` /
-`--list consolidated` builds just one (default: both).
+Each run downloads the latest copy of every list, normalizes the four
+different formats into one shared row structure, and (optionally) loads the
+result into BigQuery. Everything happens in memory — nothing is downloaded or
+cached to disk.
 
-The advanced format is a relational model (names, addresses, ID documents and
-features live in separate structures keyed by id), so the parser first reads the
-`ReferenceValueSets` and `Locations` tables, then streams the `DistinctParty`
-records, then joins the `SanctionsEntries` (programs, listing dates) back on.
-
-## Stage 2 — EU consolidated list
-
-Downloads the EU **Financial Sanctions Files (FSF)** full XML from the EC FSD web
-gate into memory and flattens every `sanctionEntity` — persons and enterprises —
-into rows with the same column layout as the OFAC export (shared headers
-wherever the two lists carry the same information), so the two line up side by
-side.
-
-The EU format is flat: no reference tables, every name / birth date / address /
-identification / citizenship hangs off the entity with its values in attributes,
-so it is a single streaming pass. There is no explicit "primary name" flag, so
-the primary name is the lowest-`logicalId` alias (the original listing entry),
-preferring a Latin-script one when the lowest-id alias is in another script.
-
-### Access token (credential)
-
-The FSD bot/crawler download authenticates with a `?token=…` query parameter
-instead of a login, so **treat it as a secret** — never commit it. Get it from
-the download link on <https://webgate.ec.europa.eu/fsd/fsf#!/files> and provide
-it one of these ways (checked in order):
-
-- `--token-file PATH` — a file whose contents are the token
-- `EU_FSF_TOKEN_FILE` — same, via env var
-- `EU_FSF_TOKEN` — the token itself, via env var
-
-`EU_FSF_URL` overrides the whole download URL if the web gate changes. Every log
-line stores the URL with the token stripped. See `.env.example`.
-
-## Stage 3 — UN Security Council Consolidated List
-
-Downloads the UN Security Council **Consolidated List** full XML from
-`https://scsanctions.un.org/resources/xml/en/consolidated.xml` into memory and
-flattens every listed party — `<INDIVIDUAL>` and `<ENTITY>` — into rows with the
-same column layout as the OFAC and EU exports (shared headers wherever the
-lists carry the same information).
-
-The UN format is flat like the EU one (no reference tables): every party carries
-its names, aliases, birth dates, addresses and documents inline as child
-elements whose values are element *text*. It is a single streaming pass, and the
-party type comes straight from the `INDIVIDUAL` / `ENTITY` tag. There is one row
-per `REFERENCE_NUMBER` (e.g. `QDi.335`, `IRe.001`) — the UN's own designation
-reference, which also encodes individual (`…i.…`) vs entity (`…e.…`) and the
-sanctions committee prefix (`QD` = Al-Qaida, `TA` = Taliban, `KP` = DPRK, …). It
-is the sort key and the `un_reference_number` column.
-
-The published endpoint answers with a 302 redirect to a short-lived signed Azure
-Blob URL, so — like the OFAC endpoint — the file is fetched fresh each run. **No
-credential is required.** `UN_CONSOLIDATED_URL` overrides the whole URL; every
-log line stores the URL with the signature stripped.
-
-## Stage 4 — UK Sanctions List
-
-Downloads the FCDO **UK Sanctions List** full XML from
-`https://sanctionslist.fcdo.gov.uk/docs/UK-Sanctions-List.xml` into memory and
-flattens every `<Designation>` — individuals, entities and ships — into rows
-with the same column layout as the other exports.
-
-This is the UK's autonomous regime (not a mirror of the EU or UN lists). It
-**replaced the OFSI "Consolidated List of Asset Freeze Targets"** (`ConList.xml`),
-which was frozen on 28 January 2026; the asset-freeze data OFSI used to publish
-now lives here (`OFSIGroupID` is carried through as `ofsi_group_id`).
-
-The format is flat like the UN one (no reference tables): every designation
-carries its names, aliases, addresses and type-specific details (individual /
-entity / ship) inline as child-element text. It is a single streaming pass, and
-the party type comes from `<IndividualEntityShip>` (`Ship` is mapped to `Vessel`
-to match the OFAC wording). There is one row per `UniqueID` (e.g. `RUS0123`,
-`AFG0006`) — the FCDO's own designation reference, which is the sort key and the
-`uk_unique_id` column; `UNReferenceNumber` cross-references the UN list where the
-designation originates there. The free-text `OtherInformation` field becomes
-`remarks` with the INTERPOL–UN Special Notice pointer stripped.
-
-The file is served straight from CloudFront/S3 (~21 MB, no redirect, no signed
-query string), so **no credential is required**. `UK_SANCTIONS_URL` overrides the
-whole URL.
-
-### Usage
+## Running it locally
 
 Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/).
 
 ```bash
 uv sync
 
-# run every registered source end to end (EU needs EU_FSF_TOKEN set; if it is
-# missing the run still produces the other lists and then exits non-zero)
-uv run sanctions-etl
+uv run sanctions-etl              # every list
+uv run sanctions-etl ofac         # just one (ofac / eu / un / uk)
+uv run sanctions-etl --list       # see all registered sources
 
-# just OFAC
-uv run sanctions-etl ofac
-
-# just the EU list
-export EU_FSF_TOKEN=...        # or: uv run sanctions-etl eu --token-file ~/.secrets/eu.token
-uv run sanctions-etl eu
-
-# just the UN list (no credential needed)
-uv run sanctions-etl un
-
-# just the UK Sanctions List (no credential needed)
-uv run sanctions-etl uk
-
-# just one OFAC list (default builds both SDN and Non-SDN Consolidated)
-uv run sanctions-etl ofac --list sdn
-uv run sanctions-etl ofac --list consolidated
-
-# parse a local file instead of downloading (a saved-to-disk copy, for tests
-# or manual debugging — nothing is written to disk during a normal run)
-uv run sanctions-etl ofac --xml sdn_advanced.xml   # parsed as the SDN list
-uv run sanctions-etl eu --xml eu_fsf_full.xml
-uv run sanctions-etl un --xml un_consolidated.xml
-uv run sanctions-etl uk --xml uk_sanctions_list.xml
-
-# restrict party types
-uv run sanctions-etl ofac --individuals-entities-only   # drop vessels/aircraft
-uv run sanctions-etl eu --persons-only                  # or --entities-only
-uv run sanctions-etl un --individuals-only              # or --entities-only
-uv run sanctions-etl uk --individuals-only              # or --entities-only / --no-ships
-
-uv run sanctions-etl --list          # show registered sources
-uv run sanctions-etl --exclude uk    # run every source but one (repeatable)
-uv run sanctions-etl -q ofac         # -q quiet (warnings only), -v debug
-
-# also load into BigQuery (needs `uv sync --extra bigquery` and BQ_PROJECT set)
+# also load into BigQuery
+uv sync --extra bigquery
 BQ_PROJECT=sanctions-screening-508311 uv run sanctions-etl --bigquery
 ```
 
-Progress is logged to stderr as it runs (download progress, parsed-party
-counts, BigQuery load); `-q`/`-v` adjust the level and go **before** the
-source name. The whole pipeline runs in memory — nothing is downloaded to or
-cached on disk — except the `--xml` escape hatch, which reads a file already
-saved somewhere.
+The EU list needs an `EU_FSF_TOKEN` (see `.env.example`); OFAC, UN and UK
+need no credentials.
 
-### Output columns
+## Triggering the daily screening run
 
-| column | contents |
-| --- | --- |
-| `ofac_id` | OFAC fixed reference number |
-| `type` | Individual / Entity / Vessel / Aircraft |
-| `primary_name` | primary name (surname-first for individuals) |
-| `aliases` | AKA / FKA / NKA and non-Latin script renderings |
-| `dates_of_birth`, `places_of_birth` | birth date / place |
-| `nationalities`, `citizenships`, `gender`, `titles` | person attributes |
-| `countries`, `addresses` | address countries and full address strings |
-| `id_documents` | ID documents (`Type: Number (Country)`) |
-| `programs`, `lists`, `listed_on` | sanctions programs, source list, first listing date |
-| `emails`, `websites`, `digital_currency_addresses` | contact and digital-currency addresses |
-| `other_features` | every other feature (`Feature name: value`) |
-
-Multi-valued cells are joined with `; `.
-
-The EU rows reuse these headers where the data matches and swap the rest:
-`eu_reference_number` / `un_id` replace `ofac_id`, `programmes` + `regulations`
-replace `programs` + `lists`, and they add `functions`, `phones` and `remarks`
-(no `nationalities` / `digital_currency_addresses` / `other_features`).
-
-The UN rows likewise reuse the shared headers and swap the rest:
-`un_reference_number` / `data_id` replace `ofac_id`, `un_list_type` (the
-sanctions committee — Al-Qaida, Taliban, DPRK, …) fills the `programmes` slot,
-and they add `name_original_script`, `last_updated`, `last_reviewed_on` and
-`interpol_notice`. The free-text `COMMENTS1` field becomes `remarks` with the
-"INTERPOL-UN Security Council Special Notice" boilerplate stripped.
-
-The UK rows reuse the shared headers and swap the rest: `uk_unique_id` /
-`ofsi_group_id` / `un_reference_number` replace `ofac_id`, `programmes` holds
-the UK sanctions regime (`RegimeName`), and they add `designation_source`
-(UK / UN / UK|UN), `sanctions_imposed`, `name_original_script`, `last_updated`,
-`entity_type` / `parent_companies` / `subsidiaries`, `vessel_info` and
-`statement_of_reasons`.
-
-### BigQuery
-
-`--bigquery` (needs the optional `bigquery` extra: `uv sync --extra bigquery`)
-also loads each source's parsed rows into a single unified table,
-`{BQ_PROJECT}.{BQ_DATASET}.entries` — one row per sanctioned party per source
-per day it ran (a dated-snapshot strategy, not a live sync). Every run loads
-unconditionally; see `common/schema.py` for the field list and
-`common/sinks/bigquery.py` for the load strategy (`DELETE` then `INSERT` per
-`(source, snapshot_date)`, not `WRITE_TRUNCATE` on the whole day-partition,
-since sources refresh independently — this also makes a rerun for the same
-source/day idempotent).
+The pipeline runs automatically every day via the **`etl`** GitHub Actions
+workflow, loading straight into BigQuery. To run it on demand instead of
+waiting for the schedule:
 
 ```bash
-export BQ_PROJECT=sanctions-screening-508311   # required
-export BQ_DATASET=sanctions                    # optional, this is the default
-uv run sanctions-etl --bigquery                # every source
-uv run sanctions-etl --bigquery un             # just one
+gh workflow run etl.yml
 ```
 
-`entries` is partitioned by `snapshot_date` and clustered by
-`source, party_type, primary_name`; `snapshot_manifest` tracks each source's
-latest snapshot date, and the `entries_current` view joins against it so a
-reader gets the current state without scanning history.
-`scripts/gcp_bootstrap.sh` provisions all of this — dataset, tables, view,
-loader service account, Workload Identity Federation for GitHub Actions — and
-is idempotent (safe to re-run).
+(or GitHub → **Actions → etl → Run workflow**).
 
-**`entries` vs. `entries_current` — query the right one.** `entries` is an
-append-only history log: the same `uid` gets a new row every day it is
-(re)loaded, so filtering it by `uid` alone returns one row per snapshot, old
-values and all — nothing there is ever updated or deleted in place, by design.
-`entries_current` is what "current state" queries should hit instead: since it
-only ever surfaces each source's *latest* snapshot, an entity whose data
-changed shows only its newest values (the older row is still in `entries`, just
-not in this view), and an entity OFAC/EU/UN/UK delisted simply has no row at
-the latest snapshot date and drops out of the view on its own — no explicit
-delete needed. There's no tombstone recording *when* or *that* something was
-delisted, though — reconstructing that today means diffing `uid` sets across
-consecutive `snapshot_date`s yourself (`entries_changes`, a ready-made diff
-view, is backlog, not built).
+## Where the data lands
 
-BigQuery's zero-billing "sandbox" mode blocks `DELETE`/`MERGE` outright (not
-just the usual 60-day table expiry), so a billing account must be linked to
-the project for the loader to work at all. At this data volume the expected
-cost is $0/month — well within BigQuery's always-free tier (10 GB storage /
-1 TB queries per month).
+BigQuery project **`sanctions-screening-508311`**, dataset **`sanctions`**:
 
-### Tests and lint
+| table | contents |
+| --- | --- |
+| `entries` | full history — one row per party, per source, per day it was loaded |
+| `entries_current` | current state only — always query this one unless you need history |
+| `snapshot_manifest` | tracks each source's most recent load date |
+
+## Development
 
 ```bash
 uv run pytest
@@ -247,80 +62,4 @@ uv run ruff check .
 uv run ruff format --check .
 ```
 
-CI (`.github/workflows/ci.yml`) runs all three on every pull request and on
-pushes to `main`, against Python 3.11 and 3.12.
-
-### Scheduled runs (GitHub Actions)
-
-**`etl.yml`** — daily (`workflow_dispatch` + cron), runs
-`sanctions-etl --bigquery` (loading into BigQuery — see above). Everything
-runs in memory; no build artifact is produced.
-
-GCP auth uses **Workload Identity Federation**
-(`google-github-actions/auth`): the workflow exchanges its OIDC token for
-short-lived GCP credentials scoped to this one repo — no service account key
-is stored as a GitHub secret. The provider path and service account email
-hardcoded in the workflow aren't secrets; the security comes from the WIF
-provider's attribute condition (`assertion.repository ==
-'GSmiguel/sanctions_lists_etl'`), not from keeping them hidden.
-
-The EU list still needs `EU_FSF_TOKEN` as a **repository secret**
-(*Settings → Secrets and variables → Actions*); the workflow passes it to the
-run step as an environment variable, so nothing has to be exported locally. The
-token from the FSD web gate is short-lived — when it expires the `etl` run goes
-red on the EU step (the other lists still load/upload) until the secret is
-rotated.
-
-Tests run against trimmed real exports in `tests/fixtures/`:
-`sample_sdn_advanced.xml` (4 OFAC parties, one of each type, full reference
-tables), `sample_eu_fsf.xml` (5 EU entities covering persons, an enterprise,
-a UN cross-listing, ISO / year-range / non-Gregorian birth dates and contact
-info) and `sample_un_consolidated.xml` (4 individuals + 3 entities covering
-multi-part names, non-Latin scripts, exact / year-range / approximate birth
-dates, empty-alias placeholders and a trailing-space reference number).
-`sample_uk_sanctions.xml` (2 individuals + 2 entities + 1 ship covering
-multi-part and non-Latin names, `Primary Name Variation` / weak-alias
-annotations, the `dd/mm/yyyy` placeholder birth-date formats, duplicate passport
-rows, entity parent/subsidiary details, ship IMO / flag / dimensions and the
-INTERPOL notice-pointer scrub — the UK list's own `OtherInformation` field, not
-the (removed) INTERPOL source).
-`test_contract.py` pins the cross-source invariant that every source's
-`COLUMNS` maps real attributes to unique headers and that its flattened rows
-carry exactly those headers.
-
-## Architecture
-
-```
-src/sanctions_lists_etl/
-  cli.py         `sanctions-etl` command (subcommand per source, + "all", --exclude)
-  runner.py      source registry + run_all() / run_source()
-  base.py        Source / SourceResult — the contract each list implements
-  common/
-    download.py  shared HTTP fetch: stream into memory + checksum
-    pipeline.py  SourceSpec + resolve_input() + build_rows() (bytes->parse->flatten)
-    records.py   flatten_row() — record dataclass -> "; "-joined row dict
-    sortkeys.py  reference_sort_key() — order rows by designation reference
-    schema.py    ENTRIES_FIELDS — the unified BigQuery table's field list
-    xmlutils.py  namespace-agnostic XML helpers (shared by all XML sources)
-    sinks/
-      bigquery.py  BigQuerySink + load_bigquery() (the --bigquery sink)
-  sources/
-    ofac/        OFAC SDN + Consolidated (Non-SDN)
-      download.py  references.py  columns.py  parser.py  pipeline.py  normalize.py
-    eu/          EU consolidated list (FSF)
-      download.py  columns.py  parser.py  pipeline.py  normalize.py
-    un/          UN Security Council Consolidated List
-      download.py  columns.py  parser.py  pipeline.py  normalize.py
-    uk/          UK Sanctions List (FCDO)
-      download.py  columns.py  parser.py  pipeline.py  normalize.py
-```
-
-**Adding a list** (EU consolidated, UN Security Council, ...): create
-`sources/<name>/` with a `pipeline.py` that builds a `common.pipeline.SourceSpec`
-(`parse` / `rows_from_records` / `sort_key`) and a `run(**opts) -> SourceResult`
-that calls `resolve_input` -> `build_rows` (then, if `bigquery=True`,
-`load_bigquery` using the source's own `normalize.py::to_normalized`), exports a
-`SOURCE` object (`base.Source`: name, description, `run`, optional CLI hooks),
-and register it in `runner._SOURCES`. The CLI subcommand and `run_all` pick it
-up automatically. `download.py` is a thin wrapper over `common.download.fetch`
-that returns bytes in memory — nothing is written to disk.
+CI (`.github/workflows/ci.yml`) runs all three on every pull request.
