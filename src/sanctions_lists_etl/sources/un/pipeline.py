@@ -11,13 +11,16 @@ log = logging.getLogger(__name__)
 
 from ...base import Source, SourceResult
 from ...common.pipeline import SourceSpec, build_rows, resolve_input, write_excel
+from ...common.sinks.bigquery import load_bigquery
 from ...common.sortkeys import reference_sort_key
 from .columns import COLUMN_WIDTHS, HEADERS
 from .download import download_un_consolidated
+from .normalize import to_normalized
 from .parser import parse_un_consolidated, rows_from_records
 
 NAME = "un"
 DESCRIPTION = "UN Security Council Consolidated List (full XML)"
+BQ_SOURCE_KEY = "un_sc"
 INDIVIDUALS_ONLY = ("INDIVIDUAL",)
 ENTITIES_ONLY = ("ENTITY",)
 
@@ -43,12 +46,16 @@ def run(
     subject_types: tuple[str, ...] | None = None,
     download: bool = True,
     url: str | None = None,
+    bigquery: bool = False,
+    bq_project: str | None = None,
+    bq_dataset: str | None = None,
 ) -> SourceResult:
     """Run the UN pipeline end to end.
 
     If ``xml_path`` is given it is parsed as-is; otherwise a fresh copy is
     downloaded into ``raw_dir`` (unless ``download`` is ``False`` and a cached
-    file already exists).  No credential is required.
+    file already exists).  No credential is required.  ``bigquery`` also loads
+    the parsed rows into BigQuery (see :mod:`...common.sinks.bigquery`).
     """
     log.info("[un] starting")
     source_path, provenance = resolve_input(
@@ -68,6 +75,10 @@ def run(
         },
     )
     dest = write_excel(build, output_dir)
+    if bigquery:
+        load_bigquery(
+            build, to_normalized, source_key=BQ_SOURCE_KEY, project=bq_project, dataset=bq_dataset
+        )
     log.info("[un] done -> %s", dest)
     return build.to_source_result([dest])
 
