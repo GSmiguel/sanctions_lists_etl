@@ -59,13 +59,12 @@ class _FakeService:
 
 def _row(notice: dict) -> dict:
     stem = "un/entities" if notice["_kind"] == "un-entity" else "un/persons"
+    slug = notice["entity_id"].replace("/", "-")
     row = {
         "entity_id": notice["entity_id"],
         "name": notice["name"],
         "un_reference": notice["un_reference"],
-        "_links": {
-            "self": {"href": f"https://ws-public.interpol.int/notices/v1/{stem}/{notice['entity_id'].replace('/', '-')}"}
-        },
+        "_links": {"self": {"href": f"https://ws-public.interpol.int/notices/v1/{stem}/{slug}"}},
     }
     if notice["_kind"] == "un-person":
         row["forename"] = notice.get("forename", "")

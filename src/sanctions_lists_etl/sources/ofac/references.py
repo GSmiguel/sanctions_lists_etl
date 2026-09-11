@@ -86,9 +86,7 @@ def parse_reference_data(element: Element) -> ReferenceData:
         if subtype_text and subtype_text != "Unknown":
             ref.party_subtype_to_type[subtype_id] = subtype_text
         else:
-            ref.party_subtype_to_type[subtype_id] = ref.party_type.get(
-                party_type_id, "Unknown"
-            )
+            ref.party_subtype_to_type[subtype_id] = ref.party_type.get(party_type_id, "Unknown")
 
     return ref
 

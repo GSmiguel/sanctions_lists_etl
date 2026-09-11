@@ -182,6 +182,7 @@ uv run sanctions-etl un --individuals-only              # or --entities-only
 uv run sanctions-etl uk --individuals-only              # or --entities-only / --no-ships
 
 uv run sanctions-etl --list          # show registered sources
+uv run sanctions-etl --exclude interpol   # run every source but the slow INTERPOL crawl
 uv run sanctions-etl --output-dir OUT --raw-dir RAW   # override paths
 uv run sanctions-etl -q ofac         # -q quiet (warnings only), -v debug
 ```
@@ -242,11 +243,33 @@ swaps the rest: `uk_unique_id` / `ofsi_group_id` / `un_reference_number` replace
 `name_original_script`, `last_updated`, `entity_type` / `parent_companies` /
 `subsidiaries`, `vessel_info` and `statement_of_reasons`.
 
-### Tests
+### Tests and lint
 
 ```bash
 uv run pytest
+uv run ruff check .
+uv run ruff format --check .
 ```
+
+CI (`.github/workflows/ci.yml`) runs all three on every pull request and on
+pushes to `main`, against Python 3.11 and 3.12.
+
+### Scheduled runs (GitHub Actions)
+
+- **`etl.yml`** — daily (`workflow_dispatch` + cron), runs
+  `sanctions-etl --exclude interpol` and uploads the workbooks + `.meta.json`
+  sidecars as a build artifact (retention 45 days).
+- **`etl-interpol.yml`** — weekly, the INTERPOL crawl on its own (slow, and the
+  service rate-limits shared runner IPs with HTTP 403).
+
+The EU list needs `EU_FSF_TOKEN` as a **repository secret**
+(*Settings → Secrets and variables → Actions*); the workflow passes it to the
+run step as an environment variable, so nothing has to be exported locally. The
+token from the FSD web gate is short-lived — when it expires the `etl` run goes
+red on the EU step (the other lists still upload) until the secret is rotated.
+
+Loading the outputs into BigQuery instead of build artifacts is the next step
+(P1).
 
 Tests run against trimmed real exports in `tests/fixtures/`:
 `sample_sdn_advanced.xml` (4 OFAC parties, one of each type, full reference
@@ -264,15 +287,23 @@ formats, duplicate passport rows, entity parent/subsidiary details, ship IMO /
 flag / dimensions and the INTERPOL notice-pointer scrub). The INTERPOL crawler is
 tested against an in-memory fake of the web service (`test_interpol_download.py`)
 that reproduces the ~160-result cap so the `name` sweep is exercised offline.
+`test_contract.py` pins the cross-source invariant that every source's
+`COLUMNS` / `HEADERS` stay in sync and that its flattened rows carry exactly the
+declared headers.
 
 ## Architecture
 
 ```
 src/sanctions_lists_etl/
-  cli.py         `sanctions-etl` command (subcommand per source, + "all")
+  cli.py         `sanctions-etl` command (subcommand per source, + "all", --exclude)
   runner.py      source registry + run_all() / run_source()
   base.py        Source / SourceResult — the contract each list implements
   common/
+    download.py  shared HTTP fetch: stream + checksum + .meta.json + conditional GET
+    meta.py      read/write the <file>.meta.json provenance sidecar
+    pipeline.py  SourceSpec + build_rows() (download->parse->flatten) + write_excel()
+    records.py   flatten_row() — record dataclass -> "; "-joined row dict
+    sortkeys.py  reference_sort_key() — order rows by designation reference
     xmlutils.py  namespace-agnostic XML helpers (shared by all XML sources)
     excel.py     generic single-sheet workbook writer
   sources/
@@ -289,7 +320,10 @@ src/sanctions_lists_etl/
 ```
 
 **Adding a list** (EU consolidated, UN Security Council, ...): create
-`sources/<name>/` with a module exporting a `SOURCE` object
-(`base.Source`: name, description, a `run(**opts) -> SourceResult` callable, and
-optional CLI hooks), then register it in `runner._SOURCES`. The CLI subcommand
-and `run_all` pick it up automatically.
+`sources/<name>/` with a `pipeline.py` that builds a `common.pipeline.SourceSpec`
+(filenames, headers, `parse` / `rows_from_records` / `sort_key`) and a
+`run(**opts) -> SourceResult` that calls `resolve_input` -> `build_rows` ->
+`write_excel`, exports a `SOURCE` object (`base.Source`: name, description, `run`,
+optional CLI hooks), and register it in `runner._SOURCES`. The CLI subcommand and
+`run_all` pick it up automatically. `download.py` is a thin wrapper over
+`common.download.fetch`.

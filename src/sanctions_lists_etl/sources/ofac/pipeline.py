@@ -15,52 +15,58 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
-import json
 import logging
 from collections import Counter
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 log = logging.getLogger(__name__)
 
 from ...base import Source, SourceResult
-from ...common.excel import write_workbook
+from ...common.pipeline import SourceSpec, build_rows, resolve_input, write_excel
+from ...common.sortkeys import reference_sort_key
 from .columns import COLUMN_WIDTHS, HEADERS
-from .download import (
-    CONS_ADVANCED_URL,
-    SDN_ADVANCED_URL,
-    DownloadResult,
-    download_advanced_xml,
-)
+from .download import CONS_ADVANCED_URL, SDN_ADVANCED_URL, download_advanced_xml
 from .parser import parse_sdn_advanced, rows_from_records
 
 NAME = "ofac"
 DESCRIPTION = "OFAC — SDN and Consolidated (Non-SDN) sanctions lists (advanced XML)"
 INDIVIDUALS_AND_ENTITIES = ("Individual", "Entity")
 
+ALL_LISTS = ("sdn", "consolidated")
 
-@dataclass(frozen=True)
-class _ListSpec:
-    key: str
-    url: str
-    raw_filename: str
-    output_filename: str
-    sheet_name: str
-    label: str
+_URLS = {"sdn": SDN_ADVANCED_URL, "consolidated": CONS_ADVANCED_URL}
 
 
-_LISTS: dict[str, _ListSpec] = {
-    "sdn": _ListSpec(
-        "sdn", SDN_ADVANCED_URL, "sdn_advanced.xml", "ofac_sdn.xlsx", "SDN",
-        "SDN — Specially Designated Nationals",
+def _spec(description: str, raw_filename: str, output_filename: str, sheet: str) -> SourceSpec:
+    return SourceSpec(
+        name=NAME,
+        description=description,
+        raw_filename=raw_filename,
+        output_filename=output_filename,
+        sheet_name=sheet,
+        headers=HEADERS,
+        column_widths=COLUMN_WIDTHS,
+        parse=parse_sdn_advanced,
+        rows_from_records=rows_from_records,
+        sort_key=lambda record: reference_sort_key(record.fixed_ref),
+    )
+
+
+_LIST_SPECS: dict[str, SourceSpec] = {
+    "sdn": _spec(
+        "OFAC SDN — Specially Designated Nationals",
+        "sdn_advanced.xml",
+        "ofac_sdn.xlsx",
+        "SDN",
     ),
-    "consolidated": _ListSpec(
-        "consolidated", CONS_ADVANCED_URL, "cons_advanced.xml",
-        "ofac_consolidated.xlsx", "CONS", "Consolidated (Non-SDN) sanctions list",
+    "consolidated": _spec(
+        "OFAC Consolidated (Non-SDN) sanctions list",
+        "cons_advanced.xml",
+        "ofac_consolidated.xlsx",
+        "CONS",
     ),
 }
-ALL_LISTS = ("sdn", "consolidated")
 
 
 def run(
@@ -85,67 +91,50 @@ def run(
     if not selected:
         raise ValueError("no OFAC list selected")
 
-    output_dir = Path(output_dir)
-    raw_dir = Path(raw_dir)
-    generated_at = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
-
-    per_list: list[tuple[_ListSpec, Path, int, dict[str, int]]] = []
-    for key in selected:
-        spec = _LISTS[key]
-        source, sha256 = _resolve_source(
-            spec, raw_dir, xml_path=xml_path, download=download
-        )
-        records = parse_sdn_advanced(source, party_types=party_types)
-        records.sort(key=lambda record: _sort_key(record.fixed_ref))
-        counts = dict(Counter(record.party_type for record in records))
-
-        metadata = {
-            "source": f"OFAC {spec.label}",
-            "source_file": source.name,
-            "source_sha256": sha256 or "",
-            "generated_at": generated_at,
-            "record_count": str(len(records)),
-            "party_type_filter": ", ".join(party_types) if party_types else "(all)",
-            **{f"count_{p.lower()}": str(c) for p, c in sorted(counts.items())},
-        }
-        dest = output_dir / spec.output_filename
-        log.info("[ofac] %s: writing %d rows to %s", spec.key, len(records), dest)
-        write_workbook(
-            HEADERS,
-            rows_from_records(records),
-            dest,
-            sheet_name=spec.sheet_name,
-            column_widths=COLUMN_WIDTHS,
-            metadata=metadata,
-        )
-        per_list.append((spec, dest, len(records), counts))
-        log.info("[ofac] %s done -> %s", spec.key, dest)
-
-    total = sum(count for _, _, count, _ in per_list)
+    filter_label = ", ".join(party_types) if party_types else "(all)"
+    builds: list[tuple[str, Path, int]] = []
     merged: Counter[str] = Counter()
-    for _, _, _, counts in per_list:
-        merged.update(counts)
 
+    for key in selected:
+        spec = _LIST_SPECS[key]
+        source_path, provenance = resolve_input(
+            spec,
+            raw_dir=raw_dir,
+            fetch=lambda k=key: download_advanced_xml(
+                raw_dir, url=_URLS[k], filename=_LIST_SPECS[k].raw_filename
+            ),
+            local_path=xml_path,
+            download=download,
+        )
+        build = build_rows(
+            spec,
+            source_path=source_path,
+            provenance=provenance,
+            parse_kwargs={"party_types": party_types},
+            extra_metadata={"party_type_filter": filter_label},
+        )
+        dest = write_excel(build, output_dir)
+        log.info("[ofac] %s done -> %s", key, dest)
+        builds.append((key, dest, build.record_count))
+        merged.update(build.counts_by_type)
+
+    total = sum(count for _, _, count in builds)
     summary = {
         "source": DESCRIPTION,
-        "generated_at": generated_at,
-        "lists_built": ", ".join(spec.key for spec, _, _, _ in per_list),
+        "generated_at": dt.datetime.now(dt.UTC).isoformat(timespec="seconds"),
+        "lists_built": ", ".join(key for key, _, _ in builds),
         "record_count": str(total),
-        "party_type_filter": ", ".join(party_types) if party_types else "(all)",
-        **{
-            f"{spec.key}_xlsx": str(dest) for spec, dest, _, _ in per_list
-        },
-        **{
-            f"{spec.key}_record_count": str(count) for spec, _, count, _ in per_list
-        },
+        "party_type_filter": filter_label,
+        **{f"{key}_xlsx": str(dest) for key, dest, _ in builds},
+        **{f"{key}_record_count": str(count) for key, _, count in builds},
     }
-
     return SourceResult(
         source=NAME,
-        xlsx_path=per_list[0][1],
+        xlsx_path=builds[0][1],
         record_count=total,
         counts_by_type=dict(merged),
         metadata=summary,
+        outputs=[dest for _, dest, _ in builds],
     )
 
 
@@ -193,40 +182,3 @@ SOURCE = Source(
     configure_parser=configure_parser,
     options_from_args=options_from_args,
 )
-
-
-def _resolve_source(
-    spec: _ListSpec,
-    raw_dir: Path,
-    *,
-    xml_path: Path | str | None,
-    download: bool,
-) -> tuple[Path, str | None]:
-    if xml_path is not None:
-        source = Path(xml_path)
-        log.info("[ofac] %s: using local XML %s", spec.key, source)
-        return source, _cached_sha256(source)
-
-    source = raw_dir / spec.raw_filename
-    if download or not source.exists():
-        result: DownloadResult = download_advanced_xml(
-            raw_dir, url=spec.url, filename=spec.raw_filename
-        )
-        return result.path, result.sha256
-
-    log.info("[ofac] %s: reusing cached XML %s", spec.key, source)
-    return source, _cached_sha256(source)
-
-
-def _cached_sha256(source: Path) -> str | None:
-    meta = source.with_name(source.name + ".meta.json")
-    if not meta.exists():
-        return None
-    try:
-        return json.loads(meta.read_text())["sha256"]
-    except (ValueError, KeyError):
-        return None
-
-
-def _sort_key(fixed_ref: str) -> tuple[int, str]:
-    return (int(fixed_ref), "") if fixed_ref.isdigit() else (2**63, fixed_ref)

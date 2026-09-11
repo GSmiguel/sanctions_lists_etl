@@ -8,8 +8,9 @@ else — the CLI subcommand, ``run_all`` — picks it up automatically.
 from __future__ import annotations
 
 import logging
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 log = logging.getLogger(__name__)
 
@@ -80,9 +81,7 @@ def run_sources(
             log.error("[%s] failed: %s", name, exc)
             failures.append(f"{name}: {exc}")
     if failures:
-        raise RuntimeError(
-            "one or more sources failed:\n  " + "\n  ".join(failures)
-        )
+        raise RuntimeError("one or more sources failed:\n  " + "\n  ".join(failures))
     return results
 
 
@@ -91,12 +90,21 @@ def run_all(
     output_dir: Path | str = DEFAULT_OUTPUT_DIR,
     raw_dir: Path | str = DEFAULT_RAW_DIR,
     keep_going: bool = True,
+    exclude: Iterable[str] = (),
 ) -> list[SourceResult]:
     """Run every registered source with its defaults.
 
-    One source failing (e.g. the EU list without ``EU_FSF_TOKEN`` set) does not
-    stop the others; the run still ends with an error listing what failed.
+    ``exclude`` drops named sources from the batch (e.g. the slow INTERPOL crawl
+    on a daily schedule).  One source failing (e.g. the EU list without
+    ``EU_FSF_TOKEN`` set) does not stop the others; the run still ends with an
+    error listing what failed.
     """
-    return run_sources(
-        _SOURCES, output_dir=output_dir, raw_dir=raw_dir, keep_going=keep_going
-    )
+    skip = {name for name in exclude}
+    unknown = skip - set(_SOURCES)
+    if unknown:
+        raise KeyError(
+            f"unknown source(s) in exclude: {', '.join(sorted(unknown))}; "
+            f"available: {', '.join(sorted(_SOURCES))}"
+        )
+    names = [name for name in _SOURCES if name not in skip]
+    return run_sources(names, output_dir=output_dir, raw_dir=raw_dir, keep_going=keep_going)

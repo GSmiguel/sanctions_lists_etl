@@ -18,13 +18,14 @@ from __future__ import annotations
 
 import logging
 import re
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable
 from xml.etree.ElementTree import Element, iterparse
 
 log = logging.getLogger(__name__)
 
+from ...common.records import flatten_row
 from ...common.xmlutils import child_text, children, first_child, localname
 from .columns import COLUMNS
 
@@ -66,9 +67,7 @@ _PHOTO = (
 # The "Photo(s) ... available for inclusion in the ... Special Notice." sentence
 # can sit anywhere (real information often follows it), so it is removed on its
 # own before the trailing pointer is cut.
-_PHOTO_SENTENCE = re.compile(
-    r"\s*" + _PHOTO + _INTERPOL + r" Special Notice\.?", re.IGNORECASE
-)
+_PHOTO_SENTENCE = re.compile(r"\s*" + _PHOTO + _INTERPOL + r" Special Notice\.?", re.IGNORECASE)
 # The notice pointer always sits at the end of the field and the FCDO data
 # routinely injects stray spaces into the URL, so once a trailing marker is seen
 # everything from it to the end is dropped (DOTALL ``.*$``).
@@ -125,18 +124,7 @@ class SanctionParty:
     other_information: str = ""
 
     def to_row(self) -> dict[str, str]:
-        row: dict[str, str] = {}
-        for attr, header in COLUMNS:
-            value = getattr(self, attr)
-            if isinstance(value, list):
-                seen: list[str] = []
-                for item in value:
-                    if item and item not in seen:
-                        seen.append(item)
-                row[header] = _LIST_SEP.join(seen)
-            else:
-                row[header] = value or ""
-        return row
+        return flatten_row(self, COLUMNS)
 
 
 def parse_uk_sanctions(
@@ -193,9 +181,7 @@ def _build_party(desig: Element) -> SanctionParty:
 
     record.titles = _texts(desig, "Titles", "Title")
     record.sanctions_imposed = [
-        piece.strip()
-        for piece in child_text(desig, "SanctionsImposed").split("|")
-        if piece.strip()
+        piece.strip() for piece in child_text(desig, "SanctionsImposed").split("|") if piece.strip()
     ]
     designated = _to_iso(child_text(desig, "DateDesignated"))
     if designated:
@@ -243,9 +229,7 @@ def _resolve_names(desig: Element) -> tuple[str, list[str], str]:
             aliases.append(f"{assembled} (primary name variation)")
         else:
             strength = child_text(name_el, "AliasStrength").lower()
-            aliases.append(
-                f"{assembled} (low quality)" if "low" in strength else assembled
-            )
+            aliases.append(f"{assembled} (low quality)" if "low" in strength else assembled)
 
     if not primary and aliases:
         primary = aliases.pop(0).rsplit(" (", 1)[0]
@@ -290,13 +274,9 @@ def _apply_individual(desig: Element, record: SanctionParty) -> None:
         if rendered:
             record.documents.append(rendered)
 
-    for national_id in individual.findall(
-        "NationalIdentifierDetails/NationalIdentifier"
-    ):
+    for national_id in individual.findall("NationalIdentifierDetails/NationalIdentifier"):
         number = child_text(national_id, "NationalIdentifierNumber")
-        info = " ".join(
-            child_text(national_id, "NationalIdentifierAdditionalInformation").split()
-        )
+        info = " ".join(child_text(national_id, "NationalIdentifierAdditionalInformation").split())
         if not number and not info:
             continue
         rendered = f"National ID: {number}" if number else "National ID"
@@ -325,9 +305,7 @@ def _apply_ship(desig: Element, record: SanctionParty) -> None:
         record.documents.append(f"IMO {digits}")
     for flag in _texts(ship, "CurrentBelievedFlagOfShips", "CurrentBelievedFlagOfShip"):
         record.address_countries.append(flag)
-    record.positions.extend(
-        _texts(ship, "CurrentOwnerOperators", "CurrentOwnerOperator")
-    )
+    record.positions.extend(_texts(ship, "CurrentOwnerOperators", "CurrentOwnerOperator"))
 
     pieces: list[str] = []
     for label, container, item in (
@@ -359,7 +337,11 @@ def _iter(parent: Element, container: str, name: str) -> list[Element]:
 
 
 def _texts(parent: Element, container: str, name: str) -> list[str]:
-    return [(node.text or "").strip() for node in _iter(parent, container, name) if (node.text or "").strip()]
+    return [
+        (node.text or "").strip()
+        for node in _iter(parent, container, name)
+        if (node.text or "").strip()
+    ]
 
 
 def _join(node: Element, keys: tuple[str, ...]) -> str:

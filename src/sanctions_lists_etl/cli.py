@@ -1,9 +1,10 @@
 """``sanctions-etl`` command line.
 
-    sanctions-etl                 run every source
-    sanctions-etl all             same, explicit
-    sanctions-etl ofac [opts]     run one source with its own flags
-    sanctions-etl --list          show registered sources
+sanctions-etl                        run every source
+sanctions-etl all                    same, explicit
+sanctions-etl all --exclude interpol run every source but one
+sanctions-etl ofac [opts]            run one source with its own flags
+sanctions-etl --list                 show registered sources
 """
 
 from __future__ import annotations
@@ -32,17 +33,22 @@ def build_parser() -> argparse.ArgumentParser:
         "--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR, help="where .xlsx files are written"
     )
     parser.add_argument(
-        "--raw-dir", type=Path, default=DEFAULT_RAW_DIR, help="where downloaded source files are cached"
+        "--raw-dir",
+        type=Path,
+        default=DEFAULT_RAW_DIR,
+        help="where downloaded source files are cached",
     )
+    parser.add_argument("--list", action="store_true", help="list registered sources and exit")
     parser.add_argument(
-        "--list", action="store_true", help="list registered sources and exit"
+        "--exclude",
+        action="append",
+        default=[],
+        metavar="SOURCE",
+        choices=sorted(available_sources()),
+        help="skip this source when running all (repeatable)",
     )
-    parser.add_argument(
-        "-q", "--quiet", action="store_true", help="only log warnings and errors"
-    )
-    parser.add_argument(
-        "-v", "--verbose", action="store_true", help="log debug-level detail"
-    )
+    parser.add_argument("-q", "--quiet", action="store_true", help="only log warnings and errors")
+    parser.add_argument("-v", "--verbose", action="store_true", help="log debug-level detail")
 
     subparsers = parser.add_subparsers(dest="source", metavar="SOURCE")
     subparsers.add_parser("all", help="run every registered source (default)")
@@ -71,13 +77,15 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         if args.source in (None, "all"):
-            results = run_all(output_dir=args.output_dir, raw_dir=args.raw_dir)
+            results = run_all(
+                output_dir=args.output_dir, raw_dir=args.raw_dir, exclude=args.exclude
+            )
         else:
+            if args.exclude:
+                parser.error("--exclude only applies when running every source")
             source = get_source(args.source)
             options = source.options_from_args(args)
-            results = [
-                source.run(output_dir=args.output_dir, raw_dir=args.raw_dir, **options)
-            ]
+            results = [source.run(output_dir=args.output_dir, raw_dir=args.raw_dir, **options)]
     except RuntimeError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1

@@ -3,25 +3,41 @@
 from __future__ import annotations
 
 import argparse
-import datetime as dt
-import json
 import logging
-from collections import Counter
 from pathlib import Path
 from typing import Any
 
 log = logging.getLogger(__name__)
 
 from ...base import Source, SourceResult
-from ...common.excel import write_workbook
+from ...common.meta import read_meta
+from ...common.pipeline import Provenance, SourceSpec, build_rows, write_excel
 from .columns import COLUMN_WIDTHS, HEADERS
-from .download import DownloadResult, download_interpol
+from .download import download_interpol
 from .parser import Notice, parse_interpol, rows_from_records
 
 NAME = "interpol"
 DESCRIPTION = "INTERPOL UN Special Notices (public web service)"
-OUTPUT_FILENAME = "interpol.xlsx"
-RAW_FILENAME = "interpol.json"
+
+
+def _sort_key(record: Notice) -> tuple[str, str]:
+    """Order rows by UN reference (falling back to name), then id."""
+    return (record.un_reference or record.primary_name).upper(), record.interpol_notice_id
+
+
+SPEC = SourceSpec(
+    name=NAME,
+    description=DESCRIPTION,
+    raw_filename="interpol.json",
+    output_filename="interpol.xlsx",
+    sheet_name="INTERPOL",
+    headers=HEADERS,
+    column_widths=COLUMN_WIDTHS,
+    parse=parse_interpol,
+    rows_from_records=rows_from_records,
+    sort_key=_sort_key,
+    input_kind="snapshot",
+)
 
 
 def run(
@@ -41,56 +57,41 @@ def run(
     the snapshot size (smoke tests).
     """
     log.info("[interpol] starting")
-    downloaded: DownloadResult | None = None
     if json_path is not None:
-        source = Path(json_path)
-        log.info("[interpol] using local snapshot %s", source)
+        source_path = Path(json_path)
+        log.info("[interpol] using local snapshot %s", source_path)
+        provenance, coverage = _from_meta(source_path)
     else:
-        source = Path(raw_dir) / RAW_FILENAME
-        if download or not source.exists():
-            downloaded = download_interpol(raw_dir, url=url, limit=limit)
-            source = downloaded.path
+        cached = Path(raw_dir) / SPEC.raw_filename
+        if download or not cached.exists():
+            result = download_interpol(raw_dir, url=url, limit=limit)
+            source_path = result.path
+            provenance = Provenance(result.path.name, result.sha256, result.url)
+            coverage = result.coverage
         else:
-            log.info("[interpol] reusing cached snapshot %s", source)
+            log.info("[interpol] reusing cached snapshot %s", cached)
+            source_path = cached
+            provenance, coverage = _from_meta(cached)
 
-    sha256 = downloaded.sha256 if downloaded else _cached_meta(source, "sha256")
-    source_url = downloaded.url if downloaded else _cached_meta(source, "url")
-    coverage = downloaded.coverage if downloaded else _cached_meta(source, "coverage")
-
-    records = parse_interpol(source)
-    records.sort(key=_sort_key)
-    counts = dict(Counter(record.party_type for record in records))
-
-    metadata = {
-        "source": DESCRIPTION,
-        "source_file": source.name,
-        "source_url": source_url or "",
-        "source_sha256": sha256 or "",
-        "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
-        "record_count": str(len(records)),
-        "coverage": coverage or "",
-        **{f"count_{ptype.lower()}": str(count) for ptype, count in sorted(counts.items())},
-    }
-
-    dest = Path(output_dir) / OUTPUT_FILENAME
-    log.info("[interpol] writing %d rows to %s", len(records), dest)
-    xlsx = write_workbook(
-        HEADERS,
-        rows_from_records(records),
-        dest,
-        sheet_name="INTERPOL",
-        column_widths=COLUMN_WIDTHS,
-        metadata=metadata,
+    build = build_rows(
+        SPEC,
+        source_path=source_path,
+        provenance=provenance,
+        extra_metadata={"coverage": coverage},
     )
-    log.info("[interpol] done -> %s", xlsx)
+    dest = write_excel(build, output_dir)
+    log.info("[interpol] done -> %s", dest)
+    return build.to_source_result([dest])
 
-    return SourceResult(
-        source=NAME,
-        xlsx_path=xlsx,
-        record_count=len(records),
-        counts_by_type=counts,
-        metadata=metadata,
+
+def _from_meta(path: Path) -> tuple[Provenance, str]:
+    meta = read_meta(path)
+    provenance = Provenance(
+        source_file=path.name,
+        source_sha256=str(meta.get("sha256") or ""),
+        source_url=str(meta.get("url") or ""),
     )
+    return provenance, str(meta.get("coverage") or "")
 
 
 def configure_parser(parser: argparse.ArgumentParser) -> None:
@@ -129,19 +130,3 @@ SOURCE = Source(
     configure_parser=configure_parser,
     options_from_args=options_from_args,
 )
-
-
-def _cached_meta(source: Path, key: str) -> str | None:
-    meta = source.with_name(source.name + ".meta.json")
-    if not meta.exists():
-        return None
-    try:
-        value = json.loads(meta.read_text())[key]
-    except (ValueError, KeyError):
-        return None
-    return value if isinstance(value, str) else None
-
-
-def _sort_key(record: Notice) -> tuple[str, str]:
-    """Order rows by UN reference (falling back to name), then id."""
-    return (record.un_reference or record.primary_name).upper(), record.interpol_notice_id

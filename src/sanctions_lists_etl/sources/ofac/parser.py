@@ -9,13 +9,14 @@ and are joined back onto the already-built records by profile id.
 from __future__ import annotations
 
 import logging
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable
 from xml.etree.ElementTree import Element, iterparse
 
 log = logging.getLogger(__name__)
 
+from ...common.records import flatten_row
 from ...common.xmlutils import (
     child_text,
     children,
@@ -38,7 +39,6 @@ FEATURE_LOCATION = "25"
 FEATURE_TITLE = "26"
 FEATURE_GENDER = "224"
 
-_LIST_SEP = "; "
 _UNKNOWN_COUNTRIES = {"undetermined", "unknown"}
 _ADDRESS_PART_ORDER = (
     "ADDRESS1",
@@ -75,18 +75,7 @@ class PartyRecord:
     other_features: list[str] = field(default_factory=list)
 
     def to_row(self) -> dict[str, str]:
-        row: dict[str, str] = {}
-        for attr, header in COLUMNS:
-            value = getattr(self, attr)
-            if isinstance(value, list):
-                seen: list[str] = []
-                for item in value:
-                    if item and item not in seen:
-                        seen.append(item)
-                row[header] = _LIST_SEP.join(seen)
-            else:
-                row[header] = value or ""
-        return row
+        return flatten_row(self, COLUMNS)
 
 
 def parse_sdn_advanced(
@@ -205,9 +194,7 @@ def _resolve_names(identity: Element, ref: ReferenceData) -> tuple[str, list[str
         for master in children(groups, "MasterNamePartGroup"):
             npg = first_child(master, "NamePartGroup")
             if npg is not None:
-                group_type[npg.get("ID")] = ref.name_part_type.get(
-                    npg.get("NamePartTypeID"), ""
-                )
+                group_type[npg.get("ID")] = ref.name_part_type.get(npg.get("NamePartTypeID"), "")
 
     primary = ""
     aliases: list[str] = []
