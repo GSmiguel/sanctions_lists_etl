@@ -254,6 +254,23 @@ uv run ruff format --check .
 CI (`.github/workflows/ci.yml`) runs all three on every pull request and on
 pushes to `main`, against Python 3.11 and 3.12.
 
+### Scheduled runs (GitHub Actions)
+
+- **`etl.yml`** — daily (`workflow_dispatch` + cron), runs
+  `sanctions-etl --exclude interpol` and uploads the workbooks + `.meta.json`
+  sidecars as a build artifact (retention 45 days).
+- **`etl-interpol.yml`** — weekly, the INTERPOL crawl on its own (slow, and the
+  service rate-limits shared runner IPs with HTTP 403).
+
+The EU list needs `EU_FSF_TOKEN` as a **repository secret**
+(*Settings → Secrets and variables → Actions*); the workflow passes it to the
+run step as an environment variable, so nothing has to be exported locally. The
+token from the FSD web gate is short-lived — when it expires the `etl` run goes
+red on the EU step (the other lists still upload) until the secret is rotated.
+
+Loading the outputs into BigQuery instead of build artifacts is the next step
+(P1).
+
 Tests run against trimmed real exports in `tests/fixtures/`:
 `sample_sdn_advanced.xml` (4 OFAC parties, one of each type, full reference
 tables), `sample_eu_fsf.xml` (5 EU entities covering persons, an enterprise,

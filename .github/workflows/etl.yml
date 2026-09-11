@@ -1,0 +1,42 @@
+name: etl
+
+# Daily refresh of every list except the slow INTERPOL crawl (see etl-interpol.yml).
+# Outputs are uploaded as build artifacts for now; loading into BigQuery is P1.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 6 * * *"  # 06:17 UTC daily
+
+permissions:
+  contents: read
+
+concurrency:
+  group: etl
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.1.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --no-dev
+      - name: Run ETL (all sources except interpol)
+        env:
+          EU_FSF_TOKEN: ${{ secrets.EU_FSF_TOKEN }}
+        run: uv run sanctions-etl --exclude interpol
+      - name: Upload workbooks
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanctions-lists
+          path: |
+            data/output/*.xlsx
+            data/raw/*.meta.json
+          retention-days: 45
+          if-no-files-found: warn
