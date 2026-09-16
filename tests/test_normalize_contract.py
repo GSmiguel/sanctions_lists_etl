@@ -23,7 +23,6 @@ from sanctions_lists_etl.sources.uk.parser import parse_uk_sanctions
 from sanctions_lists_etl.sources.un.normalize import to_normalized as un_to_normalized
 from sanctions_lists_etl.sources.un.parser import parse_un_consolidated
 
-_SNAPSHOT_DATE = "2026-01-01"
 _SOURCE_SHA256 = "deadbeef"
 _INGESTED_AT = "2026-01-01T00:00:00+00:00"
 
@@ -54,7 +53,6 @@ def _rows(contract: Contract, request) -> list[dict]:
         contract.to_normalized(
             record,
             source_key=contract.source_key,
-            snapshot_date=_SNAPSHOT_DATE,
             source_sha256=_SOURCE_SHA256,
             ingested_at=_INGESTED_AT,
         )

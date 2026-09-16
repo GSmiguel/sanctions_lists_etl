@@ -16,12 +16,10 @@ def to_normalized(
     record: PartyRecord,
     *,
     source_key: str,
-    snapshot_date: str,
     source_sha256: str,
     ingested_at: str,
 ) -> dict:
     return {
-        "snapshot_date": snapshot_date,
         "source": source_key,
         "source_authority": SOURCE_AUTHORITY,
         "source_reference": record.fixed_ref,

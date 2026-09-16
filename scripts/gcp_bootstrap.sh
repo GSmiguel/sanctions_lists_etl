@@ -42,10 +42,52 @@ bq --project_id="${PROJECT_ID}" mk --dataset \
   --description="Unified public sanctions lists (OFAC/EU/UN/UK)" \
   "${DATASET}" 2>&1 | grep -qv "already exists" || true
 
-echo "== entries table (partitioned by snapshot_date, clustered by source/party_type/primary_name) =="
+echo "== entries table (current state, clustered by source/party_type/primary_name) =="
 bq query --project_id="${PROJECT_ID}" --use_legacy_sql=false <<SQL
 CREATE TABLE IF NOT EXISTS \`${PROJECT_ID}.${DATASET}.entries\` (
-  snapshot_date DATE NOT NULL,
+  source STRING NOT NULL,
+  source_authority STRING NOT NULL,
+  source_reference STRING NOT NULL,
+  uid STRING NOT NULL,
+  party_type STRING NOT NULL,
+  primary_name STRING NOT NULL,
+  name_original_script STRING,
+  un_reference STRING,
+  aliases ARRAY<STRING>,
+  birth_dates ARRAY<STRING>,
+  birth_places ARRAY<STRING>,
+  nationalities ARRAY<STRING>,
+  citizenships ARRAY<STRING>,
+  genders ARRAY<STRING>,
+  titles ARRAY<STRING>,
+  functions ARRAY<STRING>,
+  address_countries ARRAY<STRING>,
+  addresses ARRAY<STRING>,
+  documents ARRAY<STRING>,
+  programs ARRAY<STRING>,
+  sanctions_lists ARRAY<STRING>,
+  listed_on ARRAY<STRING>,
+  last_updated ARRAY<STRING>,
+  emails ARRAY<STRING>,
+  phones ARRAY<STRING>,
+  websites ARRAY<STRING>,
+  crypto_addresses ARRAY<STRING>,
+  remarks STRING,
+  source_fields JSON,
+  source_sha256 STRING,
+  ingested_at TIMESTAMP NOT NULL,
+  first_seen_date DATE NOT NULL,
+  last_seen_date DATE NOT NULL
+)
+CLUSTER BY source, party_type, primary_name
+OPTIONS (
+  description = "One row per currently-listed party (uid). Kept current via a per-source MERGE in common/sinks/bigquery.py — no daily snapshot copies. See common/schema.py."
+);
+SQL
+
+echo "== entries_staging table (truncate-and-reload buffer the sink MERGEs from) =="
+bq query --project_id="${PROJECT_ID}" --use_legacy_sql=false <<SQL
+CREATE TABLE IF NOT EXISTS \`${PROJECT_ID}.${DATASET}.entries_staging\` (
   source STRING NOT NULL,
   source_authority STRING NOT NULL,
   source_reference STRING NOT NULL,
@@ -78,10 +120,8 @@ CREATE TABLE IF NOT EXISTS \`${PROJECT_ID}.${DATASET}.entries\` (
   source_sha256 STRING,
   ingested_at TIMESTAMP NOT NULL
 )
-PARTITION BY snapshot_date
-CLUSTER BY source, party_type, primary_name
 OPTIONS (
-  description = "One row per sanctioned party per source per day it was (re)fetched. See common/schema.py."
+  description = "Transient per-load buffer: BigQuerySink WRITE_TRUNCATEs each source's rows here, then MERGEs into entries. Not meant to be queried directly."
 );
 SQL
 
@@ -92,14 +132,11 @@ CREATE TABLE IF NOT EXISTS \`${PROJECT_ID}.${DATASET}.snapshot_manifest\` (
   latest_snapshot_date DATE NOT NULL
 )
 OPTIONS (
-  description = "Latest snapshot_date loaded per source; entries_current joins on this."
+  description = "Last date each source was successfully synced into entries. Informational only, not used for filtering."
 );
 
 CREATE OR REPLACE VIEW \`${PROJECT_ID}.${DATASET}.entries_current\` AS
-SELECT e.*
-FROM \`${PROJECT_ID}.${DATASET}.entries\` e
-JOIN \`${PROJECT_ID}.${DATASET}.snapshot_manifest\` m
-  ON e.source = m.source AND e.snapshot_date = m.latest_snapshot_date;
+SELECT * FROM \`${PROJECT_ID}.${DATASET}.entries\`;
 SQL
 
 echo "== loader service account =="
