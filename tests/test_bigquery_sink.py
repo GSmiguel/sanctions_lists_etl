@@ -26,9 +26,8 @@ class _Record:
     party_type: str = "Individual"
 
 
-def _to_normalized(record, *, source_key, snapshot_date, source_sha256, ingested_at):
+def _to_normalized(record, *, source_key, source_sha256, ingested_at):
     return {
-        "snapshot_date": snapshot_date,
         "source": source_key,
         "source_authority": "TEST",
         "source_reference": record.ref,
@@ -88,40 +87,42 @@ def test_normalized_rows_carries_provenance_sha256():
         build,
         _to_normalized,
         source_key="demo_src",
-        snapshot_date="2026-01-01",
         ingested_at="2026-01-01T00:00:00+00:00",
     )
     assert [r["uid"] for r in rows] == ["demo_src:A1", "demo_src:B2"]
     assert all(r["source_sha256"] == "abc123" for r in rows)
 
 
-def test_sink_load_deletes_then_appends_and_updates_manifest():
+def test_sink_load_merges_staging_into_entries_and_updates_manifest():
     client = _FakeClient()
     sink = BigQuerySink(project="proj", dataset="sanctions", client=client)
     rows = [{"uid": "demo_src:A1"}]
 
-    outcome = sink.load(rows, source_key="demo_src", snapshot_date="2026-01-01")
+    outcome = sink.load(rows, source_key="demo_src", load_date="2026-01-01")
 
     assert outcome.status == "loaded"
     assert outcome.row_count == 1
-    assert len(client.queries) == 2  # DELETE, then the manifest MERGE
-    delete_sql, delete_params = client.queries[0]
-    assert "DELETE FROM" in delete_sql
-    # bigquery.ScalarQueryParameter coerces a DATE-typed value into a real date.
-    assert delete_params == {"snapshot_date": dt.date(2026, 1, 1), "source": "demo_src"}
-    assert "MERGE" in client.queries[1][0]
+
     assert len(client.loads) == 1
     loaded_rows, table_id, job_config = client.loads[0]
     assert loaded_rows == rows
-    assert table_id == "proj.sanctions.entries"
-    assert job_config.write_disposition == bigquery.WriteDisposition.WRITE_APPEND
+    assert table_id == "proj.sanctions.entries_staging"
+    assert job_config.write_disposition == bigquery.WriteDisposition.WRITE_TRUNCATE
+
+    assert len(client.queries) == 2  # entries MERGE, then the manifest MERGE
+    merge_sql, merge_params = client.queries[0]
+    assert "MERGE" in merge_sql
+    assert "WHEN NOT MATCHED BY SOURCE AND T.source = @source_key THEN DELETE" in merge_sql
+    # bigquery.ScalarQueryParameter coerces a DATE-typed value into a real date.
+    assert merge_params == {"load_date": dt.date(2026, 1, 1), "source_key": "demo_src"}
+    assert "MERGE" in client.queries[1][0]
 
 
 def test_sink_load_skips_when_no_rows():
     client = _FakeClient()
     sink = BigQuerySink(project="proj", client=client)
 
-    outcome = sink.load([], source_key="demo_src", snapshot_date="2026-01-01")
+    outcome = sink.load([], source_key="demo_src", load_date="2026-01-01")
 
     assert outcome.status == "skipped (no rows)"
     assert not client.queries

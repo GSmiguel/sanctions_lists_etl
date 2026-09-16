@@ -50,9 +50,10 @@ BigQuery project **`sanctions-screening-508311`**, dataset **`sanctions`**:
 
 | table | contents |
 | --- | --- |
-| `entries` | full history — one row per party, per source, per day it was loaded |
-| `entries_current` | current state only — always query this one unless you need history |
-| `snapshot_manifest` | tracks each source's most recent load date |
+| `entries` | current state only — one row per party, kept current via a per-source MERGE (no daily copies); `first_seen_date`/`last_seen_date` give a lightweight history without the storage cost |
+| `entries_current` | plain view over `entries`, kept for naming stability — query either one |
+| `entries_staging` | transient load buffer the sink MERGEs from; not meant to be queried |
+| `snapshot_manifest` | tracks each source's most recent load date, informational only |
 
 ## Development
 
